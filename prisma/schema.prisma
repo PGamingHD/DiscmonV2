@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Pokemon {
+  pokemonId           String          @id @unique @db.VarChar(32)
+  pokemonName         String          @default("Unknown") @db.VarChar(32)
+  pokemonPicture      String          @default("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDK5_M9hXf_9mGi98hp7qu3rO4f6LmalxCwjM-ZhS15w&s") @db.VarChar(120)
+  pokemonShinyPicture String          @default("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDK5_M9hXf_9mGi98hp7qu3rO4f6LmalxCwjM-ZhS15w&s") @db.VarChar(120)
+  pokemonRarity       PokemonRarity   @default(COMMON)
+  pokemonType         PokemonType[]
+  PokemonEvolve       PokemonEvolve[]
+}
+
+model PokemonType {
+  Id          String   @id @unique @db.VarChar(32)
+  pokemon     Pokemon  @relation(fields: [Id], references: [pokemonId])
+  pokemonType PokeType @default(NORMAL)
+}
+
+model PokemonEvolve {
+  Id          String  @id @unique @db.VarChar(32)
+  pokemon     Pokemon @relation(fields: [Id], references: [pokemonId])
+  evolveName  String  @db.VarChar(32)
+  evolveStage Int     @db.Int()
+}
+
+model Server {
+  serverId          String  @id @unique @db.VarChar(32)
+  serverBlacklisted Boolean @default(false)
+  serverRedirect    String? @db.VarChar(32)
+  serverSpawn       Int     @db.Int()
+  serverLanguage    String  @db.VarChar(6)
+}
+
+model PokemonSpawned {
+  pokemonId    String  @id @unique @db.VarChar(32)
+  pokemonCatch Boolean @default(true)
+}
+
+enum PokemonRarity {
+  COMMON
+  UNCOMMON
+  RARE
+  LEGEND
+  ULTRABEAST
+}
+
+enum PokeType {
+  NORMAL
+  FIRE
+  WATER
+  GRASS
+  FLYING
+  FIGHTING
+  POISON
+  ELECTRIC
+  GROUND
+  ROCK
+  PSYCHIC
+  ICE
+  BUG
+  GHOST
+  STEEL
+  DRAGON
+  DARK
+  FAIRY
+}

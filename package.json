@@ -1,0 +1,40 @@
+{
+  "name": "DiscmonV2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "ts-node src/bot.ts",
+    "start:dev": "ts-node-dev src/index.ts",
+    "start:production": "npx rimraf dist && tsc && node dist/index.js",
+    "build": "tsc",
+    "fix": "gts fix"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/lodash": "^4.14.194",
+    "@types/node": "^18.16.3",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.14.1",
+    "axios": "^1.4.0",
+    "biguint-format": "^1.0.2",
+    "chalk": "^4.0.0",
+    "discord.js": "^14.11.0",
+    "dotenv": "^16.0.3",
+    "form-data": "^4.0.0",
+    "glob": "^7.2.3",
+    "gts": "^3.1.1",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "prisma": "^4.13.0",
+    "rimraf": "^5.0.1",
+    "snowflake-generator": "^1.0.2",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "tslib": "^2.5.0",
+    "winston": "^3.8.2",
+    "winston-loki": "^6.0.6"
+  }
+}
