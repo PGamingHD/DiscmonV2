@@ -187,8 +187,6 @@ export default new Command({
         collector.on('end', async (i, reason): Promise<void> => {
             console.log(i, reason);
         });
-
-        //const registeredUser: userData | null = await db.registerNewUser(interaction.user.id, nextTrainerId);
         return;
     },
 });

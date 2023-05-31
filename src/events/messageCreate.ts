@@ -5,12 +5,21 @@ import {
     ChannelType,
     EmbedBuilder,
     Events,
+    GuildMember,
+    PermissionFlagsBits
 } from 'discord.js';
 import { Event } from '../structures/Event';
 import { client } from "../bot";
 import { escapeRegex } from "../utils/misc";
 import { Colours } from "../@types/Colours";
 import logger from "../utils/logger";
+import db from "../utils/database";
+import {PokemonServer} from "@prisma/client";
+
+// ACTIONS
+import increaseSpawnChance from "../utils/actions/increaseSpawnChance";
+import getSpawnRarity from "../utils/actions/getSpawnRarity";
+import encounterSpawn from "../utils/actions/encounterSpawn";
 
 export default new Event(Events.MessageCreate, async (message) => {
     if (message.channel.type === ChannelType.DM) logger.log(`I WAS DMED, CONTENT: ${message.content}`);
@@ -18,7 +27,36 @@ export default new Event(Events.MessageCreate, async (message) => {
     if (message.author.bot) return;
     if (!client || !client.user) return;
 
-    const prefix: string = '!';
+
+    const serverExists: PokemonServer | null = await db.getServer(message.guild.id);
+
+    if (!serverExists) {
+        if (message.channel.type !== ChannelType.GuildText) return;
+        const newServer: PokemonServer = await db.addServer(message.guild.id);
+
+        await increaseSpawnChance(newServer, client, message);
+
+        if (newServer.serverSpawn >= 50) {
+            const getRarity: string = getSpawnRarity();
+
+            if (message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.ViewChannel) && message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.SendMessages) && message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.EmbedLinks)) {
+                await encounterSpawn(message, getRarity, newServer);
+            }
+        }
+    } else {
+        if (message.channel.type !== ChannelType.GuildText) return;
+        await increaseSpawnChance(serverExists, client, message);
+
+        if (serverExists.serverSpawn >= 50) {
+            const getRarity: string = getSpawnRarity();
+
+            if (message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.ViewChannel) && message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.SendMessages) && message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.EmbedLinks)) {
+                await encounterSpawn(message, getRarity, serverExists);
+            }
+        }
+    }
+
+    /*const prefix: string = '!';
     const prefixRegex: RegExp = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(prefix)})`);
     if (!prefixRegex.test(message.content)) return;
 
@@ -86,5 +124,5 @@ export default new Event(Events.MessageCreate, async (message) => {
         }
     } catch (error) {
         console.log(error);
-    }
+    }*/
 });

@@ -2,6 +2,7 @@ import logger from "./logger";
 import {
     Generator
 } from 'snowflake-generator'
+import {PokemonGender, PokemonNature} from "@prisma/client";
 const SnowflakeGenerator: Generator = new Generator(1420070400000);
 
 export function generateGuid(): string {
@@ -35,6 +36,51 @@ export function capitalizeFirst(string: string): string {
     }
 
     return toReturn;
+}
+
+export function randomNumber(min: number, max: number): number{
+    return (Math.floor(Math.pow(10,14)*Math.random()*Math.random())%(max-min+1))+min;
+}
+
+export function randomizeNature(): PokemonNature {
+    const Nature: PokemonNature[] = [
+        PokemonNature.TIMID,
+        PokemonNature.BASHFUL,
+        PokemonNature.BRAVE,
+        PokemonNature.BOLD,
+        PokemonNature.CALM,
+        PokemonNature.CAREFUL,
+        PokemonNature.DOCILE,
+        PokemonNature.GENTLE,
+        PokemonNature.HARDY,
+        PokemonNature.HASTY,
+        PokemonNature.IMPISH,
+        PokemonNature.JOLLY,
+        PokemonNature.LAX,
+        PokemonNature.LONELY,
+        PokemonNature.MILD,
+        PokemonNature.MODEST,
+        PokemonNature.NAIVE,
+        PokemonNature.NAUGHTY,
+        PokemonNature.QUIET,
+        PokemonNature.QUIRKY,
+        PokemonNature.RASH,
+        PokemonNature.RELAXED,
+        PokemonNature.SASSY,
+        PokemonNature.SERIOUS,
+        PokemonNature.TIMID,
+    ]
+
+    return Nature[Math.random() * Nature.length>>0];
+}
+
+export function randomizeGender(): PokemonGender {
+    const Gender: PokemonGender[] = [
+        PokemonGender.MALE,
+        PokemonGender.FEMALE,
+    ]
+
+    return Gender[Math.random() * Gender.length>>0];
 }
 
 export function formatSeconds(seconds: number): string {

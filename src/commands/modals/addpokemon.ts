@@ -22,7 +22,7 @@ export default new Command({
 
         const pokeName: TextInputBuilder = new TextInputBuilder().setCustomId('pokeName').setLabel('Pokémon Name').setStyle(TextInputStyle.Short).setMaxLength(32).setMinLength(2).setRequired(true);
         const pokeRarity: TextInputBuilder = new TextInputBuilder().setCustomId('pokeRarity').setLabel('Pokémon Rarity').setStyle(TextInputStyle.Short).setMaxLength(16).setMinLength(4).setRequired(true);
-        const pokeType: TextInputBuilder = new TextInputBuilder().setCustomId('pokeType').setLabel('Pokémon Type').setStyle(TextInputStyle.Short).setMaxLength(16).setMinLength(4).setRequired(true);
+        const pokeType: TextInputBuilder = new TextInputBuilder().setCustomId('pokeType').setLabel('Pokémon Type').setStyle(TextInputStyle.Short).setMaxLength(16).setMinLength(3).setRequired(true);
         const evolveName: TextInputBuilder = new TextInputBuilder().setCustomId('evolveName').setLabel('Pokémon Evolve Name').setStyle(TextInputStyle.Short).setMaxLength(16).setMinLength(4).setRequired(true);
         const evolveStage: TextInputBuilder = new TextInputBuilder().setCustomId('evolveStage').setLabel('Pokémon Evolve Stage').setStyle(TextInputStyle.Short).setMaxLength(2).setMinLength(1).setRequired(true);
 

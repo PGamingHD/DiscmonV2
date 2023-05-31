@@ -23,10 +23,11 @@ model Pokemon {
 }
 
 model Pokemons {
-  pokemonId      String  @id @unique @db.VarChar(32)
-  pokemonName    String  @db.VarChar(32)
-  pokemonPicture String  @db.VarChar(120)
-  pokemonOwner   String? @db.VarChar(32)
+  pokemonId          String  @id @unique @db.VarChar(32)
+  pokemonName        String  @db.VarChar(32)
+  pokemonPicture     String  @db.VarChar(120)
+  pokemonOwner       String? @db.VarChar(32)
+  pokemonPlacementId Int?    @db.Int()
 
   pokemonXP       Int           @db.Int()
   pokemonLevel    Int           @db.Int()
@@ -62,7 +63,7 @@ model PokemonEvolve {
 
 model PokemonsIVs {
   pokemonId String   @id @unique @db.VarChar(32)
-  pokemon   Pokemons @relation(fields: [pokemonId], references: [pokemonId])
+  pokemon   Pokemons @relation(fields: [pokemonId], references: [pokemonId], onDelete: Cascade)
 
   HP         Int @db.Int()
   Attack     Int @db.Int()

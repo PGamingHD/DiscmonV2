@@ -25,44 +25,16 @@ export class Database {
         return this.prisma.pokemon.create({data});
     }
 
-    /*addNewPokemon(pokemonId: string, pokemonPokedex: number, pokemonName: string, pokemonPicture: string, pokemonShinyPicture: string, pokemonRarity: PokemonRarity, pokeEvolve: any, pokeType: any): Promise<Pokemon> {
-        return this.prisma.pokemon.create({
-            data: {
-                pokemonId,
-                pokemonPokedex,
-                pokemonName,
-                pokemonPicture,
-                pokemonRarity,
-                pokemonShinyPicture,
-                pokemonEvolve: pokeEvolve,
-                pokemonType: pokeType,
-            }
-        });
-    }*/
-
-    addPokemonTypes(pokemonId: string, pokemonType: PokeType, typeUniqueId: string): Promise<PokemonType> {
-        return this.prisma.pokemonType.create({
-            data: {
-                pokemonId,
-                pokemonType,
-                typeUniqueId,
-            }
-        });
-    }
-
-    addPokemonEvolve(pokemonId: string, nextName: string, evolveUniqueId: string, evolveStage: number): Promise<PokemonEvolve> {
-        return this.prisma.pokemonEvolve.create({
-            data: {
-                pokemonId,
-                nextEvolveName: nextName,
-                evolveUniqueId,
-                currentEvolveStage: evolveStage
-            }
-        })
-    }
-
     getPokemonCount(): Promise<number> {
         return this.prisma.pokemon.count();
+    }
+
+    getPokemonRarityCount(pokemonRarity: PokemonRarity): Promise<number> {
+        return this.prisma.pokemon.count({
+            where: {
+                pokemonRarity
+            }
+        })
     }
 
     getPokemon(pokemonName: string): Promise<Pokemon | null> {
@@ -73,18 +45,28 @@ export class Database {
         });
     }
 
+    getRandomPokemon(pokemonRarity: PokemonRarity, randomSkip: number): Promise<Pokemon | null> {
+        return this.prisma.pokemon.findFirst({
+            where: {
+                pokemonRarity
+            },
+            skip: randomSkip,
+            take: 1
+        });
+    }
+
     /*
     * SPAWNED & CLAIMED GETTERS AND SETTERS!
     * */
 
-    spawnNewPokemon(serverId: string, channelId: string, messageId: string, pokemonId: string, pokemonName: string, pokemonPicture: string, pokemonGender: PokemonGender, pokemonNature: PokemonNature): Promise<Pokemons | null> {
+    spawnNewPokemon(serverId: string, channelId: string, messageId: string, pokemonId: string, pokemonName: string, pokemonPicture: string, pokemonGender: PokemonGender, pokemonNature: PokemonNature, pokemonLevel: number, ivData: any): Promise<Pokemons | null> {
         return this.prisma.pokemons.create({
             data: {
                 pokemonId,
                 pokemonName,
                 pokemonPicture,
+                pokemonLevel,
                 pokemonXP: 0,
-                pokemonLevel: 1,
                 pokemonCatch: true,
                 pokemonSelected: false,
                 pokemonFavorite: false,
@@ -93,20 +75,34 @@ export class Database {
                 spawnedServer: serverId,
                 spawnedChannel: channelId,
                 spawnedMessage: messageId,
+                PokemonIVs: {
+                    create: ivData
+                }
             }
         });
     }
 
-    findSpawnedPokemon(channelId: string): Promise<Pokemons | null> {
+    findSpawnedPokemon(channelId: string, pokemonName: string): Promise<Pokemons | null> {
         return this.prisma.pokemons.findFirst({
             where: {
+                pokemonName,
                 spawnedChannel: channelId,
                 pokemonCatch: true
             }
         });
     }
 
-    setSpawnedOwner(pokemonId: string, pokemonOwner: string): Promise<Pokemons | null> {
+    findSpawnedExactPokemon(pokemonId: string, channelId: string): Promise<Pokemons | null> {
+        return this.prisma.pokemons.findFirst({
+            where: {
+                pokemonId,
+                spawnedChannel: channelId,
+                pokemonCatch: true,
+            }
+        })
+    }
+
+    setSpawnedOwner(pokemonId: string, pokemonOwner: string, placementId: number): Promise<Pokemons | null> {
         return this.prisma.pokemons.update({
             where: {
                 pokemonId,
@@ -114,7 +110,7 @@ export class Database {
             data: {
                 pokemonOwner,
                 pokemonCatch: false,
-
+                pokemonPlacementId: placementId,
                 spawnedServer: null,
                 spawnedMessage: null,
                 spawnedChannel: null,
@@ -133,10 +129,27 @@ export class Database {
                 pokemonGender,
                 pokemonSelected,
                 pokemonFavorite: false,
+                pokemonPlacementId: 1,
                 pokemonLevel: 1,
                 pokemonXP: 0,
                 pokemonCatch: false,
             }
+        });
+    }
+
+    deleteSpawnedPokemon(pokemonId: string) {
+        return this.prisma.pokemons.delete({
+            where: {
+                pokemonId
+            }
+        });
+    }
+
+    deleteCatchablePokemon() {
+        return this.prisma.pokemons.deleteMany({
+            where: {
+                pokemonCatch: true,
+            },
         });
     }
 
@@ -161,8 +174,69 @@ export class Database {
     findPokemonTrainer(userId: string): Promise<userData | null> {
         return this.prisma.userData.findFirst({
             where: {
-                userId
+                userId,
             }
         });
+    }
+
+    getPokemonNextPokeId(userId: string): Promise<Pokemons[]> {
+        return this.prisma.pokemons.findMany({
+            where: {
+                pokemonOwner: userId,
+                NOT: {
+                    pokemonPlacementId: null,
+                }
+            },
+            orderBy: [{
+                pokemonPlacementId: 'desc',
+            }],
+            take: 1,
+            skip: 0,
+        })
+    }
+
+    /*
+    * SERVER GETTERS & SETTERS
+    * */
+
+    getServer(serverId: string): Promise<PokemonServer | null> {
+        return this.prisma.pokemonServer.findFirst({
+            where: {
+                serverId
+            }
+        });
+    }
+
+    addServer(serverId: string): Promise<PokemonServer> {
+        return this.prisma.pokemonServer.create({
+            data: {
+                serverId,
+                serverBlacklisted: false,
+                serverSpawn: 0,
+                serverLanguage: 'en',
+            }
+        });
+    }
+
+    incrementServerSpawnChance(serverId: string, increment: number): Promise<PokemonServer | null> {
+        return this.prisma.pokemonServer.update({
+            where: {
+                serverId
+            },
+            data: {
+                serverSpawn: {increment}
+            }
+        });
+    }
+
+    setServerSpawnChance(serverId: string, number: number): Promise<PokemonServer | null> {
+        return this.prisma.pokemonServer.update({
+            where: {
+                serverId
+            },
+            data: {
+                serverSpawn: number
+            }
+        })
     }
 }

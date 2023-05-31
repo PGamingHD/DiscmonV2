@@ -16,6 +16,7 @@ import {ButtonType, ModalType, TextType} from '../@types/Command';
 import path from 'path';
 import logger from '../utils/logger';
 import {hasUpperCase} from "../utils/misc";
+import db from "../utils/database";
 
 const globPromise = promisify(glob);
 
@@ -25,6 +26,9 @@ export class ExtendedClient extends Client {
     contextmenus: Collection<string, MenuType> = new Collection();
     modals: Collection<string, ModalType> = new Collection();
     buttons: Collection<string, ButtonType> = new Collection();
+
+    //GLOBAL TEMP VARIABLES
+    awardCooldowns: Collection<string, string> = new Collection();
 
     constructor() {
         super({
