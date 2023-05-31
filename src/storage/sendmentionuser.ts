@@ -2,12 +2,12 @@ import {
     ApplicationCommandOptionType,
     ChannelType
 } from 'discord.js';
-import { Command } from '../../structures/Command';
-import sendSelectMentionMenu from "../../utils/messages/sendSelectMentionMenu";
+import { Command } from '../structures/Command';
+import sendSelectMentionMenu from "../utils/messages/sendSelectMentionMenu";
 
 export default new Command({
     name: 'sendselectmention',
-    description: 'This is just a testing command, desc here!',
+    description: 'This is just a user command, desc here!',
     noDefer: true,
     run: async ({ interaction, client }) => {
         return sendSelectMentionMenu(interaction, true, 60000, 60000, async (i: any) => {

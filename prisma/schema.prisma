@@ -11,39 +11,82 @@ datasource db {
 }
 
 model Pokemon {
-  pokemonId           String          @id @unique @db.VarChar(32)
-  pokemonName         String          @default("Unknown") @db.VarChar(32)
-  pokemonPicture      String          @default("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDK5_M9hXf_9mGi98hp7qu3rO4f6LmalxCwjM-ZhS15w&s") @db.VarChar(120)
-  pokemonShinyPicture String          @default("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDK5_M9hXf_9mGi98hp7qu3rO4f6LmalxCwjM-ZhS15w&s") @db.VarChar(120)
-  pokemonRarity       PokemonRarity   @default(COMMON)
-  pokemonType         PokemonType[]
-  PokemonEvolve       PokemonEvolve[]
+  pokemonId           String        @id @unique @db.VarChar(32)
+  pokemonPokedex      Int           @unique @db.Int()
+  pokemonName         String        @default("Unknown") @db.VarChar(32)
+  pokemonPicture      String        @default("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDK5_M9hXf_9mGi98hp7qu3rO4f6LmalxCwjM-ZhS15w&s") @db.VarChar(120)
+  pokemonShinyPicture String        @default("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDK5_M9hXf_9mGi98hp7qu3rO4f6LmalxCwjM-ZhS15w&s") @db.VarChar(120)
+  pokemonRarity       PokemonRarity @default(COMMON)
+
+  pokemonType   PokemonType[]
+  pokemonEvolve PokemonEvolve?
+}
+
+model Pokemons {
+  pokemonId      String  @id @unique @db.VarChar(32)
+  pokemonName    String  @db.VarChar(32)
+  pokemonPicture String  @db.VarChar(120)
+  pokemonOwner   String? @db.VarChar(32)
+
+  pokemonXP       Int           @db.Int()
+  pokemonLevel    Int           @db.Int()
+  pokemonCatch    Boolean       @default(true)
+  pokemonSelected Boolean       @default(false)
+  pokemonFavorite Boolean       @default(false)
+  pokemonGender   PokemonGender @default(MALE)
+  pokemonNature   PokemonNature @default(ADAMANT)
+
+  spawnedServer  String? @db.VarChar(32)
+  spawnedChannel String? @unique @db.VarChar(32)
+  spawnedMessage String? @unique @db.VarChar(32)
+
+  PokemonIVs PokemonsIVs?
 }
 
 model PokemonType {
-  Id          String   @id @unique @db.VarChar(32)
-  pokemon     Pokemon  @relation(fields: [Id], references: [pokemonId])
+  typeUniqueId String @id @unique @db.VarChar(32)
+
+  pokemon     Pokemon  @relation(fields: [pokemonId], references: [pokemonId])
+  pokemonId   String   @db.VarChar(32)
   pokemonType PokeType @default(NORMAL)
 }
 
 model PokemonEvolve {
-  Id          String  @id @unique @db.VarChar(32)
-  pokemon     Pokemon @relation(fields: [Id], references: [pokemonId])
-  evolveName  String  @db.VarChar(32)
-  evolveStage Int     @db.Int()
+  evolveUniqueId String @id @unique @db.VarChar(32)
+
+  pokemon            Pokemon @relation(fields: [pokemonId], references: [pokemonId])
+  pokemonId          String  @unique @db.VarChar(32)
+  nextEvolveName     String  @db.VarChar(32)
+  currentEvolveStage Int     @db.Int()
 }
 
-model Server {
+model PokemonsIVs {
+  pokemonId String   @id @unique @db.VarChar(32)
+  pokemon   Pokemons @relation(fields: [pokemonId], references: [pokemonId])
+
+  HP         Int @db.Int()
+  Attack     Int @db.Int()
+  Defense    Int @db.Int()
+  SpecialAtk Int @db.Int()
+  SpecialDef Int @db.Int()
+  Speed      Int @db.Int()
+  TotalIV    Int @db.Int()
+}
+
+model userData {
+  userId          String  @id @unique @db.VarChar(32)
+  userBlacklisted Boolean @default(false)
+  userTokens      Int     @default(0) @db.Int()
+  userCoins       Int     @default(500) @db.Int()
+  trainerNumber   Int     @unique @db.Int()
+}
+
+model PokemonServer {
   serverId          String  @id @unique @db.VarChar(32)
   serverBlacklisted Boolean @default(false)
   serverRedirect    String? @db.VarChar(32)
   serverSpawn       Int     @db.Int()
   serverLanguage    String  @db.VarChar(6)
-}
-
-model PokemonSpawned {
-  pokemonId    String  @id @unique @db.VarChar(32)
-  pokemonCatch Boolean @default(true)
 }
 
 enum PokemonRarity {
@@ -52,6 +95,40 @@ enum PokemonRarity {
   RARE
   LEGEND
   ULTRABEAST
+  SHINY
+}
+
+enum PokemonNature {
+  ADAMANT
+  BASHFUL
+  BRAVE
+  BOLD
+  CALM
+  CAREFUL
+  DOCILE
+  GENTLE
+  HARDY
+  HASTY
+  IMPISH
+  JOLLY
+  LAX
+  LONELY
+  MILD
+  MODEST
+  NAIVE
+  NAUGHTY
+  QUIET
+  QUIRKY
+  RASH
+  RELAXED
+  SASSY
+  SERIOUS
+  TIMID
+}
+
+enum PokemonGender {
+  MALE
+  FEMALE
 }
 
 enum PokeType {

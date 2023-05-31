@@ -2,15 +2,15 @@ import {
     ApplicationCommandOptionType,
     ChannelType
 } from 'discord.js';
-import { Command } from '../../structures/Command';
-import sendSelectRoleMenu from "../../utils/messages/sendSelectRoleMenu";
+import { Command } from '../structures/Command';
+import sendSelectChannelMenu from "../utils/messages/sendSelectChannelMenu";
 
 export default new Command({
-    name: 'sendselectrole',
-    description: 'This is just a testing command, desc here!',
+    name: 'sendselectchannel',
+    description: 'This is just a user command, desc here!',
     noDefer: true,
     run: async ({ interaction, client }) => {
-        return sendSelectRoleMenu(interaction, true, 60000, 60000, async (i: any) => {
+        return sendSelectChannelMenu(interaction, [ChannelType.GuildText], true, 60000, 60000, async (i: any) => {
             if (!i.deferred) await i.deferUpdate();
             console.log('LOGGED SELECTION');
             console.log(i);
