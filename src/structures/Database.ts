@@ -221,6 +221,11 @@ export class Database {
                 userId: userid,
                 userBlacklisted: false,
                 trainerNumber: nextTrainerNum,
+                userBag: {
+                    create: {
+                        userRedeems: 0
+                    }
+                }
             }
         });
     }
@@ -309,6 +314,17 @@ export class Database {
             data: {
                 serverSpawn: number
             }
-        })
+        });
+    }
+
+    setRedirectChannel(serverId: string, channelId: string | null): Promise<PokemonServer | null> {
+        return this.prisma.pokemonServer.update({
+            where: {
+                serverId
+            },
+            data: {
+                serverRedirect: channelId
+            }
+        });
     }
 }

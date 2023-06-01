@@ -81,6 +81,15 @@ model userData {
   userTokens      Int     @default(0) @db.Int()
   userCoins       Int     @default(500) @db.Int()
   trainerNumber   Int     @unique @db.Int()
+
+  userBag userBag?
+}
+
+model userBag {
+  userId String   @id @unique @db.VarChar(32)
+  user   userData @relation(fields: [userId], references: [userId])
+
+  userRedeems Int @db.Int()
 }
 
 model PokemonServer {
