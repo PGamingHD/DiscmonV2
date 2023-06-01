@@ -28,7 +28,7 @@ export default new Command({
             const IVpercentage = pokemon.PokemonIVs.HP + pokemon.PokemonIVs.Attack + pokemon.PokemonIVs.Defense + pokemon.PokemonIVs.SpecialAtk + pokemon.PokemonIVs.SpecialDef + pokemon.PokemonIVs.Speed;
             const IVtotal: string = (IVpercentage / 186 * 100).toFixed(2);
 
-            pokemonData.push(`\`${pokemon.pokemonPlacementId}\` **${pokemon.pokemonName}** • Lvl. ${pokemon.pokemonLevel} • *IV ${IVtotal}%*`)
+            pokemonData.push(`\`${pokemon.pokemonPlacementId}\` ${pokemon.pokemonFavorite === true ? '⭐' : ''}${pokemon.pokemonPicture.includes('shiny') ? '✨' : ''}${pokemon.pokemonPicture.includes('alolan') ? '💿' : ''} **${pokemon.pokemonName}** • Lvl. ${pokemon.pokemonLevel} • *IV ${IVtotal}%*`)
         }
 
         const pages: string[][] = chunk(pokemonData, 15);

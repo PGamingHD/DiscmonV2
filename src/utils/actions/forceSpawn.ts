@@ -1,44 +1,39 @@
-import {ChannelType, EmbedBuilder, Message, TextChannel} from "discord.js";
+import {ChannelType, EmbedBuilder, Interaction, Message, TextChannel} from "discord.js";
 import db from "../database";
 import {generateFlake, randomizeGender, randomizeNature, randomNumber} from "../misc";
 import {
     Pokemon,
-    PokemonRarity,
     Pokemons,
     PokemonServer
 } from "@prisma/client";
 import {Colours} from "../../@types/Colours";
 
-export default async function(message: Message<boolean>, spawnedRarity: string, serverData: PokemonServer) {
-    if (!message.guild) return;
-    if (message.channel.type !== ChannelType.GuildText) return;
+export default async function(interaction: Interaction, pokeName: string, serverData: PokemonServer, pokeLevel: number, maxIV: boolean) {
+    if (!interaction.guild) return;
+    if (!interaction.channel) return;
+    if (interaction.channel.type !== ChannelType.GuildText) return;
 
-    const getPokemons: number = await db.getPokemonRarityCount(spawnedRarity.toUpperCase() as PokemonRarity);
-    console.log(getPokemons);
-    const randomPokemon: number = randomNumber(1, getPokemons);
-    console.log(randomPokemon);
-
-    const pokemonToSpawn: Pokemon | null = await db.getRandomPokemon(spawnedRarity.toUpperCase() as PokemonRarity, randomPokemon);
+    const pokemonToSpawn: Pokemon | null = await db.getPokemon(pokeName);
 
     let channelToSend: TextChannel;
 
     if (serverData.serverRedirect) {
         let redirectChannel;
         try {
-            redirectChannel = await message.guild.channels.fetch(`${serverData.serverRedirect}`);
+            redirectChannel = await interaction.guild.channels.fetch(`${serverData.serverRedirect}`);
         } catch {
-            redirectChannel = message.channel;
+            redirectChannel = interaction.channel;
         }
 
         channelToSend = redirectChannel as TextChannel;
     } else {
-        channelToSend = message.channel;
+        channelToSend = interaction.channel;
     }
 
     if (!channelToSend) return;
     if (!pokemonToSpawn) return;
 
-    const levelGeneration: number = Math.floor(Math.random() * (20 - 1) + 1);
+    const levelGeneration: number = pokeLevel;
     const generatedId: string = generateFlake();
 
     const spawnMessage: Message<true> = await channelToSend.send({
@@ -53,14 +48,14 @@ export default async function(message: Message<boolean>, spawnedRarity: string, 
         ]
     });
 
-    const guildId: string = message.guild.id;
+    const guildId: string = interaction.guild.id;
     const channelId: string = channelToSend.id;
 
     const hasSpawnedAlready: Pokemons | null = await db.findSpawnedPokemon(channelId, pokemonToSpawn.pokemonName);
 
     if (hasSpawnedAlready) {
         try {
-            const channel: TextChannel = await message.guild.channels.fetch(hasSpawnedAlready.spawnedChannel as string) as TextChannel;
+            const channel: TextChannel = await interaction.guild.channels.fetch(hasSpawnedAlready.spawnedChannel as string) as TextChannel;
             if (!channel) return;
             const oldMessage = await channel.messages.fetch(hasSpawnedAlready.spawnedMessage as string);
             await oldMessage.edit({content: `:x: The \`${pokemonToSpawn.pokemonName}\` wasn't caught in time and therefore fled, better luck next time!`, embeds: [], components: []});
@@ -69,12 +64,21 @@ export default async function(message: Message<boolean>, spawnedRarity: string, 
         await db.deleteSpawnedPokemon(hasSpawnedAlready.pokemonId);
     }
 
-    const HPiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-    const ATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-    const DEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-    const SPECATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-    const SPECDEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-    const SPEEDiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+    let HPiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+    let ATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+    let DEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+    let SPECATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+    let SPECDEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+    let SPEEDiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+
+    if (maxIV) {
+        HPiv = 31;
+        ATKiv = 31;
+        DEFiv = 31;
+        SPECATKiv = 31;
+        SPECDEFiv = 31;
+        SPEEDiv = 31;
+    }
 
     await db.spawnNewPokemon(guildId, channelId, spawnMessage.reactions.message.id, generatedId, pokemonToSpawn.pokemonName, pokemonToSpawn.pokemonPicture, randomizeGender(), randomizeNature(), levelGeneration, {
         HP: HPiv,

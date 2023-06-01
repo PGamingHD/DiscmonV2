@@ -3,6 +3,7 @@ import {Events, Guild, Message, TextChannel} from "discord.js";
 import db from "../utils/database";
 import logger from "../utils/logger";
 import {Pokemons} from "@prisma/client";
+import {readdirSync} from "fs";
 
 export default new Event(Events.ClientReady, async (client) => {
     const allPokemons: Pokemons[] = await db.findDeleteCatchablePokemon();

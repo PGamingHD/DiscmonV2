@@ -16,6 +16,7 @@ import {ButtonType, ModalType, TextType} from '../@types/Command';
 import path from 'path';
 import logger from '../utils/logger';
 import {hasUpperCase} from "../utils/misc";
+import {readdirSync} from "fs";
 
 const globPromise = promisify(glob);
 
@@ -29,6 +30,7 @@ export class ExtendedClient extends Client {
     //GLOBAL TEMP VARIABLES
     awardCooldowns: Collection<string, string> = new Collection();
     xpCooldowns: Collection<string, string> = new Collection();
+    changelogFiles: Collection<number, any> = new Collection();
 
     constructor() {
         super({
@@ -70,7 +72,7 @@ export class ExtendedClient extends Client {
         const guildSpecfic: ApplicationCommandDataResolvable[] = [];
 
         const root: string = path.join(__dirname, '..');
-        const commandFiles = await globPromise('/commands/*/*{.ts,.js}', {root});
+        const commandFiles: string[] = await globPromise('/commands/*/*{.ts,.js}', {root});
         const textFiles: string[] = await globPromise('/text/*/*{.ts,.js}', {root});
         const modalFiles: string[] = await globPromise('/modals/*/*{.ts,.js}', {root});
         const buttonFiles: string[] = await globPromise('/buttons/*/*{.ts,.js}', {root});
@@ -124,6 +126,17 @@ export class ExtendedClient extends Client {
 
             this.buttons.set(button.customId, button as ButtonType);
         }
+
+        const changelogs: string[] = readdirSync( process.cwd() + '/src/changelog/');
+        changelogs.map((file: string) => {
+            const filecontent = require(process.cwd() + `/src/changelog/${file}`);
+            const number = filecontent['ChangelogNumber'];
+            this.changelogFiles.set(number, {
+                ChangelogTitle: filecontent['ChangelogTitle'],
+                ChangelogDescription: filecontent['ChangelogDescription'],
+                ChangelogTimestamp: filecontent['ChangelogTimestamp']
+            })
+        });
 
         this.on('ready', () => {
             this.registerCommands({
