@@ -1,22 +1,71 @@
 import {
+    ActionRowBuilder,
+    AnyComponentBuilder,
+    APIEmbed,
     ApplicationCommandOptionType,
-    ChannelType,
-    EmbedBuilder
+    ChannelType, EmbedBuilder,
+    ModalBuilder,
+    TextInputBuilder,
+    TextInputStyle
 } from 'discord.js';
-import { Modal } from '../../structures/Modal';
-import {Colours} from "../../@types/Colours";
-import {Pokemon, PokemonNature, PokemonRarity, PokeType} from "@prisma/client";
-import db from "../../utils/database";
+import { Command } from '../../structures/Command';
+import {Pokemon, PokemonRarity, PokeType} from "@prisma/client";
 import {capitalizeFirst, generateFlake} from "../../utils/misc";
+import {Colours} from "../../@types/Colours";
+import db from "../../utils/database";
 
-export default new Modal({
-    customId: 'addPokeModal',
-    run: async ({interaction, client, args}) => {
-        let pokeName: string = args.getTextInputValue('pokeName');
-        let evolveName: string = args.getTextInputValue('evolveName');
-        const pokeRarity: string = args.getTextInputValue('pokeRarity');
-        const pokeType: string = args.getTextInputValue('pokeType');
-        const evolveStage: string = args.getTextInputValue('evolveStage');
+export default new Command({
+    name: 'addpokemon',
+    description: 'Add a new Pokémon to the database (DEVELOPER ONLY)',
+    defaultMemberPermissions: 'Administrator',
+    main: true,
+    noDefer: true,
+    options: [{
+        name: 'name',
+        description: 'What is the name of the pokemon?',
+        type: ApplicationCommandOptionType.String,
+        required: true
+    }, {
+        name: 'pokerarity',
+        description: 'common, uncommon, rare, legend, ultrabeast, shiny, one only!',
+        type: ApplicationCommandOptionType.String,
+        required: true
+    }, {
+        name: 'poketype',
+        description: 'The pokémons type, separate types with "," only!',
+        type: ApplicationCommandOptionType.String,
+        required: true
+    }, {
+        name: 'evolvename',
+        description: 'What is the name of the evolve of this pokemon? ("none" if no evolve)',
+        type: ApplicationCommandOptionType.String,
+        required: true
+    }, {
+        name: 'evolvelevel',
+        description: 'The level this pokémon will evolve into new pokémon',
+        type: ApplicationCommandOptionType.Integer,
+        required: true
+    }, {
+        name: 'currentstage',
+        description: 'What stage of evolution this pokémon is in',
+        type: ApplicationCommandOptionType.Integer,
+        required: true,
+    }],
+    run: async ({ interaction, client }) => {
+        let pokeName: string | null = interaction.options.getString('name');
+        let evolveName: string | null = interaction.options.getString('evolvename');
+        const pokeRarity: string | null = interaction.options.getString('pokerarity');
+        const pokeType: string | null = interaction.options.getString('poketype');
+        const evolveStage: number | null = interaction.options.getInteger('currentstage');
+        const evolveLevel: number | null = interaction.options.getInteger('evolvelevel');
+
+        if (!pokeName) return;
+        if (!evolveName) return;
+        if (!pokeRarity) return;
+        if (!pokeType) return;
+        if (!evolveStage) return;
+        if (!evolveLevel) return;
+
 
         pokeName = pokeName.toLowerCase();
         pokeName = capitalizeFirst(pokeName);
@@ -79,7 +128,8 @@ export default new Modal({
                 create: {
                     evolveUniqueId: generateFlake(),
                     nextEvolveName: evolveName,
-                    currentEvolveStage: parseInt(evolveStage)
+                    nextEvolveLevel: evolveLevel,
+                    currentEvolveStage: evolveStage,
                 }},
             pokemonType: {
                 create: pokemonTypes
@@ -88,4 +138,3 @@ export default new Modal({
         return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription(`The Pokémon \`${pokeName}\` has been added into the database successfully with all types & evolve data!`)]});
     },
 });
-

@@ -58,6 +58,7 @@ model PokemonEvolve {
   pokemon            Pokemon @relation(fields: [pokemonId], references: [pokemonId])
   pokemonId          String  @unique @db.VarChar(32)
   nextEvolveName     String  @db.VarChar(32)
+  nextEvolveLevel    Int     @db.Int()
   currentEvolveStage Int     @db.Int()
 }
 
@@ -71,7 +72,6 @@ model PokemonsIVs {
   SpecialAtk Int @db.Int()
   SpecialDef Int @db.Int()
   Speed      Int @db.Int()
-  TotalIV    Int @db.Int()
 }
 
 model userData {

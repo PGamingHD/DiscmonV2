@@ -12,7 +12,7 @@ export default async function(message: Message<boolean>, spawnedRarity: string, 
     if (!message.guild) return;
     if (message.channel.type !== ChannelType.GuildText) return;
 
-    const getPokemons: number = await db.getPokemonRarityCount(spawnedRarity as PokemonRarity);
+    const getPokemons: number = await db.getPokemonRarityCount(spawnedRarity.toUpperCase() as PokemonRarity);
     console.log(getPokemons);
     const randomPokemon: number = randomNumber(1, getPokemons);
     console.log(randomPokemon);
@@ -80,8 +80,7 @@ export default async function(message: Message<boolean>, spawnedRarity: string, 
         Defense: DEFiv,
         SpecialAtk: SPECATKiv,
         SpecialDef: SPECDEFiv,
-        Speed: SPEEDiv,
-        TotalIV: 1,
+        Speed: SPEEDiv
     });
 
     await db.setServerSpawnChance(guildId, 0);

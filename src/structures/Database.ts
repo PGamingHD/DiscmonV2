@@ -118,7 +118,7 @@ export class Database {
         });
     }
 
-    setNewPokemonOwner(pokemonId: string, pokemonOwner: string, pokemonPicture: string, pokemonName: string, pokemonNature: PokemonNature, pokemonGender: PokemonGender, pokemonSelected: boolean, ): Promise<Pokemons | null> {
+    setNewPokemonOwner(pokemonId: string, pokemonOwner: string, pokemonPicture: string, pokemonName: string, pokemonNature: PokemonNature, pokemonGender: PokemonGender, pokemonSelected: boolean, ivData: any): Promise<Pokemons | null> {
         return this.prisma.pokemons.create({
             data: {
                 pokemonId,
@@ -133,6 +133,9 @@ export class Database {
                 pokemonLevel: 1,
                 pokemonXP: 0,
                 pokemonCatch: false,
+                PokemonIVs: {
+                    create: ivData
+                }
             }
         });
     }
@@ -192,6 +195,20 @@ export class Database {
             }],
             take: 1,
             skip: 0,
+        })
+    }
+
+    getTrainerPokemons(userId: string): Promise<Pokemons[]> {
+        return this.prisma.pokemons.findMany({
+            where: {
+                pokemonOwner: userId
+            },
+            include: {
+                PokemonIVs: true
+            },
+            orderBy: [{
+                pokemonPlacementId: 'asc'
+            }]
         })
     }
 

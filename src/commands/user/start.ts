@@ -11,8 +11,8 @@ import {Colours} from "../../@types/Colours";
 import {generateFlake} from "../../utils/misc";
 
 export default new Command({
-    name: 'register',
-    description: 'Register to become a real Pokémon trainer',
+    name: 'start',
+    description: 'Start your new adventure as a Pokémon Trainer',
     noDefer: true,
     run: async ({ interaction, client }) => {
         const dataExists: userData | null = await db.findPokemonTrainer(interaction.user.id);
@@ -86,14 +86,29 @@ export default new Command({
                     PokemonGender.FEMALE,
                 ]
 
-                const newUser: userData | null = await db.registerNewUser(interaction.user.id, nextTrainerId);
+                await db.registerNewUser(interaction.user.id, nextTrainerId);
 
-                await db.setNewPokemonOwner(generateFlake(), interaction.user.id, pokemon.pokemonPicture, pokemon.pokemonName, Nature[Math.random() * Nature.length>>0], Gender[Math.random() * Gender.length>>0], true);
+                const HPiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+                const ATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+                const DEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+                const SPECATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+                const SPECDEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+                const SPEEDiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+
+                await db.setNewPokemonOwner(generateFlake(), interaction.user.id, pokemon.pokemonPicture, pokemon.pokemonName, Nature[Math.random() * Nature.length>>0], Gender[Math.random() * Gender.length>>0], true, {
+                    HP: HPiv,
+                    Attack: ATKiv,
+                    Defense: DEFiv,
+                    SpecialAtk: SPECATKiv,
+                    SpecialDef: SPECDEFiv,
+                    Speed: SPEEDiv
+                });
 
                 await choiceMsg.edit({embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription('You have successfully chosen \`Bulbasaur\` as your starter Pokémon.')], components: []});
             }
 
             if (i.customId === "charmander") {
+                console.log("CHARMANDER");
                 const pokemon: Pokemon | null = await db.getPokemon('Charmander');
                 if (!pokemon) return;
 
@@ -131,9 +146,23 @@ export default new Command({
                     PokemonGender.FEMALE,
                 ]
 
-                const newUser: userData | null = await db.registerNewUser(interaction.user.id, nextTrainerId);
+                await db.registerNewUser(interaction.user.id, nextTrainerId);
 
-                await db.setNewPokemonOwner(generateFlake(), interaction.user.id, pokemon.pokemonPicture, pokemon.pokemonName, Nature[Math.random() * Nature.length>>0], Gender[Math.random() * Gender.length>>0], true);
+                const HPiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+                const ATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+                const DEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+                const SPECATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+                const SPECDEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+                const SPEEDiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+
+                await db.setNewPokemonOwner(generateFlake(), interaction.user.id, pokemon.pokemonPicture, pokemon.pokemonName, Nature[Math.random() * Nature.length>>0], Gender[Math.random() * Gender.length>>0], true, {
+                    HP: HPiv,
+                    Attack: ATKiv,
+                    Defense: DEFiv,
+                    SpecialAtk: SPECATKiv,
+                    SpecialDef: SPECDEFiv,
+                    Speed: SPEEDiv
+                });
 
                 await choiceMsg.edit({embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription('You have successfully chosen \`Charmander\` as your starter Pokémon.')], components: []});
             }
@@ -176,16 +205,34 @@ export default new Command({
                     PokemonGender.FEMALE,
                 ]
 
-                const newUser: userData | null = await db.registerNewUser(interaction.user.id, nextTrainerId);
+                await db.registerNewUser(interaction.user.id, nextTrainerId);
 
-                await db.setNewPokemonOwner(generateFlake(), interaction.user.id, pokemon.pokemonPicture, pokemon.pokemonName, Nature[Math.random() * Nature.length>>0], Gender[Math.random() * Gender.length>>0], true);
+                const HPiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+                const ATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+                const DEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+                const SPECATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+                const SPECDEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+                const SPEEDiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+
+                await db.setNewPokemonOwner(generateFlake(), interaction.user.id, pokemon.pokemonPicture, pokemon.pokemonName, Nature[Math.random() * Nature.length>>0], Gender[Math.random() * Gender.length>>0], true, {
+                    HP: HPiv,
+                    Attack: ATKiv,
+                    Defense: DEFiv,
+                    SpecialAtk: SPECATKiv,
+                    SpecialDef: SPECDEFiv,
+                    Speed: SPEEDiv
+                });
 
                 await choiceMsg.edit({embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription('You have successfully chosen \`Squirtle\` as your starter Pokémon.')], components: []});
             }
         });
 
         collector.on('end', async (i, reason): Promise<void> => {
-            console.log(i, reason);
+            bulbasaur.setDisabled(true);
+            charmander.setDisabled(true);
+            squirtle.setDisabled(true);
+
+            await choiceMsg.edit({components: [choiceRow]});
         });
         return;
     },

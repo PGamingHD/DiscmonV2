@@ -12,7 +12,7 @@ import sendSelectMenu from "../utils/messages/sendSelectMenu";
 
 export default new Command({
     name: 'sendselection',
-    description: 'This is just a developer command to send string select menus!',
+    description: 'This is just a test command to send string select menus!',
     noDefer: true,
     run: async ({ interaction, client }) => {
 
