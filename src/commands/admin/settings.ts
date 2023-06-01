@@ -46,8 +46,8 @@ export default new Command({
                         .setThumbnail('https://cdn.discordapp.com/attachments/1010999257899204769/1057280575465082890/4482f729452089.55f35b167dbbe.png')
                 ]
             });
-        } catch {
-            return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('Settings could not be fetched correctly, does the redirect channel still exist?')]});
+        } catch (e: any) {
+            return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription(`Settings could not be fetched, please send the error code to a Developer.\n\n**Error Code:** \`${e.message}\``)]});
         }
     },
 });
