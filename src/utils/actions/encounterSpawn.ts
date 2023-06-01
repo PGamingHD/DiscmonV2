@@ -3,7 +3,8 @@ import db from "../database";
 import {generateFlake, randomizeGender, randomizeNature, randomNumber} from "../misc";
 import {
     Pokemon,
-    PokemonRarity, Pokemons,
+    PokemonRarity,
+    Pokemons,
     PokemonServer
 } from "@prisma/client";
 import {Colours} from "../../@types/Colours";

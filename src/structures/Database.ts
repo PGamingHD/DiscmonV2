@@ -4,10 +4,9 @@ import {
     PokemonServer,
     Pokemon,
     Pokemons,
-    PokemonType,
-    PokemonEvolve,
-    PokemonsIVs,
-    PokemonGender, PokemonNature, PokemonRarity, PokeType
+    PokemonGender,
+    PokemonNature,
+    PokemonRarity,
 } from '@prisma/client';
 
 export class Database {

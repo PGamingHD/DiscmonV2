@@ -1,8 +1,14 @@
 import {
     ActionRowBuilder,
-    ApplicationCommandOptionType, ButtonBuilder, ButtonInteraction,
-    ButtonStyle, CacheType,
-    ChannelType, ComponentType, Embed, EmbedBuilder, InteractionCollector, InteractionResponse
+    ApplicationCommandOptionType,
+    ButtonBuilder,
+    ButtonInteraction,
+    ButtonStyle,
+    CacheType,
+    ChannelType,
+    ComponentType,EmbedBuilder,
+    InteractionCollector,
+    InteractionResponse
 } from 'discord.js';
 import { Command } from '../../structures/Command';
 import db from "../../utils/database";

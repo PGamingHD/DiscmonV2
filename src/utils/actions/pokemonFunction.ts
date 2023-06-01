@@ -1,4 +1,9 @@
-import {ChannelType, GuildMember, Message, PermissionFlagsBits} from "discord.js";
+import {
+    ChannelType,
+    GuildMember,
+    Message,
+    PermissionFlagsBits
+} from "discord.js";
 import {ExtendedClient} from "../../structures/Client";
 import db from "../database";
 import {Pokemon, Pokemons} from "@prisma/client";

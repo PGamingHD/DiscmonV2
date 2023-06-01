@@ -2,7 +2,6 @@ import { ApplicationCommandType } from 'discord.js';
 import { ContextMenu } from '../../structures/ContextMenu';
 import sendEmbed from "../../utils/messages/sendEmbed";
 import {Colours} from "../../@types/Colours";
-import db from "../../utils/database";
 
 export default new ContextMenu({
     name: 'Test ID',

@@ -16,7 +16,6 @@ import {ButtonType, ModalType, TextType} from '../@types/Command';
 import path from 'path';
 import logger from '../utils/logger';
 import {hasUpperCase} from "../utils/misc";
-import db from "../utils/database";
 
 const globPromise = promisify(glob);
 

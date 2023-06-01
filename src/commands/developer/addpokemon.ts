@@ -1,11 +1,8 @@
 import {
-    ActionRowBuilder,
-    AnyComponentBuilder,
     APIEmbed,
     ApplicationCommandOptionType,
-    ChannelType, EmbedBuilder,
-    ModalBuilder,
-    TextInputBuilder,
+    ChannelType,
+    EmbedBuilder,
     TextInputStyle
 } from 'discord.js';
 import { Command } from '../../structures/Command';

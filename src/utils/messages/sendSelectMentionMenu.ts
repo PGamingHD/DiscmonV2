@@ -6,9 +6,9 @@ import {
     CommandInteraction,
     ComponentType,
     InteractionCollector,
-    InteractionResponse, MentionableSelectMenuBuilder, MentionableSelectMenuInteraction,
-    UserSelectMenuBuilder,
-    UserSelectMenuInteraction
+    InteractionResponse,
+    MentionableSelectMenuBuilder,
+    MentionableSelectMenuInteraction,
 } from 'discord.js';
 import logger from '../logger';
 
