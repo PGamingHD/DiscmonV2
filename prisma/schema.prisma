@@ -38,7 +38,7 @@ model Pokemons {
   pokemonNature   PokemonNature @default(ADAMANT)
 
   spawnedServer  String? @db.VarChar(32)
-  spawnedChannel String? @unique @db.VarChar(32)
+  spawnedChannel String? @db.VarChar(32)
   spawnedMessage String? @unique @db.VarChar(32)
 
   PokemonIVs PokemonsIVs?

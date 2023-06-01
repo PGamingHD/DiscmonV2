@@ -14,12 +14,13 @@ import { escapeRegex } from "../utils/misc";
 import { Colours } from "../@types/Colours";
 import logger from "../utils/logger";
 import db from "../utils/database";
-import {PokemonServer} from "@prisma/client";
+import {PokemonServer, userData} from "@prisma/client";
 
 // ACTIONS
 import increaseSpawnChance from "../utils/actions/increaseSpawnChance";
 import getSpawnRarity from "../utils/actions/getSpawnRarity";
 import encounterSpawn from "../utils/actions/encounterSpawn";
+import pokemonFunction from "../utils/actions/pokemonFunction";
 
 export default new Event(Events.MessageCreate, async (message) => {
     if (message.channel.type === ChannelType.DM) logger.log(`I WAS DMED, CONTENT: ${message.content}`);
@@ -27,6 +28,11 @@ export default new Event(Events.MessageCreate, async (message) => {
     if (message.author.bot) return;
     if (!client || !client.user) return;
 
+    const findUser: userData | null = await db.findPokemonTrainer(message.author.id);
+
+    if (findUser) {
+        await pokemonFunction(message, client);
+    }
 
     const serverExists: PokemonServer | null = await db.getServer(message.guild.id);
 

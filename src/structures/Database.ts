@@ -41,6 +41,9 @@ export class Database {
         return this.prisma.pokemon.findFirst({
             where: {
                 pokemonName
+            },
+            include: {
+                pokemonEvolve: true
             }
         });
     }
@@ -102,6 +105,23 @@ export class Database {
         })
     }
 
+    findDeleteCatchablePokemon(): Promise<Pokemons[]> {
+        return this.prisma.pokemons.findMany({
+            where: {
+                pokemonCatch: true
+            }
+        });
+    }
+
+    findUserSelectedPokemon(userId: string): Promise<Pokemons | null> {
+        return this.prisma.pokemons.findFirst({
+            where: {
+                pokemonSelected: true,
+                pokemonOwner: userId,
+            },
+        })
+    }
+
     setSpawnedOwner(pokemonId: string, pokemonOwner: string, placementId: number): Promise<Pokemons | null> {
         return this.prisma.pokemons.update({
             where: {
@@ -138,6 +158,42 @@ export class Database {
                 }
             }
         });
+    }
+
+    setPokemonEvolve(pokemonId: string, evolveName: string, evolvePic: string): Promise<Pokemons | null> {
+        return this.prisma.pokemons.update({
+            where: {
+                pokemonId
+            },
+            data: {
+                pokemonName: evolveName,
+                pokemonPicture: evolvePic,
+                pokemonXP: 0,
+            }
+        });
+    }
+
+    setPokemonLevelUp(pokemonId: string): Promise<Pokemons | null> {
+        return this.prisma.pokemons.update({
+            where: {
+                pokemonId
+            },
+            data: {
+                pokemonLevel: {increment: 1},
+                pokemonXP: 0,
+            }
+        })
+    }
+
+    setPokemonXP(pokemonId: string, XP: number): Promise<Pokemons | null> {
+        return this.prisma.pokemons.update({
+            where: {
+                pokemonId
+            },
+            data: {
+                pokemonXP: {increment: XP}
+            }
+        })
     }
 
     deleteSpawnedPokemon(pokemonId: string) {

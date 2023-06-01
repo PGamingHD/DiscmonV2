@@ -29,6 +29,7 @@ export class ExtendedClient extends Client {
 
     //GLOBAL TEMP VARIABLES
     awardCooldowns: Collection<string, string> = new Collection();
+    xpCooldowns: Collection<string, string> = new Collection();
 
     constructor() {
         super({
