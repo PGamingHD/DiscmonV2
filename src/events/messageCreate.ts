@@ -1,17 +1,12 @@
 import {
-    ActionRowBuilder,
-    ButtonBuilder,
     ButtonStyle,
     ChannelType,
-    EmbedBuilder,
     Events,
     GuildMember,
     PermissionFlagsBits
 } from 'discord.js';
 import { Event } from '../structures/Event';
 import { client } from "../bot";
-import { escapeRegex } from "../utils/misc";
-import { Colours } from "../@types/Colours";
 import logger from "../utils/logger";
 import db from "../utils/database";
 import {PokemonServer, userData} from "@prisma/client";

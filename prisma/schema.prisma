@@ -11,12 +11,13 @@ datasource db {
 }
 
 model Pokemon {
-  pokemonId           String        @id @unique @db.VarChar(32)
-  pokemonPokedex      Int           @unique @db.Int()
-  pokemonName         String        @default("Unknown") @db.VarChar(32)
-  pokemonPicture      String        @default("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDK5_M9hXf_9mGi98hp7qu3rO4f6LmalxCwjM-ZhS15w&s") @db.VarChar(120)
-  pokemonShinyPicture String        @default("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDK5_M9hXf_9mGi98hp7qu3rO4f6LmalxCwjM-ZhS15w&s") @db.VarChar(120)
-  pokemonRarity       PokemonRarity @default(COMMON)
+  pokemonId            String        @id @unique @db.VarChar(32)
+  pokemonPokedex       Int           @unique @db.Int()
+  pokemonName          String        @default("Unknown") @db.VarChar(32)
+  pokemonPicture       String        @default("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDK5_M9hXf_9mGi98hp7qu3rO4f6LmalxCwjM-ZhS15w&s") @db.VarChar(120)
+  pokemonShinyPicture  String?       @db.VarChar(120)
+  pokemonAlolanPicture String?       @db.VarChar(120)
+  pokemonRarity        PokemonRarity @default(COMMON)
 
   pokemonType   PokemonType[]
   pokemonEvolve PokemonEvolve?

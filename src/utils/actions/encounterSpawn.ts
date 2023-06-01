@@ -1,6 +1,6 @@
-import {ChannelType, EmbedBuilder, Guild, GuildTextBasedChannel, Message, TextChannel} from "discord.js";
+import {ChannelType, EmbedBuilder, Message, TextChannel} from "discord.js";
 import db from "../database";
-import {generateFlake, generateGuid, randomizeGender, randomizeNature, randomNumber} from "../misc";
+import {generateFlake, randomizeGender, randomizeNature, randomNumber} from "../misc";
 import {
     Pokemon,
     PokemonRarity, Pokemons,

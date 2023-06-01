@@ -50,6 +50,11 @@ export default new Command({
         description: 'What stage of evolution this pokémon is in',
         type: ApplicationCommandOptionType.Integer,
         required: true,
+    }, {
+        name: 'hasalolan',
+        description: 'Does the pokémon have alolan version or not?',
+        type: ApplicationCommandOptionType.Boolean,
+        required: true
     }],
     run: async ({ interaction, client }) => {
         let pokeName: string | null = interaction.options.getString('name');
@@ -58,6 +63,7 @@ export default new Command({
         const pokeType: string | null = interaction.options.getString('poketype');
         const evolveStage: number | null = interaction.options.getInteger('currentstage');
         const evolveLevel: number | null = interaction.options.getInteger('evolvelevel');
+        const hasAlolan: Boolean | null = interaction.options.getBoolean('hasalolan');
 
         if (!pokeName) return;
         if (!evolveName) return;
@@ -65,6 +71,7 @@ export default new Command({
         if (!pokeType) return;
         if (!evolveStage) return;
         if (!evolveLevel) return;
+        if (!hasAlolan) return;
 
 
         pokeName = pokeName.toLowerCase();
@@ -75,6 +82,13 @@ export default new Command({
 
         const pokePicture: string = `https://img.pokemondb.net/sprites/home/normal/${pokeName.toLowerCase()}.png`;
         const pokeShinyPicture: string = `https://img.pokemondb.net/sprites/home/shiny/${pokeName.toLowerCase()}.png`;
+        let pokeAlolanPicture: string | null;
+        if (hasAlolan) {
+            pokeAlolanPicture = `https://img.pokemondb.net/sprites/home/normal/${pokeName.toLowerCase()}-alolan.png`;
+        } else {
+            pokeAlolanPicture = null;
+        }
+
 
         if (pokeRarity.toUpperCase() !== PokemonRarity.RARE && pokeRarity.toUpperCase() !== PokemonRarity.COMMON && pokeRarity.toUpperCase() !== PokemonRarity.UNCOMMON && pokeRarity.toUpperCase() !== PokemonRarity.LEGEND && pokeRarity.toUpperCase() !== PokemonRarity.ULTRABEAST && pokeRarity.toUpperCase() !== PokemonRarity.SHINY)
             return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('The rarity is invalid, please make sure to capitalize the rarity.')]});
@@ -124,6 +138,7 @@ export default new Command({
             pokemonPicture: pokePicture,
             pokemonRarity: pokeRarity.toUpperCase(),
             pokemonShinyPicture: pokeShinyPicture,
+            pokemonAlolanPicture: pokeAlolanPicture,
             pokemonEvolve: {
                 create: {
                     evolveUniqueId: generateFlake(),
