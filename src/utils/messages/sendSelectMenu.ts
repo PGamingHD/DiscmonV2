@@ -122,9 +122,9 @@ export default async function (interaction: CommandInteraction, options: any[], 
         })
 
         buttonCollector.on('collect', async (i: ButtonInteraction<CacheType>): Promise<void> => {
-            if (i.user.id !== interaction.user.id) return;
-
             if (!i.deferred) await i.deferUpdate();
+
+            if (i.user.id !== interaction.user.id) return;
 
             if (i.customId === 'prev') {
                 if (index > 0) {

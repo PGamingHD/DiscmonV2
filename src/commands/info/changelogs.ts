@@ -7,12 +7,8 @@ import {
     EmbedBuilder
 } from 'discord.js';
 import { Command } from '../../structures/Command';
-import db from "../../utils/database";
-import {Pokemons, userData} from "@prisma/client";
 import {Colours} from "../../@types/Colours";
 import sendPagination from "../../utils/messages/sendPagination";
-import {chunk} from 'lodash';
-import {capitalizeFirst} from "../../utils/misc";
 
 export default new Command({
     name: 'changelogs',

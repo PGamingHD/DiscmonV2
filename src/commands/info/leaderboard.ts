@@ -4,15 +4,13 @@ import {
     ButtonStyle,
     ChannelType,
     ComponentType,
-    EmbedBuilder, User
+    EmbedBuilder,
 } from 'discord.js';
 import { Command } from '../../structures/Command';
 import db from "../../utils/database";
-import {Pokemons, userData} from "@prisma/client";
+import {userData} from "@prisma/client";
 import {Colours} from "../../@types/Colours";
 import sendPagination from "../../utils/messages/sendPagination";
-import {chunk} from 'lodash';
-import {capitalizeFirst} from "../../utils/misc";
 
 export default new Command({
     name: 'leaderboard',

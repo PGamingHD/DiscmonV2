@@ -1,12 +1,13 @@
 import {
     PrismaClient,
     userData,
+    userPayment,
     PokemonServer,
     Pokemon,
     Pokemons,
     PokemonGender,
     PokemonNature,
-    PokemonRarity,
+    PokemonRarity, TrainerRanks,
 } from '@prisma/client';
 
 export class Database {
@@ -342,6 +343,65 @@ export class Database {
             },
             data: {
                 serverRedirect: channelId
+            }
+        });
+    }
+
+    /*
+    * PAYMENT GETTERS & SETTERS
+    * */
+
+    createPayment(invoiceOwner: string, invoiceId: string, invoiceType: string): Promise<userPayment | null> {
+        return this.prisma.userPayment.create({
+            data: {
+                invoiceOwner,
+                invoiceId,
+                invoiceType,
+            }
+        });
+    }
+
+    hasPayment(invoiceId: string): Promise<userPayment | null> {
+        return this.prisma.userPayment.findFirst({
+            where: {
+                invoiceId
+            }
+        });
+    }
+
+    increaseCoins(userId: string, amount: number | TrainerRanks): Promise<userData | null> {
+        return this.prisma.userData.update({
+            where: {
+                userId
+            },
+            data: {
+                userCoins: {
+                    increment: amount as number
+                }
+            }
+        });
+    }
+
+    increaseTokens(userId: string, amount: number | TrainerRanks): Promise<userData | null> {
+        return this.prisma.userData.update({
+            where: {
+                userId
+            },
+            data: {
+                userTokens: {
+                    increment: amount as number
+                }
+            }
+        });
+    }
+
+    setTrainerRank(userId: string, newRank: number | TrainerRanks): Promise<userData | null> {
+        return this.prisma.userData.update({
+            where: {
+                userId
+            },
+            data: {
+                trainerRank: newRank as TrainerRanks
             }
         });
     }

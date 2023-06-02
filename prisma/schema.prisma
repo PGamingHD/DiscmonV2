@@ -76,13 +76,15 @@ model PokemonsIVs {
 }
 
 model userData {
-  userId          String  @id @unique @db.VarChar(32)
-  userBlacklisted Boolean @default(false)
-  userTokens      Int     @default(0) @db.Int()
-  userCoins       Int     @default(500) @db.Int()
-  trainerNumber   Int     @unique @db.Int()
+  userId          String       @id @unique @db.VarChar(32)
+  userBlacklisted Boolean      @default(false)
+  userTokens      Int          @default(0) @db.Int()
+  userCoins       Int          @default(500) @db.Int()
+  trainerNumber   Int          @unique @db.Int()
+  trainerRank     TrainerRanks @default(NORMAL_TRAINER)
 
-  userBag userBag?
+  userBag     userBag?
+  userPayment userPayment[]
 }
 
 model userBag {
@@ -90,6 +92,15 @@ model userBag {
   user   userData @relation(fields: [userId], references: [userId])
 
   userRedeems Int @db.Int()
+}
+
+model userPayment {
+  invoiceId String @id @unique @db.VarChar(120)
+
+  invoiceOwner String   @db.VarChar(32)
+  user         userData @relation(fields: [invoiceOwner], references: [userId])
+
+  invoiceType String @db.VarChar(32)
 }
 
 model PokemonServer {
@@ -107,6 +118,17 @@ enum PokemonRarity {
   LEGEND
   ULTRABEAST
   SHINY
+  DEVELOPER
+}
+
+enum TrainerRanks {
+  NORMAL_TRAINER
+  BRONZE_TRAINER
+  SILVER_TRAINER
+  GOLD_TRAINER
+  PLATINUM_TRAINER
+  MODERATOR
+  ADMINISTRATOR
   DEVELOPER
 }
 
