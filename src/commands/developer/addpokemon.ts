@@ -14,8 +14,6 @@ import db from "../../utils/database";
 export default new Command({
     name: 'addpokemon',
     description: 'Add a new Pokémon to the database (DEVELOPER ONLY)',
-    defaultMemberPermissions: 'Administrator',
-    main: true,
     noDefer: true,
     options: [{
         name: 'name',
@@ -54,6 +52,8 @@ export default new Command({
         required: true
     }],
     run: async ({ interaction, client }) => {
+        if (interaction.user.id !== "694107202344058880" && interaction.user.id !== "266726434855321600") return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You do not have permission to use this command.')]})
+
         let pokeName: string | null = interaction.options.getString('name');
         let evolveName: string | null = interaction.options.getString('evolvename');
         const pokeRarity: string | null = interaction.options.getString('pokerarity');

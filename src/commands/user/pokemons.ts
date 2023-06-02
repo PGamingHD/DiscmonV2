@@ -47,7 +47,7 @@ export default new Command({
             })
         }
 
-        await sendPagination(interaction, embeds, 120000, 120000);
+        await sendPagination(interaction, embeds, 120000, 120000, false);
 
         return;
     },

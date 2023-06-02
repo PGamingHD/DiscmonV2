@@ -13,7 +13,7 @@ import {
 } from 'discord.js';
 import logger from '../logger';
 
-export default async function (interaction: CommandInteraction, pages: APIEmbed[], time = 60000, idle = 60000) {
+export default async function (interaction: CommandInteraction, pages: APIEmbed[], time = 60000, idle = 60000, ephemeral: boolean) {
     try {
         if (!interaction) throw new Error('Invalid interaction provided');
         if (!pages) throw new Error('No pages provided');
@@ -23,7 +23,7 @@ export default async function (interaction: CommandInteraction, pages: APIEmbed[
         if (time < 30000) throw new Error('Time must be more than 30 seconds');
         if (idle < 30000) throw new Error('Idle time must be more than 30 seconds');
 
-        if (!interaction.deferred) await interaction.deferReply();
+        if (!interaction.deferred) await interaction.deferReply({ephemeral});
 
         if (pages.length === 1) {
             const page: Message<boolean> = await interaction.editReply({

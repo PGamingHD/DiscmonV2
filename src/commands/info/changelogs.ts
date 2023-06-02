@@ -46,6 +46,6 @@ export default new Command({
             })
         }
 
-        return sendPagination(interaction, embeds, 120000, 120000);
+        return sendPagination(interaction, embeds, 120000, 120000, false);
     },
 });

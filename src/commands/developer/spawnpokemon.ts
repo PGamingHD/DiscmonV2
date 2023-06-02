@@ -15,8 +15,6 @@ import forceSpawn from "../../utils/actions/forceSpawn";
 export default new Command({
     name: 'spawnpokemon',
     description: 'Spawn a Pokémon into the server (DEVELOPER ONLY)',
-    defaultMemberPermissions: 'Administrator',
-    main: true,
     noDefer: true,
     options: [{
         name: 'pokename',
@@ -35,13 +33,14 @@ export default new Command({
         required: true
     }],
     run: async ({ interaction, client }) => {
+        if (interaction.user.id !== "694107202344058880" && interaction.user.id !== "266726434855321600") return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You do not have permission to use this command.')]});
         let pokeName: string | null = await interaction.options.getString('pokename');
         const pokeLevel: number | null = await interaction.options.getInteger('pokelevel');
         const maxIV: boolean | null = await interaction.options.getBoolean('maxiv');
 
         if (!pokeName) return;
         if (!pokeLevel) return;
-        if (!maxIV) return;
+        if (maxIV === null) return;
         if (!interaction.guild) return;
 
         pokeName = capitalizeFirst(pokeName);

@@ -272,6 +272,24 @@ export class Database {
         })
     }
 
+    getTrainerTopCoins(): Promise<userData[]>  {
+        return this.prisma.userData.findMany({
+            orderBy: [{
+                userCoins: 'desc',
+            }],
+            take: 10
+        })
+    }
+
+    getTrainerTopTokens(): Promise<userData[]> {
+        return this.prisma.userData.findMany({
+            orderBy: [{
+                userTokens: 'desc',
+            }],
+            take: 10
+        })
+    }
+
     /*
     * SERVER GETTERS & SETTERS
     * */
