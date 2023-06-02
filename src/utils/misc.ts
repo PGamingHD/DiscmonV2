@@ -3,6 +3,11 @@ import {
     Generator
 } from 'snowflake-generator'
 import {PokemonGender, PokemonNature} from "@prisma/client";
+import {Colours} from "../@types/Colours";
+import {
+    EmbedBuilder,
+    WebhookClient
+} from "discord.js";
 const SnowflakeGenerator: Generator = new Generator(1420070400000);
 
 export function generateGuid(): string {
@@ -105,4 +110,20 @@ export function escapeRegex(str: string): string | void {
     } catch (e) {
         return logger.error(e);
     }
+}
+
+export async function sendWebhook(webhookLink: string, webhookTitle: string, webhookDesc: string, webhookColor: Colours) {
+    const webhook: WebhookClient = new WebhookClient({
+        url: webhookLink
+    });
+
+    await webhook.send({
+        embeds: [
+            new EmbedBuilder()
+                .setColor(webhookColor)
+                .setTitle(webhookTitle)
+                .setDescription(webhookDesc)
+                .setTimestamp()
+        ]
+    });
 }

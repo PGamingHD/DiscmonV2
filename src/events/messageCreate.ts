@@ -59,7 +59,7 @@ export default new Event(Events.MessageCreate, async (message) => {
 
     /*const prefix: string = '!';
     const prefixRegex: RegExp = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(prefix)})`);
-    if (!prefixRegex.test(message.content)) return;
+    if (!prefixRegex.users(message.content)) return;
 
     //@ts-ignore
     const [e, mPrefix] = message.content.match(prefixRegex);
