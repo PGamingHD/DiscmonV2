@@ -83,8 +83,9 @@ model userData {
   trainerNumber   Int          @unique @db.Int()
   trainerRank     TrainerRanks @default(NORMAL_TRAINER)
 
-  userBag     userBag?
-  userPayment userPayment[]
+  orderPokemonBy PokemonOrder?
+  userBag        userBag?
+  userPayment    userPayment[]
 }
 
 model userBag {
@@ -116,6 +117,7 @@ enum PokemonRarity {
   UNCOMMON
   RARE
   LEGEND
+  MYTHICAL
   ULTRABEAST
   SHINY
   DEVELOPER
@@ -163,6 +165,12 @@ enum PokemonNature {
 enum PokemonGender {
   MALE
   FEMALE
+}
+
+enum PokemonOrder {
+  IV
+  LEVEL
+  FAVORITE
 }
 
 enum PokeType {

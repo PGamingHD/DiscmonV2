@@ -8,25 +8,27 @@ import {
 } from 'discord.js';
 import { Command } from '../../structures/Command';
 import db from "../../utils/database";
-import {userData} from "@prisma/client";
+import {Pokemon, Pokemons, userData} from "@prisma/client";
 import {Colours} from "../../@types/Colours";
-import sendPagination from "../../utils/messages/sendPagination";
+import {capitalizeFirst} from "../../utils/misc";
 import {chunk} from 'lodash';
+import sendPagination from "../../utils/messages/sendPagination";
 
 export default new Command({
-    name: 'pokemons',
-    description: 'View all your caught Pokémons',
+    name: 'pokedex',
+    description: 'Get a pokédex of all Pokémons available',
     requireAccount: true,
     noDefer: true,
     run: async ({ interaction, client }) => {
-        const ownedPokemons: any = await db.getTrainerPokemons(interaction.user.id);
+        const pokedexMons: any = await db.getAllPokemons();
         const pokemonData: string[] = [];
 
-        for (const pokemon of ownedPokemons) {
-            const IVpercentage = pokemon.PokemonIVs.HP + pokemon.PokemonIVs.Attack + pokemon.PokemonIVs.Defense + pokemon.PokemonIVs.SpecialAtk + pokemon.PokemonIVs.SpecialDef + pokemon.PokemonIVs.Speed;
-            const IVtotal: string = (IVpercentage / 186 * 100).toFixed(2);
-
-            pokemonData.push(`\`${pokemon.pokemonPlacementId}\` ${pokemon.pokemonFavorite === true ? '⭐' : ''}${pokemon.pokemonPicture.includes('shiny') ? '✨' : ''}${pokemon.pokemonPicture.includes('alolan') ? '💿' : ''} **${pokemon.pokemonName}** • Lvl. ${pokemon.pokemonLevel} • *IV ${IVtotal}%*`)
+        for (const pokemon of pokedexMons) {
+            const types: string[] = [];
+            for (const type of pokemon.pokemonType) {
+                types.push(capitalizeFirst(type.pokemonType));
+            }
+            pokemonData.push(`\`${pokemon.pokemonPokedex}\` *${pokemon.pokemonName}* • *${types.join(', ')}* • __*${capitalizeFirst(pokemon.pokemonRarity)}*__`);
         }
 
         const pages: string[][] = chunk(pokemonData, 15);
@@ -36,7 +38,7 @@ export default new Command({
         for (const page of pages) {
             currentPage++;
             embeds.push({
-                title: `📦 __Your current Pokémons__ 📦`,
+                title: `🧰 __Pokémon Pokedex__ 🧰`,
                 description: `${page.join('\n')}`,
                 footer: {
                     text: `Page ${currentPage} of ${pages.length}`

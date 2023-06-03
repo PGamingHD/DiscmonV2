@@ -40,7 +40,7 @@ export default async function(interaction: Interaction, pokeName: string, server
         embeds: [
             new EmbedBuilder()
                 .setColor(Colours.YELLOW)
-                .setDescription(`A wild pokémon has spawned, catch the spawned\n pokémon with \`/catch (name)\` before it flees!`)
+                .setDescription(`A wild pokémon has been spawned by a Developer,\ncatch the spawned pokémon with \`/catch (name)\`\nbefore it flees!`)
                 .setImage(pokemonToSpawn.pokemonPicture)
                 .setFooter({
                     text: generatedId
@@ -92,18 +92,20 @@ export default async function(interaction: Interaction, pokeName: string, server
     await db.setServerSpawnChance(guildId, 0);
 
     setTimeout(async () => {
-        const timeToDel = await db.findSpawnedExactPokemon(pokemonToSpawn.pokemonId, channelId);
+        const timeToDel: Pokemons | null = await db.findSpawnedExactPokemon(generatedId, channelId);
 
         if (timeToDel) {
-            await db.deleteSpawnedPokemon(pokemonToSpawn.pokemonId);
+            await db.deleteSpawnedPokemon(generatedId);
 
-            if (spawnMessage) {
+            /*if (spawnMessage) {
                 await spawnMessage.delete();
-            }
+            }*/
 
-            await spawnMessage.edit({content: `:x: The \`${pokemonToSpawn.pokemonName}\` wasn't caught in time and therefore fled, better luck next time!`, components: [], embeds: []})
+            try {
+                await spawnMessage.edit({content: `:x: The \`${pokemonToSpawn.pokemonName}\` wasn't caught in time and therefore fled, better luck next time!`, components: [], embeds: []})
+            } catch (e){console.log(e)}
         }
-    }, 1000 * 120);
+    }, 1000 * 60 * 2);
 
 
 

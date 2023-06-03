@@ -21,9 +21,12 @@ export default new Command({
     description: 'Start your new adventure as a Pokémon Trainer',
     noDefer: true,
     run: async ({ interaction, client }) => {
-        const dataExists: userData | null = await db.findPokemonTrainer(interaction.user.id);
-        if (dataExists) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setDescription('You already seem to have an account, you do not need to register again.').setColor(Colours.RED)]});
-        const nextTrainerId: number = await db.findNextTrainerId() + 1;
+        let nextTrainerId: userData | null | number = await db.findNextTrainerId();
+        if (!nextTrainerId) {
+            nextTrainerId = 0;
+        } else {
+            nextTrainerId = nextTrainerId.trainerNumber + 1;
+        }
 
         const bulbasaur: ButtonBuilder = new ButtonBuilder()
             .setCustomId('bulbasaur')
@@ -43,7 +46,7 @@ export default new Command({
 
         const choiceRow: ActionRowBuilder<ButtonBuilder> = new ActionRowBuilder<ButtonBuilder>().addComponents(bulbasaur, charmander, squirtle);
 
-        const choiceMsg: InteractionResponse<boolean> = await interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setTitle('Please choose a starter Pokémon').setImage('https://cdn.discordapp.com/attachments/1010999257899204769/1057280526190387271/starters.png').setColor(Colours.YELLOW)], components: [choiceRow]})
+        const choiceMsg: InteractionResponse<boolean> = await interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setTitle('Please choose a starter Pokémon').setImage('https://cdn.discordapp.com/attachments/1010999257899204769/1057280526190387271/starters.png').setColor(Colours.YELLOW).setFooter({text: 'NOTE: Bot is in Alpha, expect data wipes for updates.'})], components: [choiceRow]})
 
         const collector: InteractionCollector<ButtonInteraction<CacheType>> = await choiceMsg.createMessageComponentCollector({
             componentType: ComponentType.Button,
@@ -92,7 +95,7 @@ export default new Command({
                     PokemonGender.FEMALE,
                 ]
 
-                await db.registerNewUser(interaction.user.id, nextTrainerId);
+                await db.registerNewUser(interaction.user.id, nextTrainerId as number);
 
                 const HPiv: number = Math.floor(Math.random() * (31 - 1) + 1);
                 const ATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
@@ -152,7 +155,7 @@ export default new Command({
                     PokemonGender.FEMALE,
                 ]
 
-                await db.registerNewUser(interaction.user.id, nextTrainerId);
+                await db.registerNewUser(interaction.user.id, nextTrainerId as number);
 
                 const HPiv: number = Math.floor(Math.random() * (31 - 1) + 1);
                 const ATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
@@ -211,7 +214,7 @@ export default new Command({
                     PokemonGender.FEMALE,
                 ]
 
-                await db.registerNewUser(interaction.user.id, nextTrainerId);
+                await db.registerNewUser(interaction.user.id, nextTrainerId as number);
 
                 const HPiv: number = Math.floor(Math.random() * (31 - 1) + 1);
                 const ATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);

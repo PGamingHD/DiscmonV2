@@ -8,7 +8,7 @@ import {
 } from "discord.js";
 import {Colours} from "../../@types/Colours";
 import db from "../database";
-import {TrainerRanks} from "@prisma/client";
+import {TrainerRanks, userData} from "@prisma/client";
 
 export default async function(interaction: any, paymentAmount: number, paymentType: string, paymentReward: number | TrainerRanks, paymentGateways: string[]) {
     const createPaymentGateway = await axios({
@@ -110,17 +110,35 @@ export default async function(interaction: any, paymentAmount: number, paymentTy
                         }
                     } else {
                         if (paymentType === 'coin') {
-                            const nextTrainerId: number = await db.findNextTrainerId() + 1;
+                            let nextTrainerId: userData | null | number = await db.findNextTrainerId();
+                            if (!nextTrainerId) {
+                                nextTrainerId = 0;
+                            } else {
+                                nextTrainerId = nextTrainerId.trainerNumber + 1;
+                            }
+
                             await db.registerNewUser(interaction.user.id, nextTrainerId);
 
                             await db.increaseCoins(interaction.user.id, paymentReward);
                         } else if (paymentType === 'token') {
-                            const nextTrainerId: number = await db.findNextTrainerId() + 1;
+                            let nextTrainerId: userData | null | number = await db.findNextTrainerId();
+                            if (!nextTrainerId) {
+                                nextTrainerId = 0;
+                            } else {
+                                nextTrainerId = nextTrainerId.trainerNumber + 1;
+                            }
+
                             await db.registerNewUser(interaction.user.id, nextTrainerId);
 
                             await db.increaseTokens(interaction.user.id, paymentReward);
                         } else if (paymentType === 'rank') {
-                            const nextTrainerId: number = await db.findNextTrainerId() + 1;
+                            let nextTrainerId: userData | null | number = await db.findNextTrainerId();
+                            if (!nextTrainerId) {
+                                nextTrainerId = 0;
+                            } else {
+                                nextTrainerId = nextTrainerId.trainerNumber + 1;
+                            }
+
                             await db.registerNewUser(interaction.user.id, nextTrainerId);
 
                             await db.setTrainerRank(interaction.user.id, paymentReward);

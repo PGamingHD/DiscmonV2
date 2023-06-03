@@ -14,6 +14,7 @@ import {capitalizeFirst} from "../../utils/misc";
 export default new Command({
     name: 'catch',
     description: 'Catch a pokémon that has been spawned',
+    requireAccount: true,
     noDefer: true,
     options: [{
         name: 'name',
@@ -22,8 +23,6 @@ export default new Command({
         required: true
     }],
     run: async ({ interaction, client }) => {
-        const dataExists: userData | null = await db.findPokemonTrainer(interaction.user.id);
-        if (!dataExists) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setDescription('You do not seem to have an account, please register before trying to catch a Pokémon.').setColor(Colours.RED)]});
         let pokeName: string | null = interaction.options.getString('name');
         if (!pokeName) return;
         if (!interaction.channel) return;

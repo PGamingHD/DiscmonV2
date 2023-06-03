@@ -58,6 +58,10 @@ export type TextType = {
 
 export type CommandType = {
     noDefer?: boolean;
+    developerRestricted?: boolean;
+    adminRestricted?: boolean;
+    modRestricted?: boolean;
+    requireAccount?: boolean;
     userPermissions?: PermissionResolvable[];
     main?: boolean;
     run: RunFunction;

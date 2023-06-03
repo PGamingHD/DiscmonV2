@@ -13,16 +13,22 @@ import db from "../../utils/database";
 
 export default new Command({
     name: 'addpokemon',
-    description: 'Add a new Pokémon to the database (DEVELOPER ONLY)',
+    description: 'Add a new Pokémon to the database',
+    developerRestricted: true,
     noDefer: true,
     options: [{
+        name: 'pokedexid',
+        description: 'The Pokédex ID of the Pokémon',
+        type: ApplicationCommandOptionType.Integer,
+        required: true
+    },{
         name: 'name',
         description: 'What is the name of the pokemon?',
         type: ApplicationCommandOptionType.String,
         required: true
     }, {
         name: 'pokerarity',
-        description: 'common, uncommon, rare, legend, ultrabeast, shiny, one only!',
+        description: 'common, uncommon, rare, legend, mythical, ultrabeast, shiny, developer, one only!',
         type: ApplicationCommandOptionType.String,
         required: true
     }, {
@@ -52,23 +58,23 @@ export default new Command({
         required: true
     }],
     run: async ({ interaction, client }) => {
-        if (interaction.user.id !== "694107202344058880" && interaction.user.id !== "266726434855321600") return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You do not have permission to use this command.')]})
-
+        const pokeId: number | null = interaction.options.getInteger('pokedexid');
         let pokeName: string | null = interaction.options.getString('name');
         let evolveName: string | null = interaction.options.getString('evolvename');
         const pokeRarity: string | null = interaction.options.getString('pokerarity');
         const pokeType: string | null = interaction.options.getString('poketype');
         const evolveStage: number | null = interaction.options.getInteger('currentstage');
         const evolveLevel: number | null = interaction.options.getInteger('evolvelevel');
-        const hasAlolan: Boolean | null = interaction.options.getBoolean('hasalolan');
+        const hasAlolan: boolean | null = interaction.options.getBoolean('hasalolan');
 
+        if (!pokeId) return;
         if (!pokeName) return;
         if (!evolveName) return;
         if (!pokeRarity) return;
         if (!pokeType) return;
         if (!evolveStage) return;
         if (!evolveLevel) return;
-        if (!hasAlolan) return;
+        if (!hasAlolan === null) return;
 
 
         pokeName = pokeName.toLowerCase();
@@ -87,7 +93,7 @@ export default new Command({
         }
 
 
-        if (pokeRarity.toUpperCase() !== PokemonRarity.RARE && pokeRarity.toUpperCase() !== PokemonRarity.COMMON && pokeRarity.toUpperCase() !== PokemonRarity.UNCOMMON && pokeRarity.toUpperCase() !== PokemonRarity.LEGEND && pokeRarity.toUpperCase() !== PokemonRarity.ULTRABEAST && pokeRarity.toUpperCase() !== PokemonRarity.SHINY && pokeRarity.toUpperCase() !== PokemonRarity.DEVELOPER)
+        if (pokeRarity.toUpperCase() !== PokemonRarity.RARE && pokeRarity.toUpperCase() !== PokemonRarity.COMMON && pokeRarity.toUpperCase() !== PokemonRarity.UNCOMMON && pokeRarity.toUpperCase() !== PokemonRarity.LEGEND && pokeRarity.toUpperCase() !== PokemonRarity.MYTHICAL && pokeRarity.toUpperCase() !== PokemonRarity.ULTRABEAST && pokeRarity.toUpperCase() !== PokemonRarity.SHINY && pokeRarity.toUpperCase() !== PokemonRarity.DEVELOPER)
             return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('The rarity is invalid, must be of a valid rarity.')]});
 
         const alrExists: Pokemon | null = await db.getPokemon(pokeName);
@@ -117,7 +123,7 @@ export default new Command({
 
         const allTypes: string[] = pokeType.split(',');
 
-        if (allTypes.length === 0) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('The types field is empty, please atleast 1 type.')]});
+        if (allTypes.length === 0) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('The types field is empty, please enter atleast 1 type.')]});
 
         const pokemonTypes: any[] = [];
         for (const type of allTypes) {
@@ -126,11 +132,9 @@ export default new Command({
             pokemonTypes.push({pokemonType: type.toUpperCase(), typeUniqueId: generateFlake()});
         }
 
-        const pokeNumber: number = await db.getPokemonCount() + 1;
-
         await db.addNewPokemon({
             pokemonId: generateFlake(),
-            pokemonPokedex: pokeNumber,
+            pokemonPokedex: pokeId,
             pokemonName: pokeName,
             pokemonPicture: pokePicture,
             pokemonRarity: pokeRarity.toUpperCase(),

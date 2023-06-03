@@ -16,11 +16,9 @@ import {capitalizeFirst} from "../../utils/misc";
 export default new Command({
     name: 'pokemon',
     description: 'View details of your Pokémons',
+    requireAccount: true,
     noDefer: true,
     run: async ({ interaction, client }) => {
-        const dataExists: userData | null = await db.findPokemonTrainer(interaction.user.id);
-        if (!dataExists) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setDescription('You do not seem to have an account, please register before trying to catch a Pokémon.').setColor(Colours.RED)]});
-
         const ownedPokemons: any[] = await db.getTrainerPokemons(interaction.user.id);
 
         if (ownedPokemons.length === 0) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setDescription('You do not have any Pokémons that could be shown.').setColor(Colours.RED)]});

@@ -48,6 +48,17 @@ export class Database {
         });
     }
 
+    getAllPokemons(): Promise<Pokemon[]> {
+        return this.prisma.pokemon.findMany({
+            orderBy: [{
+                pokemonPokedex: 'asc',
+            }],
+            include: {
+                pokemonType: true
+            }
+        });
+    }
+
     getRandomPokemon(pokemonRarity: PokemonRarity, randomSkip: number): Promise<Pokemon | null> {
         return this.prisma.pokemon.findFirst({
             where: {
@@ -120,6 +131,23 @@ export class Database {
                 pokemonOwner: userId,
             },
         })
+    }
+
+    findAllPokemons(): Promise<Pokemons[]> {
+        return this.prisma.pokemons.findMany({
+            include: {
+                PokemonIVs: true
+            }
+        })
+    }
+
+    findPlacementPokemon(userId: string, placementId: number): Promise<Pokemons | null> {
+        return this.prisma.pokemons.findFirst({
+            where: {
+                pokemonOwner: userId,
+                pokemonPlacementId: placementId,
+            }
+        });
     }
 
     setSpawnedOwner(pokemonId: string, pokemonOwner: string, placementId: number): Promise<Pokemons | null> {
@@ -212,6 +240,14 @@ export class Database {
         });
     }
 
+    deleteCaughtPokemon(pokemonId: string) {
+        return this.prisma.pokemons.delete({
+            where: {
+                pokemonId,
+            }
+        });
+    }
+
     /*
     * TRAINER GETTERS AND SETTERS!
     * */
@@ -231,8 +267,13 @@ export class Database {
         });
     }
 
-    findNextTrainerId(): Promise<number> {
-        return this.prisma.userData.count();
+    findNextTrainerId(): Promise<userData | null> {
+        return this.prisma.userData.findFirst({
+            orderBy: [{
+                trainerNumber: 'asc'
+            }],
+            take: 1
+        })
     }
 
     findPokemonTrainer(userId: string): Promise<userData | null> {

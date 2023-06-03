@@ -17,11 +17,12 @@ import paymentSystem from "../../utils/actions/paymentSystem";
 export default new Command({
     name: 'store',
     description: 'Shop from our official store (contact upon issues)',
+    requireAccount: true,
     noDefer: true,
     run: async ({ interaction, client }) => {
         if (!client.user) return;
         const userData: userData | null = await db.findPokemonTrainer(interaction.user.id);
-        if (!userData) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You do not seem to have an account, please register before trying to buy something.')]});
+        if (!userData) return;
 
         const storeRow: any = new ActionRowBuilder()
         storeRow.addComponents([

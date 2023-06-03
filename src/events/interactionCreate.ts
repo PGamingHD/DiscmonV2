@@ -1,12 +1,15 @@
 import {
     CommandInteractionOptionResolver,
     ModalSubmitFields,
-    Events
+    Events, EmbedBuilder
 } from 'discord.js';
 import { client } from '../bot';
 import { Event } from '../structures/Event';
 import logger from '../utils/logger';
 import {ButtonType, CommandType, MenuType, ModalType} from "../@types/Command";
+import {TrainerRanks, userData} from "@prisma/client";
+import db from "../utils/database";
+import {Colours} from "../@types/Colours";
 
 
 export default new Event(Events.InteractionCreate, async interaction => {
@@ -18,6 +21,12 @@ export default new Event(Events.InteractionCreate, async interaction => {
         if (command.noDefer) bla = 'hey';
 
         else await interaction.deferReply();
+
+        const findUser: userData | null = await db.findPokemonTrainer(interaction.user.id);
+        if (findUser && command.developerRestricted && findUser.trainerRank !== TrainerRanks.DEVELOPER) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You require the permission \`Developer\` to execute this command.')]});
+        if (findUser && command.adminRestricted && findUser.trainerRank !== TrainerRanks.ADMINISTRATOR && findUser.trainerRank !== TrainerRanks.DEVELOPER) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You require the permission \`Administrator\` to execute this command.')]});
+        if (findUser && command.modRestricted && findUser.trainerRank !== TrainerRanks.MODERATOR && findUser.trainerRank !== TrainerRanks.ADMINISTRATOR && findUser.trainerRank !== TrainerRanks.DEVELOPER) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You require the permission \`Moderator\` to execute this command.')]});
+        if (command.requireAccount && !findUser) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You require an account to execute this command, please use \`/start\` to start your adventure.')]});
 
         try {
             await command.run({

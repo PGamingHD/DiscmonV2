@@ -14,9 +14,7 @@ export default async function(message: Message<boolean>, spawnedRarity: string, 
     if (message.channel.type !== ChannelType.GuildText) return;
 
     const getPokemons: number = await db.getPokemonRarityCount(spawnedRarity.toUpperCase() as PokemonRarity);
-    console.log(getPokemons);
     const randomPokemon: number = randomNumber(1, getPokemons);
-    console.log(randomPokemon);
 
     const pokemonToSpawn: Pokemon | null = await db.getRandomPokemon(spawnedRarity.toUpperCase() as PokemonRarity, randomPokemon);
 
@@ -88,18 +86,18 @@ export default async function(message: Message<boolean>, spawnedRarity: string, 
     await db.setServerSpawnChance(guildId, 0);
 
     setTimeout(async () => {
-        const timeToDel = await db.findSpawnedExactPokemon(pokemonToSpawn.pokemonId, channelId);
+        const timeToDel: Pokemons | null = await db.findSpawnedExactPokemon(generatedId, channelId);
 
         if (timeToDel) {
-            await db.deleteSpawnedPokemon(pokemonToSpawn.pokemonId);
+            await db.deleteSpawnedPokemon(generatedId);
 
-            if (spawnMessage) {
+            /*if (spawnMessage) {
                 await spawnMessage.delete();
-            }
+            }*/
 
             await spawnMessage.edit({content: `:x: The \`${pokemonToSpawn.pokemonName}\` wasn't caught in time and therefore fled, better luck next time!`, components: [], embeds: []})
         }
-    }, 1000 * 120);
+    }, 1000 * 60 * 2);
 
 
 
