@@ -21,6 +21,7 @@ model Pokemon {
 
   pokemonType   PokemonType[]
   pokemonEvolve PokemonEvolve?
+  pokemonEVs    PokemonEVs?
 }
 
 model Pokemons {
@@ -42,7 +43,8 @@ model Pokemons {
   spawnedChannel String? @db.VarChar(32)
   spawnedMessage String? @unique @db.VarChar(32)
 
-  PokemonIVs PokemonsIVs?
+  PokemonIVs    PokemonsIVs?
+  PokemonBattle PokemonBattle?
 }
 
 model PokemonType {
@@ -63,6 +65,18 @@ model PokemonEvolve {
   currentEvolveStage Int     @db.Int()
 }
 
+model PokemonEVs {
+  pokemonId String  @id @unique @db.VarChar(32)
+  pokemon   Pokemon @relation(fields: [pokemonId], references: [pokemonId])
+
+  HP         Int @db.Int()
+  Attack     Int @db.Int()
+  Defense    Int @db.Int()
+  SpecialAtk Int @db.Int()
+  SpecialDef Int @db.Int()
+  Speed      Int @db.Int()
+}
+
 model PokemonsIVs {
   pokemonId String   @id @unique @db.VarChar(32)
   pokemon   Pokemons @relation(fields: [pokemonId], references: [pokemonId], onDelete: Cascade)
@@ -73,6 +87,17 @@ model PokemonsIVs {
   SpecialAtk Int @db.Int()
   SpecialDef Int @db.Int()
   Speed      Int @db.Int()
+}
+
+model PokemonBattle {
+  pokemonId String   @id @unique @db.VarChar(32)
+  pokemon   Pokemons @relation(fields: [pokemonId], references: [pokemonId])
+
+  opponentTrainer String @db.VarChar(32)
+  opponentHP      Int    @db.Int()
+
+  mainTrainer String @db.VarChar(32)
+  mainHP      Int    @db.Int()
 }
 
 model userData {

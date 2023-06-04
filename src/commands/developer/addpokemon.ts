@@ -56,6 +56,36 @@ export default new Command({
         description: 'Does the pokémon have alolan version or not?',
         type: ApplicationCommandOptionType.Boolean,
         required: true
+    }, {
+        name: 'ev_hp',
+        description: 'The default HP EV for this Pokémon',
+        type: ApplicationCommandOptionType.Integer,
+        required: true,
+    }, {
+        name: 'ev_attack',
+        description: 'The default Attack EV for this Pokémon',
+        type: ApplicationCommandOptionType.Integer,
+        required: true,
+    }, {
+        name: 'ev_def',
+        description: 'The default Defense EV for this Pokémon',
+        type: ApplicationCommandOptionType.Integer,
+        required: true,
+    }, {
+        name: 'ev_spatk',
+        description: 'The default Special Attack EV for this Pokémon',
+        type: ApplicationCommandOptionType.Integer,
+        required: true,
+    }, {
+        name: 'ev_spdef',
+        description: 'The default Special Defense EV for this Pokémon',
+        type: ApplicationCommandOptionType.Integer,
+        required: true,
+    }, {
+        name: 'ev_speed',
+        description: 'The default Speed EV for this Pokémon',
+        type: ApplicationCommandOptionType.Integer,
+        required: true,
     }],
     run: async ({ interaction, client }) => {
         const pokeId: number | null = interaction.options.getInteger('pokedexid');
@@ -67,6 +97,13 @@ export default new Command({
         const evolveLevel: number | null = interaction.options.getInteger('evolvelevel');
         const hasAlolan: boolean | null = interaction.options.getBoolean('hasalolan');
 
+        const evHP: number | null = interaction.options.getInteger('ev_hp');
+        const evAttack: number | null = interaction.options.getInteger('ev_attack');
+        const evDef: number | null = interaction.options.getInteger('ev_def');
+        const evSpAtk: number | null = interaction.options.getInteger('ev_spatk');
+        const evSpDef: number | null = interaction.options.getInteger('ev_spdef');
+        const evSpeed: number | null = interaction.options.getInteger('ev_speed');
+
         if (!pokeId) return;
         if (!pokeName) return;
         if (!evolveName) return;
@@ -75,6 +112,13 @@ export default new Command({
         if (!evolveStage) return;
         if (!evolveLevel) return;
         if (!hasAlolan === null) return;
+
+        if (!evHP) return;
+        if (!evAttack) return;
+        if (!evDef) return;
+        if (!evSpAtk) return;
+        if (!evSpDef) return;
+        if (!evSpeed) return;
 
 
         pokeName = pokeName.toLowerCase();
@@ -150,7 +194,18 @@ export default new Command({
                 }},
             pokemonType: {
                 create: pokemonTypes
-            }});
+            },
+            pokemonEVs: {
+                create: {
+                    HP: evHP,
+                    Attack: evAttack,
+                    Defense: evDef,
+                    SpecialAtk: evSpAtk,
+                    SpecialDef: evSpDef,
+                    Speed: evSpeed,
+                }
+            }
+        });
 
         return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription(`The Pokémon \`${pokeName}\` has been added into the database successfully with all types & evolve data!`)]});
     },
