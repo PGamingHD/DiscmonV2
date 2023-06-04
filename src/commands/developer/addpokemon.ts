@@ -83,11 +83,12 @@ export default new Command({
         evolveName = evolveName.toLowerCase();
         evolveName = capitalizeFirst(evolveName);
 
-        const pokePicture: string = `https://img.pokemondb.net/sprites/home/normal/${pokeName.toLowerCase()}.png`;
-        const pokeShinyPicture: string = `https://img.pokemondb.net/sprites/home/shiny/${pokeName.toLowerCase()}.png`;
+        const pokePicture: string = `https://pgaminghd.github.io/discmon-images/pokemon-sprites/normal/${pokeId}.png`;
+        const pokeShinyPicture: string = `https://pgaminghd.github.io/discmon-images/pokemon-sprites/shiny/${pokeId}.png`;
+
         let pokeAlolanPicture: string | null;
         if (hasAlolan) {
-            pokeAlolanPicture = `https://img.pokemondb.net/sprites/home/normal/${pokeName.toLowerCase()}-alolan.png`;
+            pokeAlolanPicture = `https://pgaminghd.github.io/discmon-images/pokemon-sprites/alolan/normal/${pokeId}.png`;
         } else {
             pokeAlolanPicture = null;
         }
