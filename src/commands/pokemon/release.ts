@@ -9,7 +9,7 @@ import {
 import { Command } from '../../structures/Command';
 import {Colours} from "../../@types/Colours";
 import db from "../../utils/database";
-import typeChart from "../../utils/charts/effectiveChart";
+
 
 export default new Command({
     name: 'release',
