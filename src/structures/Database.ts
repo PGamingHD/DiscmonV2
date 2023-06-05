@@ -45,6 +45,7 @@ export class Database {
             include: {
                 pokemonEvolve: true,
                 pokemonEVs: true,
+                pokemonType: true,
             }
         });
     }
@@ -64,6 +65,9 @@ export class Database {
         return this.prisma.pokemon.findFirst({
             where: {
                 pokemonRarity
+            },
+            include: {
+                pokemonEVs: true
             },
             skip: randomSkip,
             take: 1
@@ -134,6 +138,10 @@ export class Database {
                 pokemonSelected: true,
                 pokemonOwner: userId,
             },
+            include: {
+                PokemonsEVs: true,
+                PokemonIVs: true,
+            }
         })
     }
 

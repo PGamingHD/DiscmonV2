@@ -8,6 +8,8 @@ import {
     EmbedBuilder,
     WebhookClient
 } from "discord.js";
+import typeChart from "./charts/effectiveChart";
+import MoveChart from "./charts/moveChart";
 const SnowflakeGenerator: Generator = new Generator(1420070400000);
 
 export function generateGuid(): string {
@@ -114,6 +116,29 @@ export function escapeRegex(str: string): string | void {
 
 export function calculatePokemonHP(Level: number, BaseEV: number, HPiv: number, currentEV: number): number {
     return Math.floor(0.01 * (2 * BaseEV + HPiv + Math.floor(0.25 * currentEV)) * Level) + Level + 10;
+}
+
+//Attack = move power, Level = poke level, Defense = DefenseEV, defenderType = stringed types, move = moveChart[moveIndex]
+export function calculateDamage(attackerAttack: number, attackerLevel: number, defenderDefense: number, defenderType: string[], move: any): number {
+    // Calculate base damage
+    const baseDamage: number = Math.floor((2 * attackerLevel / 5 + 2) * (move.power === -1 ? 50 : move.power) * attackerAttack / defenderDefense / 50) + 2;
+
+    // Apply type effectiveness
+    const effectiveness: number = typeChart[move.type.toLowerCase()][defenderType[0].toLowerCase()] * (defenderType[1] ? typeChart[move.type.toLowerCase()][defenderType[1].toLowerCase()] : 1);
+    const typeMultiplier: 1 | 2 | 0.5 = effectiveness === 0 ? 0.5 : effectiveness === 2 ? 2 : 1;
+
+    // Calculate critical hit
+    const isCritical: boolean = Math.random() <= move.criticalChance;
+    const criticalMultiplier: 1 | 2 = isCritical ? 2 : 1;
+
+    // Apply random factor (between 0.85 and 1.00)
+    const randomFactor: number = Math.random() * (1.00 - 0.85) + 0.85;
+
+    // Calculate final damage
+    const damageDone: number = Math.floor(baseDamage * typeMultiplier * criticalMultiplier * randomFactor);
+
+    // Subtract damage from defender's HP
+    return damageDone;
 }
 
 export async function sleep(time: number): Promise<void> {

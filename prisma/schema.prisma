@@ -68,7 +68,7 @@ model PokemonEvolve {
 
 model PokemonsEVs {
   pokemonId String   @id @unique @db.VarChar(32)
-  pokemon   Pokemons @relation(fields: [pokemonId], references: [pokemonId])
+  pokemon   Pokemons @relation(fields: [pokemonId], references: [pokemonId], onDelete: Cascade)
 
   HP         Int @db.Int()
   Attack     Int @db.Int()
@@ -104,7 +104,7 @@ model PokemonsIVs {
 
 model PokemonBattle {
   pokemonId String   @id @unique @db.VarChar(32)
-  pokemon   Pokemons @relation(fields: [pokemonId], references: [pokemonId])
+  pokemon   Pokemons @relation(fields: [pokemonId], references: [pokemonId], onDelete: Cascade)
 
   opponentTrainer String @db.VarChar(32)
   opponentHP      Int    @db.Int()
