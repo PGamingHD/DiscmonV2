@@ -45,6 +45,7 @@ model Pokemons {
 
   PokemonIVs    PokemonsIVs?
   PokemonBattle PokemonBattle?
+  PokemonsEVs   PokemonsEVs?
 }
 
 model PokemonType {
@@ -63,6 +64,18 @@ model PokemonEvolve {
   nextEvolveName     String  @db.VarChar(32)
   nextEvolveLevel    Int     @db.Int()
   currentEvolveStage Int     @db.Int()
+}
+
+model PokemonsEVs {
+  pokemonId String   @id @unique @db.VarChar(32)
+  pokemon   Pokemons @relation(fields: [pokemonId], references: [pokemonId])
+
+  HP         Int @db.Int()
+  Attack     Int @db.Int()
+  Defense    Int @db.Int()
+  SpecialAtk Int @db.Int()
+  SpecialDef Int @db.Int()
+  Speed      Int @db.Int()
 }
 
 model PokemonEVs {

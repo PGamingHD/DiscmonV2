@@ -43,7 +43,8 @@ export class Database {
                 pokemonName
             },
             include: {
-                pokemonEvolve: true
+                pokemonEvolve: true,
+                pokemonEVs: true,
             }
         });
     }
@@ -73,7 +74,7 @@ export class Database {
     * SPAWNED & CLAIMED GETTERS AND SETTERS!
     * */
 
-    spawnNewPokemon(serverId: string, channelId: string, messageId: string, pokemonId: string, pokemonName: string, pokemonPicture: string, pokemonGender: PokemonGender, pokemonNature: PokemonNature, pokemonLevel: number, ivData: any): Promise<Pokemons | null> {
+    spawnNewPokemon(serverId: string, channelId: string, messageId: string, pokemonId: string, pokemonName: string, pokemonPicture: string, pokemonGender: PokemonGender, pokemonNature: PokemonNature, pokemonLevel: number, ivData: any, evData: any): Promise<Pokemons | null> {
         return this.prisma.pokemons.create({
             data: {
                 pokemonId,
@@ -91,6 +92,9 @@ export class Database {
                 spawnedMessage: messageId,
                 PokemonIVs: {
                     create: ivData
+                },
+                PokemonsEVs: {
+                    create: evData
                 }
             }
         });
@@ -166,7 +170,7 @@ export class Database {
         });
     }
 
-    setNewPokemonOwner(pokemonId: string, pokemonOwner: string, pokemonPicture: string, pokemonName: string, pokemonNature: PokemonNature, pokemonGender: PokemonGender, pokemonSelected: boolean, ivData: any): Promise<Pokemons | null> {
+    setNewPokemonOwner(pokemonId: string, pokemonOwner: string, pokemonPicture: string, pokemonName: string, pokemonNature: PokemonNature, pokemonGender: PokemonGender, pokemonSelected: boolean, ivData: any, evData: any): Promise<Pokemons | null> {
         return this.prisma.pokemons.create({
             data: {
                 pokemonId,
@@ -183,6 +187,9 @@ export class Database {
                 pokemonCatch: false,
                 PokemonIVs: {
                     create: ivData
+                },
+                PokemonsEVs: {
+                    create: evData
                 }
             }
         });

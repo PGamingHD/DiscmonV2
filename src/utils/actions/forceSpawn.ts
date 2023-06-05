@@ -13,7 +13,7 @@ export default async function(interaction: Interaction, pokeName: string, server
     if (!interaction.channel) return;
     if (interaction.channel.type !== ChannelType.GuildText) return;
 
-    const pokemonToSpawn: Pokemon | null = await db.getPokemon(pokeName);
+    const pokemonToSpawn: any = await db.getPokemon(pokeName);
 
     let channelToSend: TextChannel;
 
@@ -87,6 +87,13 @@ export default async function(interaction: Interaction, pokeName: string, server
         SpecialAtk: SPECATKiv,
         SpecialDef: SPECDEFiv,
         Speed: SPEEDiv
+    }, {
+        HP: pokemonToSpawn.pokemonEVs.HP,
+        Attack: pokemonToSpawn.pokemonEVs.Attack,
+        Defense: pokemonToSpawn.pokemonEVs.Defense,
+        SpecialAtk: pokemonToSpawn.pokemonEVs.SpecialAtk,
+        SpecialDef: pokemonToSpawn.pokemonEVs.SpecialDef,
+        Speed: pokemonToSpawn.pokemonEVs.Speed,
     });
 
     await db.setServerSpawnChance(guildId, 0);

@@ -23,7 +23,7 @@ export default new Command({
     run: async ({ interaction, client }) => {
         let nextTrainerId: userData | null | number = await db.findNextTrainerId();
         if (!nextTrainerId) {
-            nextTrainerId = 0;
+            nextTrainerId = 1;
         } else {
             nextTrainerId = nextTrainerId.trainerNumber + 1;
         }
@@ -58,7 +58,7 @@ export default new Command({
             if (!i.deferred) await i.deferUpdate();
 
             if (i.customId === "bulbasaur") {
-                const pokemon: Pokemon | null = await db.getPokemon('Bulbasaur');
+                const pokemon: any = await db.getPokemon('Bulbasaur');
                 if (!pokemon) return;
 
 
@@ -111,14 +111,20 @@ export default new Command({
                     SpecialAtk: SPECATKiv,
                     SpecialDef: SPECDEFiv,
                     Speed: SPEEDiv
+                }, {
+                    HP: pokemon.pokemonEVs.HP,
+                    Attack: pokemon.pokemonEVs.Attack,
+                    Defense: pokemon.pokemonEVs.Defense,
+                    SpecialAtk: pokemon.pokemonEVs.SpecialAtk,
+                    SpecialDef: pokemon.pokemonEVs.SpecialDef,
+                    Speed: pokemon.pokemonEVs.Speed,
                 });
 
                 await choiceMsg.edit({embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription('You have successfully chosen \`Bulbasaur\` as your starter Pokémon.')], components: []});
             }
 
             if (i.customId === "charmander") {
-                console.log("CHARMANDER");
-                const pokemon: Pokemon | null = await db.getPokemon('Charmander');
+                const pokemon: any = await db.getPokemon('Charmander');
                 if (!pokemon) return;
 
 
@@ -171,13 +177,20 @@ export default new Command({
                     SpecialAtk: SPECATKiv,
                     SpecialDef: SPECDEFiv,
                     Speed: SPEEDiv
+                }, {
+                    HP: pokemon.pokemonEVs.HP,
+                    Attack: pokemon.pokemonEVs.Attack,
+                    Defense: pokemon.pokemonEVs.Defense,
+                    SpecialAtk: pokemon.pokemonEVs.SpecialAtk,
+                    SpecialDef: pokemon.pokemonEVs.SpecialDef,
+                    Speed: pokemon.pokemonEVs.Speed,
                 });
 
                 await choiceMsg.edit({embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription('You have successfully chosen \`Charmander\` as your starter Pokémon.')], components: []});
             }
 
             if (i.customId === "squirtle") {
-                const pokemon: Pokemon | null = await db.getPokemon('Squirtle');
+                const pokemon: any = await db.getPokemon('Squirtle');
                 if (!pokemon) return;
 
 
@@ -223,6 +236,7 @@ export default new Command({
                 const SPECDEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
                 const SPEEDiv: number = Math.floor(Math.random() * (31 - 1) + 1);
 
+                console.log("HP EV", pokemon);
                 await db.setNewPokemonOwner(generateFlake(), interaction.user.id, pokemon.pokemonPicture, pokemon.pokemonName, Nature[Math.random() * Nature.length>>0], Gender[Math.random() * Gender.length>>0], true, {
                     HP: HPiv,
                     Attack: ATKiv,
@@ -230,6 +244,13 @@ export default new Command({
                     SpecialAtk: SPECATKiv,
                     SpecialDef: SPECDEFiv,
                     Speed: SPEEDiv
+                }, {
+                    HP: pokemon.pokemonEVs.HP,
+                    Attack: pokemon.pokemonEVs.Attack,
+                    Defense: pokemon.pokemonEVs.Defense,
+                    SpecialAtk: pokemon.pokemonEVs.SpecialAtk,
+                    SpecialDef: pokemon.pokemonEVs.SpecialDef,
+                    Speed: pokemon.pokemonEVs.Speed,
                 });
 
                 await choiceMsg.edit({embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription('You have successfully chosen \`Squirtle\` as your starter Pokémon.')], components: []});

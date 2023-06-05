@@ -19,6 +19,7 @@ import { Command } from '../../structures/Command';
 import db from "../../utils/database";
 import {Colours} from "../../@types/Colours";
 import {PokemonServer} from "@prisma/client";
+import {sleep} from "../../utils/misc";
 
 export default new Command({
     name: 'settings',

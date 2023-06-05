@@ -112,6 +112,14 @@ export function escapeRegex(str: string): string | void {
     }
 }
 
+export function calculatePokemonHP(Level: number, BaseEV: number, HPiv: number, currentEV: number): number {
+    return Math.floor(0.01 * (2 * BaseEV + HPiv + Math.floor(0.25 * currentEV)) * Level) + Level + 10;
+}
+
+export async function sleep(time: number): Promise<void> {
+    await new Promise(r => setTimeout(r, time));
+}
+
 export async function sendWebhook(webhookLink: string, webhookTitle: string, webhookDesc: string, webhookColor: Colours) {
     const webhook: WebhookClient = new WebhookClient({
         url: webhookLink
