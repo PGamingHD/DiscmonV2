@@ -121,6 +121,8 @@ model userData {
   trainerNumber   Int          @unique @db.Int()
   trainerRank     TrainerRanks @default(NORMAL_TRAINER)
 
+  trainerBattles Int @db.Int()
+
   orderPokemonBy PokemonOrder?
   userBag        userBag?
   userPayment    userPayment[]

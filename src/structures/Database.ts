@@ -7,7 +7,8 @@ import {
     Pokemons,
     PokemonGender,
     PokemonNature,
-    PokemonRarity, TrainerRanks,
+    PokemonRarity,
+    TrainerRanks,
 } from '@prisma/client';
 
 export class Database {
@@ -273,6 +274,7 @@ export class Database {
                 userId: userid,
                 userBlacklisted: false,
                 trainerNumber: nextTrainerNum,
+                trainerBattles: 0,
                 userBag: {
                     create: {
                         userRedeems: 0
@@ -344,6 +346,17 @@ export class Database {
                 userTokens: 'desc',
             }],
             take: 10
+        })
+    }
+
+    increaseBattlesWon(userId: string): Promise<userData | null> {
+        return this.prisma.userData.update({
+            where: {
+                userId
+            },
+            data: {
+                trainerBattles: {increment: 1}
+            }
         })
     }
 
