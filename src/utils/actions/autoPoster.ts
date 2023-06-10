@@ -11,8 +11,8 @@ import {ExtendedClient} from "../../structures/Client";
 const server = express();
 
 export default async function(client: ExtendedClient): Promise<void> {
-    const autoposter: BasePoster = AutoPoster('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEwMTEwMDIzODQwNjQ5NzA5NDQiLCJib3QiOnRydWUsImlhdCI6MTY3MjE0NzgxOX0.CXYPN5AUk4LZ5vD6tjb4Vt_pcOourjqvU-xvAytJawA', client)
-    const webhook: Webhook = new Webhook("epicGamers123!#fromtopggPost");
+    const autoposter: BasePoster = AutoPoster(process.env.TOPGG_TOKEN as string, client);
+    const webhook: Webhook = new Webhook(process.env.TOPGG_AUTH as string);
 
     autoposter.on('posted', () => {
         logger.autoposter('[AUTOPOST] <==> || Successfully posted all relevant stats to the Top.gg site! <==> || [AUTOPOST]');
