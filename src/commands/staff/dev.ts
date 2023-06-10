@@ -6,7 +6,16 @@ import {
     TextInputStyle
 } from 'discord.js';
 import { Command } from '../../structures/Command';
-import {globalCodes, Pokemon, PokemonRarity, Pokemons, PokemonServer, PokeType, RewardType} from "@prisma/client";
+import {
+    globalCodes,
+    Pokemon,
+    PokemonRarity,
+    Pokemons,
+    PokemonServer,
+    PokeType,
+    RewardType,
+    userData
+} from "@prisma/client";
 import {capitalizeFirst, generateFlake} from "../../utils/misc";
 import {Colours} from "../../@types/Colours";
 import db from "../../utils/database";
@@ -18,6 +27,7 @@ export default new Command({
     name: 'dev',
     description: 'Developer commands, restricted to developers only',
     developerRestricted: true,
+    requireAccount: true,
     noDefer: true,
     options: [{
         name: 'addpokemon',
@@ -166,6 +176,16 @@ export default new Command({
             description: 'The amount of redeems this code can have',
             type: ApplicationCommandOptionType.Integer,
             required: true
+        }]
+    }, {
+        name: 'wipedata',
+        description: 'Wipe a users data with everything included',
+        type: ApplicationCommandOptionType.Subcommand,
+        options: [{
+            name: 'userid',
+            description: 'The users ID you wish to wipe',
+            type: ApplicationCommandOptionType.String,
+            required: true,
         }]
     }],
     run: async ({ interaction, client }) => {
@@ -396,6 +416,19 @@ export default new Command({
             await db.createCode(code, type as RewardType, rewardamount, maxuses);
 
             return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription(`The code \`${code}\` has been successfully added with redeem amount of \`${maxuses}\`!`)]});
+        }
+
+        else if (interaction.options.getSubcommand() === "wipedata") {
+            const userId: string | null = interaction.options.getString('userid');
+            if (!userId) return;
+
+            const usersData: userData | null = await db.findPokemonTrainer(userId);
+            if (!usersData) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription(`The UserID you wish to wipe is not valid.`)]});
+
+            await db.deleteAllTrainerPokemons(usersData.userId);
+            await db.removeTrainerData(usersData.userId);
+
+            return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription(`The users data has been successfully wiped.`)]});
         }
 
         else {

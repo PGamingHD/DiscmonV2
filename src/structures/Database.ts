@@ -324,6 +324,14 @@ export class Database {
         });
     }
 
+    deleteAllTrainerPokemons(userId: string) {
+        return this.prisma.pokemons.deleteMany({
+            where: {
+                pokemonOwner: userId,
+            }
+        })
+    }
+
     /*
     * TRAINER GETTERS AND SETTERS!
     * */
@@ -549,6 +557,14 @@ export class Database {
                     pokemonTotalIVs: 'desc',
                 }
             }]
+        })
+    }
+
+    removeTrainerData(userId: string) {
+        return this.prisma.userData.delete({
+            where: {
+                userId,
+            }
         })
     }
 

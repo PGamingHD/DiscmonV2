@@ -23,14 +23,16 @@ export default new Command({
         const findSelected: Pokemons | null = await db.findUserSelectedPokemon(interaction.user.id);
         if (!findSelected || !findSelected.pokemonPlacementId) return;
 
-
         if (ownedPokemons.length === 0) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setDescription('You do not have any Pokémons that could be shown.').setColor(Colours.RED)]});
 
         const embeds: APIEmbed[] = [];
 
         let currentPage: number = 0;
+        let selectedNum: number = 0;
         for (const pokemon of ownedPokemons) {
             currentPage++;
+
+            if (pokemon.pokemonId === findSelected.pokemonId) selectedNum = currentPage;
 
             let totalLevelXP;
             if (pokemon.pokemonLevel === 1) {
@@ -58,6 +60,6 @@ export default new Command({
             })
         }
 
-        return sendPagination(interaction, embeds, 120000, 120000, false, 0);
+        return sendPagination(interaction, embeds, 120000, 120000, false, selectedNum - 1);
     },
 });
