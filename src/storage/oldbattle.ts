@@ -1,11 +1,11 @@
-import {
+/*import {
     ActionRowBuilder,
     APIEmbed,
     ApplicationCommandOptionType,
     AttachmentBuilder, ButtonBuilder, ButtonInteraction,
     ButtonStyle, CacheType,
     ChannelType, ComponentType,
-    EmbedBuilder, InteractionCollector, Message,
+    EmbedBuilder, InteractionCollector,
     TextInputStyle,
     User,
 } from 'discord.js';
@@ -15,7 +15,7 @@ const {createCanvas, loadImage} = require("@napi-rs/canvas");
 import db from "../../utils/database";
 import {userData} from "@prisma/client";
 import {Colours} from "../../@types/Colours";
-import {calculateDamage, calculatePokemonHP, capitalizeFirst} from "../../utils/misc";
+import {calculateDamage, calculatePokemonHP, capitalizeFirst, hintGame} from "../../utils/misc";
 import moveChart from "../../utils/charts/moveChart";
 
 
@@ -38,12 +38,9 @@ export default new Command({
 
         if (targetUser.id === interaction.user.id) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You may not battle yourself, please send a battle request to someone else.')]});
 
-        const targetTrainer: userData | null = await db.findPokemonTrainer(targetUser.id);
-        const userTrainer: userData | null = await db.findPokemonTrainer(interaction.user.id);
-        if (!targetTrainer) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('The user have not yet registered their account, please have them register first.')]});
-        if (!userTrainer) return;
-
-        const targetPokemon: any = await db.findUserSelectedPokemon(targetTrainer.userId);
+        const pokemonTrainer: userData | null = await db.findPokemonTrainer(targetUser.id);
+        if (!pokemonTrainer) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('The user have not yet registered their account, please have them register first.')]});
+        const targetPokemon: any = await db.findUserSelectedPokemon(pokemonTrainer.userId);
         const battlerPokemon: any = await db.findUserSelectedPokemon(interaction.user.id);
 
         if (!targetPokemon) return;
@@ -84,19 +81,16 @@ export default new Command({
             components: [confirmRow],
         });
 
-        const fetchedMsg: Message<boolean> = await interaction.fetchReply();
-
-        const cofirmCollector: InteractionCollector<any> = mainMsg.createMessageComponentCollector({
+        const cofirmCollector = mainMsg.createMessageComponentCollector({
             idle: 1000 * 120,
             time: 1000 * 120,
         });
 
-        cofirmCollector.on('collect', async (interactionCollector): Promise<void> => {
+        cofirmCollector.on('collect', async (interactionCollector) => {
             if (!interaction.deferred) await interactionCollector.deferUpdate();
             if (interactionCollector.user.id !== targetUser.id) return;
 
             if (interactionCollector.customId === "confirm") {
-                cofirmCollector.stop();
                 const canvas = createCanvas(1024, 450);
                 const ctx = canvas.getContext('2d');
 
@@ -216,23 +210,20 @@ export default new Command({
 
                 const attachment: AttachmentBuilder = new AttachmentBuilder(await canvas.encode('png'), {name: `battle.png`});
 
-                let battleData: string[] = [];
-                const battleEmbed: EmbedBuilder = new EmbedBuilder()
-                    .setImage(`attachment://${attachment.name}`)
-                    .setColor(Colours.MAIN)
-                    .setTitle('Battle Initiated')
-                    .setDescription(`The battle has been initiated between user ${interaction.user} & ${targetUser} with Pokémons \`${battlerPokemon.pokemonName}\` & \`${targetPokemon.pokemonName}\`\n\n**Battle History**\n\`\`\`${battleData.length === 0 ? "No Data" : battleData.join('\n')}\`\`\``)
-                    .setFooter({text: `Move Turn: ${interaction.user.tag}`})
-
-                const fetchedMsg: Message<boolean> = await interaction.fetchReply();
-
-                const originalMsg: Message<boolean> = await fetchedMsg.edit({
-                    embeds: [battleEmbed],
+                const originalMsg = await interaction.editReply({
+                    embeds: [
+                        new EmbedBuilder()
+                        .setImage(`attachment://${attachment.name}`)
+                        .setColor(Colours.MAIN)
+                        .setTitle('Battle Initiated')
+                        .setDescription(`The battle has been initiated between user ${interaction.user} & ${targetUser} with Pokémons \`${battlerPokemon.pokemonName}\` & \`${targetPokemon.pokemonName}\``)
+                        .setFooter({text: `Move Turn: ${interaction.user.tag}`})
+                    ],
                     components: [battlerRow],
                     files: [attachment],
                 });
 
-                const collector: InteractionCollector<ButtonInteraction<CacheType>> = await fetchedMsg.createMessageComponentCollector({
+                const collector: InteractionCollector<ButtonInteraction<CacheType>> = await originalMsg.createMessageComponentCollector({
                     componentType: ComponentType.Button,
                     time: 300000,
                     idle: 300000,
@@ -290,10 +281,10 @@ export default new Command({
                     }
 
                     let moveData: any = {};
-                    let moveTypes: any[] = [];
+                    let moveTypes = [];
                     if (moveUser === "Target") {
 
-                        for (let i: number = 0; i < moveChart.length; i++) {
+                        for (let i = 0; i < moveChart.length; i++) {
                             const move = moveChart[i];
 
                             if (move.name === targetMoves[moveIndex]) {
@@ -311,43 +302,16 @@ export default new Command({
 
                         if (currentBattlerHP <= 0) {
                             await db.increaseBattlesWon(targetUser.id);
-                            await db.setTokens(targetUser.id, targetTrainer.userTokens + 1);
 
-                            const fetchedMsg: Message<boolean> = await interaction.fetchReply();
-
-                            await fetchedMsg.edit({
-                                components: [],
-                                embeds: [new EmbedBuilder().setColor(Colours.GREEN).setTitle('Battle Over').setDescription(`The battle has been won by user ${targetUser}`)],
-                                attachments: []
-                            });
-
-                            client.battleCooldowns.set(interaction.user.id, 'User on a 5 minute battle cooldown');
-                            client.battleCooldowns.set(targetUser.id, 'Target on a 5 minute battle cooldown');
-
-                            setTimeout(() => {
-                                console.log("FINISHED BATTLE COOLDOWN")
-                                client.battleCooldowns.delete(interaction.user.id);
-                                client.battleCooldowns.delete(targetUser.id);
-                            }, 1000 * 60 * 5);
-
+                            await interaction.editReply({components: [], embeds: [new EmbedBuilder().setColor(Colours.GREEN).setTitle('Battle Over').setDescription(`The battle has been won by user ${targetUser}`)], attachments: []});
                             return collector.stop();
                         }
 
-                        battleData.push(`${targetUser.tag} used move ${moveData.name} - ${damageDealt} dmg!\n`);
-
                         if (i.message.embeds[0].data.footer) {
-                            //i.message.embeds[0].data.footer.text = `Move Turn: ${interaction.user.tag}`;
-                            battleEmbed.setFooter({text: `Move Turn: ${interaction.user.tag}`})
-                            battleEmbed.setDescription(`The battle has been initiated between user ${interaction.user} & ${targetUser} with Pokémons \`${battlerPokemon.pokemonName}\` & \`${targetPokemon.pokemonName}\`\n\n**Battle History**\n\`\`\`${battleData.length === 0 ? "No Data" : battleData.join('\n')}\`\`\``)
+                            i.message.embeds[0].data.footer.text = `Move Turn: ${interaction.user.tag}`;
                         }
 
-                        const fetchedMsg: Message<boolean> = await interaction.fetchReply();
-
-                        await fetchedMsg.edit({
-                            components: [battlerRow],
-                            embeds: [battleEmbed],
-                            files: [attachment]
-                        });
+                        await interaction.editReply({components: [battlerRow], embeds: [i.message.embeds[0]], attachments: []});
                     }
 
                     if (moveUser === "Battler") {
@@ -366,43 +330,16 @@ export default new Command({
 
                         if (currentTargetHP <= 0) {
                             await db.increaseBattlesWon(interaction.user.id);
-                            await db.setTokens(interaction.user.id, userTrainer.userTokens + 1);
 
-                            const fetchedMsg: Message<boolean> = await interaction.fetchReply();
-
-                            await fetchedMsg.edit({
-                                components: [],
-                                embeds: [new EmbedBuilder().setColor(Colours.GREEN).setTitle('Battle Over').setDescription(`The battle has been won by user ${interaction.user}`)],
-                                attachments: []
-                            });
-
-                            client.battleCooldowns.set(interaction.user.id, 'User on a 5 minute battle cooldown');
-                            client.battleCooldowns.set(targetUser.id, 'Target on a 5 minute battle cooldown');
-
-                            setTimeout(() => {
-                                console.log("FINISHED BATTLE COOLDOWN")
-                                client.battleCooldowns.delete(interaction.user.id);
-                                client.battleCooldowns.delete(targetUser.id);
-                            }, 1000 * 60 * 5);
-
+                            await interaction.editReply({components: [], embeds: [new EmbedBuilder().setColor(Colours.GREEN).setTitle('Battle Over').setDescription(`The battle has been won by user ${interaction.user}`)], attachments: []});
                             return collector.stop();
                         }
 
-                        battleData.push(`${interaction.user.tag} used move ${moveData.name} - ${damageDealt} dmg!\n`);
-
                         if (i.message.embeds[0].data.footer) {
-                            //i.message.embeds[0].data.footer.text = `Move Turn: ${targetUser.tag}`;
-                            battleEmbed.setFooter({text: `Move Turn: ${targetUser.tag}`})
-                            battleEmbed.setDescription(`The battle has been initiated between user ${interaction.user} & ${targetUser} with Pokémons \`${battlerPokemon.pokemonName}\` & \`${targetPokemon.pokemonName}\`\n\n**Battle History**\n\`\`\`${battleData.length === 0 ? "No Data" : battleData.join('\n')}\`\`\``)
+                            i.message.embeds[0].data.footer.text = `Move Turn: ${targetUser.tag}`;
                         }
 
-                        const fetchedMsg: Message<boolean> = await interaction.fetchReply();
-
-                        await fetchedMsg.edit({
-                            components: [targetRow],
-                            embeds: [battleEmbed],
-                            files: [attachment]
-                        });
+                        await interaction.editReply({components: [targetRow], embeds: [i.message.embeds[0]], attachments: []});
                     }
 
                     currentMove = currentMove === "Battler" ? "Target" : "Battler";
@@ -412,21 +349,23 @@ export default new Command({
             if (interactionCollector.customId === "deny") {
                 if (interactionCollector.user.id !== targetUser.id) return;
 
-                const fetchedMsg: Message<boolean> = await interaction.fetchReply();
-
-                await fetchedMsg.edit({
-                    components: [],
-                    embeds: [new EmbedBuilder().setColor(Colours.RED).setTitle('Battle Denied').setDescription(`The battle has been denied by user ${targetUser}`)]
-                });
+                await interaction.editReply({components: [], embeds: [new EmbedBuilder().setColor(Colours.RED).setTitle('Battle Denied').setDescription(`The battle has been denied by user ${targetUser}`)]});
                 cofirmCollector.stop();
             }
         });
 
+        client.battleCooldowns.set(interaction.user.id, 'User on a 5 minute battle cooldown');
+        client.battleCooldowns.set(targetUser.id, 'Target on a 5 minute battle cooldown');
+
+        setTimeout(() => {
+            client.battleCooldowns.delete(interaction.user.id);
+            client.battleCooldowns.delete(targetUser.id);
+        }, 1000 * 60 * 5);
         return;
     }
 });
 
-async function drawBattleImage(ctx: any, canvas: any, battlerPokemon: any, targetPokemon: any, totalTargetHP: number, totalBattlerHP: number, currentTargetHP: number, currentBattlerHP: number): Promise<void> {
+async function drawBattleImage(ctx: any, canvas: any, battlerPokemon: any, targetPokemon: any, totalTargetHP: number, totalBattlerHP: number, currentTargetHP: number, currentBattlerHP: number) {
     const background = await loadImage("https://cdn.discordapp.com/attachments/1071220155037794335/1114660027500871691/images.jpg");
     ctx.drawImage(background, canvas.width / 2 - background.width / 2, canvas.height / 2 - background.height / 2);
 
@@ -459,7 +398,7 @@ async function drawBattleImage(ctx: any, canvas: any, battlerPokemon: any, targe
     ctx.fillText(`${targetPokemon.pokemonLevel}`, 890, 390);
 }
 
-function drawImageExtended (ctx: any, img: Image, x: number, y: number, mirrorImage: boolean): void{
+function drawImageExtended (ctx: any, img: Image, x: number, y: number, mirrorImage: boolean){
     if (mirrorImage) {
         ctx.translate(x+img.width/2,0);
         ctx.scale(-1,1);
@@ -469,4 +408,4 @@ function drawImageExtended (ctx: any, img: Image, x: number, y: number, mirrorIm
     }else{
         ctx.drawImage(img,x,y);
     }
-}
+}*/

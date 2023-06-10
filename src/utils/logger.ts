@@ -42,4 +42,14 @@ export default class logger {
         const date = `${moment().format("DD-MM-YYYY hh:mm:ss")}`;
         return console.log(`[${chalk.gray(date)}]: [${chalk.black.bgWhite('EVENT')}] ${text}`);
     }
+
+    static autoposter(text: any): void {
+        const date = `${moment().format("DD-MM-YYYY hh:mm:ss")}`;
+        return console.log(`[${chalk.gray(date)}]: [${chalk.black.bgCyan('AUTOPOSTER')}] ${text}`);
+    }
+
+    static express(text: any): void {
+        const date = `${moment().format("DD-MM-YYYY hh:mm:ss")}`;
+        return console.log(`[${chalk.gray(date)}]: [${chalk.black.bgGreen('EXPRESS')}] ${text}`);
+    }
 }

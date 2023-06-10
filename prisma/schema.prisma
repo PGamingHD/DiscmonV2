@@ -51,7 +51,7 @@ model Pokemons {
 model PokemonType {
   typeUniqueId String @id @unique @db.VarChar(32)
 
-  pokemon     Pokemon  @relation(fields: [pokemonId], references: [pokemonId])
+  pokemon     Pokemon  @relation(fields: [pokemonId], references: [pokemonId], onDelete: Cascade)
   pokemonId   String   @db.VarChar(32)
   pokemonType PokeType @default(NORMAL)
 }
@@ -59,7 +59,7 @@ model PokemonType {
 model PokemonEvolve {
   evolveUniqueId String @id @unique @db.VarChar(32)
 
-  pokemon            Pokemon @relation(fields: [pokemonId], references: [pokemonId])
+  pokemon            Pokemon @relation(fields: [pokemonId], references: [pokemonId], onDelete: Cascade)
   pokemonId          String  @unique @db.VarChar(32)
   nextEvolveName     String  @db.VarChar(32)
   nextEvolveLevel    Int     @db.Int()
@@ -80,7 +80,7 @@ model PokemonsEVs {
 
 model PokemonEVs {
   pokemonId String  @id @unique @db.VarChar(32)
-  pokemon   Pokemon @relation(fields: [pokemonId], references: [pokemonId])
+  pokemon   Pokemon @relation(fields: [pokemonId], references: [pokemonId], onDelete: Cascade)
 
   HP         Int @db.Int()
   Attack     Int @db.Int()
@@ -100,6 +100,8 @@ model PokemonsIVs {
   SpecialAtk Int @db.Int()
   SpecialDef Int @db.Int()
   Speed      Int @db.Int()
+
+  pokemonTotalIVs Float @db.Float()
 }
 
 model PokemonBattle {
@@ -119,29 +121,46 @@ model userData {
   userTokens      Int          @default(0) @db.Int()
   userCoins       Int          @default(500) @db.Int()
   trainerNumber   Int          @unique @db.Int()
+  trainerBattles  Int          @db.Int()
   trainerRank     TrainerRanks @default(NORMAL_TRAINER)
+  pokemonOrder    PokemonOrder @default(ID)
 
-  trainerBattles Int @db.Int()
-
-  orderPokemonBy PokemonOrder?
-  userBag        userBag?
-  userPayment    userPayment[]
+  userCodes   userCodes?
+  userBag     userBag?
+  userPayment userPayment[]
 }
 
 model userBag {
   userId String   @id @unique @db.VarChar(32)
-  user   userData @relation(fields: [userId], references: [userId])
+  user   userData @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
-  userRedeems Int @db.Int()
+  userRedeems  Int @db.Int()
+  spawnIncense Int @db.Int()
 }
 
 model userPayment {
   invoiceId String @id @unique @db.VarChar(120)
 
   invoiceOwner String   @db.VarChar(32)
-  user         userData @relation(fields: [invoiceOwner], references: [userId])
+  user         userData @relation(fields: [invoiceOwner], references: [userId], onDelete: Cascade)
 
   invoiceType String @db.VarChar(32)
+}
+
+model userCodes {
+  userId String   @id @unique @db.VarChar(32)
+  user   userData @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  code String @unique @db.VarChar(60)
+}
+
+model globalCodes {
+  code           String @id @unique @db.VarChar(60)
+  codeLimitation Int    @db.Int()
+
+  codeRedeemed Int        @db.Int()
+  rewardType   RewardType @default(COINS)
+  rewardAmount Int        @db.Int()
 }
 
 model PokemonServer {
@@ -150,6 +169,14 @@ model PokemonServer {
   serverRedirect    String? @db.VarChar(32)
   serverSpawn       Int     @db.Int()
   serverLanguage    String  @db.VarChar(6)
+}
+
+model channelIncense {
+  serverId  String @db.VarChar(32)
+  channelId String @id @unique @db.VarChar(32)
+
+  incenseEnabled Boolean
+  incenseTimeout BigInt  @db.BigInt()
 }
 
 enum PokemonRarity {
@@ -202,12 +229,19 @@ enum PokemonNature {
   TIMID
 }
 
+enum RewardType {
+  POKEMON
+  COINS
+  TOKENS
+}
+
 enum PokemonGender {
   MALE
   FEMALE
 }
 
 enum PokemonOrder {
+  ID
   IV
   LEVEL
   FAVORITE

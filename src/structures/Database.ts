@@ -5,10 +5,15 @@ import {
     PokemonServer,
     Pokemon,
     Pokemons,
+    globalCodes,
+    userCodes,
+    channelIncense,
     PokemonGender,
     PokemonNature,
     PokemonRarity,
     TrainerRanks,
+    PokemonOrder,
+    RewardType,
 } from '@prisma/client';
 
 export class Database {
@@ -58,6 +63,30 @@ export class Database {
             }],
             include: {
                 pokemonType: true
+            }
+        });
+    }
+
+    getSpecificPokemonName(name: string): Promise<Pokemon | null> {
+        return this.prisma.pokemon.findFirst({
+            where: {
+                pokemonName: name,
+            },
+            include: {
+                pokemonEVs: true,
+                pokemonType: true,
+            }
+        });
+    }
+
+    getSpecificPokemonId(id: number): Promise<Pokemon | null> {
+        return this.prisma.pokemon.findFirst({
+            where: {
+                pokemonPokedex: id,
+            },
+            include: {
+                pokemonEVs: true,
+                pokemonType: true,
             }
         });
     }
@@ -113,6 +142,15 @@ export class Database {
                 pokemonCatch: true
             }
         });
+    }
+
+    findOneSpawnedPokemon(channelId: string): Promise<Pokemons | null> {
+        return this.prisma.pokemons.findFirst({
+            where: {
+                spawnedChannel: channelId,
+                pokemonCatch: true,
+            }
+        })
     }
 
     findSpawnedExactPokemon(pokemonId: string, channelId: string): Promise<Pokemons | null> {
@@ -240,6 +278,28 @@ export class Database {
         })
     }
 
+    setPokemonSelected(pokemonId: string, selected: boolean): Promise<Pokemons | null> {
+        return this.prisma.pokemons.update({
+            where: {
+                pokemonId,
+            },
+            data: {
+                pokemonSelected: selected,
+            }
+        });
+    }
+
+    setPokemonFavorite(pokemonId: string, favorite: boolean): Promise<Pokemons | null> {
+        return this.prisma.pokemons.update({
+            where: {
+                pokemonId,
+            },
+            data: {
+                pokemonFavorite: favorite,
+            }
+        })
+    }
+
     deleteSpawnedPokemon(pokemonId: string) {
         return this.prisma.pokemons.delete({
             where: {
@@ -277,11 +337,40 @@ export class Database {
                 trainerBattles: 0,
                 userBag: {
                     create: {
-                        userRedeems: 0
+                        userRedeems: 0,
+                        spawnIncense: 0,
                     }
-                }
+                },
             }
         });
+    }
+
+    addChannelIncense(serverId: string, channelId: string, enabled: boolean, timeout: number): Promise<channelIncense | null> {
+        return this.prisma.channelIncense.create({
+            data: {
+                serverId,
+                channelId,
+                incenseEnabled: enabled,
+                incenseTimeout: timeout,
+            }
+        });
+    }
+
+    removeChannelIncense(channelId: string) {
+        return this.prisma.channelIncense.delete({
+            where: {
+                channelId,
+            }
+        })
+    }
+
+    findChannelIncense(channelId: string, serverId: string): Promise<channelIncense | null> {
+        return this.prisma.channelIncense.findFirst({
+            where: {
+                channelId,
+                serverId,
+            }
+        })
     }
 
     findNextTrainerId(): Promise<userData | null> {
@@ -297,6 +386,9 @@ export class Database {
         return this.prisma.userData.findFirst({
             where: {
                 userId,
+            },
+            include: {
+                userBag: true,
             }
         });
     }
@@ -357,6 +449,106 @@ export class Database {
             data: {
                 trainerBattles: {increment: 1}
             }
+        })
+    }
+
+    increaseUserRedeems(userId: string, amount: number): Promise<userData | null> {
+        return this.prisma.userData.update({
+            where: {
+                userId,
+            },
+            data: {
+                userBag: {
+                    update: {
+                        userRedeems: {increment: amount}
+                    }
+                }
+            }
+        })
+    }
+
+    increaseUserIncenses(userId: string, amount: number): Promise<userData | null> {
+        return this.prisma.userData.update({
+            where: {
+                userId,
+            },
+            data: {
+                userBag: {
+                    update: {
+                        spawnIncense: {increment: amount}
+                    }
+                }
+            }
+        })
+    }
+
+    setTrainerOrder(userId: string, orderBy: PokemonOrder): Promise<userData | null> {
+        return this.prisma.userData.update({
+            where: {
+                userId
+            },
+            data: {
+                pokemonOrder: orderBy
+            }
+        })
+    }
+
+    setTrainerIncenses(userId: string, incenses: number): Promise<userData | null> {
+        return this.prisma.userData.update({
+            where: {
+                userId
+            },
+            data: {
+                userBag: {
+                    update: {
+                        spawnIncense: incenses,
+                    }
+                }
+            }
+        })
+    }
+
+    sortTrainerPokemonsLevel(userId: string): Promise<Pokemons[]> {
+        return this.prisma.pokemons.findMany({
+            where: {
+                pokemonOwner: userId
+            },
+            include: {
+                PokemonIVs: true
+            },
+            orderBy: [{
+                pokemonLevel: 'desc'
+            }]
+        })
+    }
+
+    sortTrainerPokemonsFavorite(userId: string): Promise<Pokemons[]> {
+        return this.prisma.pokemons.findMany({
+            where: {
+                pokemonOwner: userId,
+            },
+            include: {
+                PokemonIVs: true
+            },
+            orderBy: [{
+                pokemonFavorite: 'desc',
+            }]
+        })
+    }
+
+    sortTrainerPokemonsIV(userId: string): Promise<Pokemons[]> {
+        return this.prisma.pokemons.findMany({
+            where: {
+                pokemonOwner: userId,
+            },
+            include: {
+                PokemonIVs: true
+            },
+            orderBy: [{
+                PokemonIVs: {
+                    pokemonTotalIVs: 'desc',
+                }
+            }]
         })
     }
 
@@ -471,6 +663,81 @@ export class Database {
             },
             data: {
                 trainerRank: newRank as TrainerRanks
+            }
+        });
+    }
+
+    setTokens(userId: string, newTokens: number): Promise<userData | null> {
+        return this.prisma.userData.update({
+            where: {
+                userId
+            },
+            data: {
+                userTokens: newTokens
+            }
+        })
+    }
+
+    setCoins(userId: string, newCoins: number): Promise<userData | null> {
+        return this.prisma.userData.update({
+            where: {
+                userId
+            },
+            data: {
+                userCoins: newCoins
+            }
+        })
+    }
+
+    /*
+    * CODES GETTERS & SETTERS
+    * */
+
+    createCode(code: string, rewardType: RewardType, rewardAmount: number, codeLimitation: number): Promise<globalCodes | null> {
+        return this.prisma.globalCodes.create({
+            data: {
+                code,
+                codeLimitation,
+                rewardAmount,
+                rewardType,
+                codeRedeemed: 0,
+            }
+        })
+    }
+
+    findCode(code: string): Promise<globalCodes | null> {
+        return this.prisma.globalCodes.findFirst({
+            where: {
+                code,
+            }
+        });
+    }
+
+    findUserCode(userId: string, code: string): Promise<userCodes | null> {
+        return this.prisma.userCodes.findFirst({
+            where: {
+                userId,
+                code,
+            }
+        });
+    }
+
+    increaseCodeRedeemed(code: string): Promise<globalCodes | null> {
+        return this.prisma.globalCodes.update({
+            where: {
+                code,
+            },
+            data: {
+                codeRedeemed: {increment: 1},
+            }
+        });
+    }
+
+    redeemAttempt(userId: string, code: string): Promise<userCodes | null> {
+        return this.prisma.userCodes.create({
+            data: {
+                userId,
+                code,
             }
         });
     }

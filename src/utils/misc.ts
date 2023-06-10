@@ -141,6 +141,29 @@ export function calculateDamage(attackerAttack: number, attackerLevel: number, d
     return damageDone;
 }
 
+export function hintGame(word: string): string {
+    let returnString: string = "";
+    for (let i: number = 0; i < word.length; i++) {
+        returnString += '_';
+    }
+
+    let returnStrings: string[] = returnString.split('');
+
+    let counter: number = 0;
+    for (let i: number = 0; counter < Math.ceil(word.length / 2); i++) {
+        const randomNum: number = randomNumber(1, word.length);
+        const char: string = returnString.charAt(randomNum);
+
+        if (char === word.charAt(randomNum)) continue;
+
+        returnStrings[randomNum] = word.charAt(randomNum);
+        returnString = returnStrings.join('');
+        counter++;
+    }
+
+    return returnString;
+}
+
 export async function sleep(time: number): Promise<void> {
     await new Promise(r => setTimeout(r, time));
 }

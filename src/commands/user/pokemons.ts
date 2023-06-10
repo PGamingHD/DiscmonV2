@@ -8,10 +8,11 @@ import {
 } from 'discord.js';
 import { Command } from '../../structures/Command';
 import db from "../../utils/database";
-import {userData} from "@prisma/client";
+import {PokemonOrder, userData} from "@prisma/client";
 import {Colours} from "../../@types/Colours";
 import sendPagination from "../../utils/messages/sendPagination";
 import {chunk} from 'lodash';
+import {capitalizeFirst} from "../../utils/misc";
 
 export default new Command({
     name: 'pokemons',
@@ -19,7 +20,21 @@ export default new Command({
     requireAccount: true,
     noDefer: true,
     run: async ({ interaction, client }) => {
-        const ownedPokemons: any = await db.getTrainerPokemons(interaction.user.id);
+        const pokemonTrainer: userData | null = await db.findPokemonTrainer(interaction.user.id);
+        if (!pokemonTrainer) return;
+
+        let ownedPokemons: any;
+        if (pokemonTrainer.pokemonOrder === PokemonOrder.LEVEL) {
+            ownedPokemons = await db.sortTrainerPokemonsLevel(interaction.user.id);
+        } else if (pokemonTrainer.pokemonOrder === PokemonOrder.FAVORITE) {
+            ownedPokemons = await db.sortTrainerPokemonsFavorite(interaction.user.id);
+        } else if (pokemonTrainer.pokemonOrder === PokemonOrder.IV) {
+            ownedPokemons = await db.sortTrainerPokemonsIV(interaction.user.id);
+        } else {
+            ownedPokemons = await db.getTrainerPokemons(interaction.user.id);
+        }
+
+        //const ownedPokemons: any = await db.getTrainerPokemons(interaction.user.id);
         const pokemonData: string[] = [];
 
         for (const pokemon of ownedPokemons) {
@@ -39,13 +54,13 @@ export default new Command({
                 title: `📦 __Your current Pokémons__ 📦`,
                 description: `${page.join('\n')}`,
                 footer: {
-                    text: `Page ${currentPage} of ${pages.length}`
+                    text: `Page ${currentPage} of ${pages.length} - Sorted by: ${pokemonTrainer.pokemonOrder}`
                 },
                 color: Colours.MAIN
             })
         }
 
-        return sendPagination(interaction, embeds, 120000, 120000, false);
+        return sendPagination(interaction, embeds, 120000, 120000, false, 0);
     }
 });
 

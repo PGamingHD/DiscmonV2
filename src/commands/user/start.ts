@@ -104,13 +104,17 @@ export default new Command({
                 const SPECDEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
                 const SPEEDiv: number = Math.floor(Math.random() * (31 - 1) + 1);
 
+                const IVpercentage = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
+                const IVtotal: string = (IVpercentage / 186 * 100).toFixed(2);
+
                 await db.setNewPokemonOwner(generateFlake(), interaction.user.id, pokemon.pokemonPicture, pokemon.pokemonName, Nature[Math.random() * Nature.length>>0], Gender[Math.random() * Gender.length>>0], true, {
                     HP: HPiv,
                     Attack: ATKiv,
                     Defense: DEFiv,
                     SpecialAtk: SPECATKiv,
                     SpecialDef: SPECDEFiv,
-                    Speed: SPEEDiv
+                    Speed: SPEEDiv,
+                    pokemonTotalIVs: parseFloat(IVtotal),
                 }, {
                     HP: pokemon.pokemonEVs.HP,
                     Attack: pokemon.pokemonEVs.Attack,
@@ -170,13 +174,17 @@ export default new Command({
                 const SPECDEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
                 const SPEEDiv: number = Math.floor(Math.random() * (31 - 1) + 1);
 
+                const IVpercentage = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
+                const IVtotal: string = (IVpercentage / 186 * 100).toFixed(2);
+
                 await db.setNewPokemonOwner(generateFlake(), interaction.user.id, pokemon.pokemonPicture, pokemon.pokemonName, Nature[Math.random() * Nature.length>>0], Gender[Math.random() * Gender.length>>0], true, {
                     HP: HPiv,
                     Attack: ATKiv,
                     Defense: DEFiv,
                     SpecialAtk: SPECATKiv,
                     SpecialDef: SPECDEFiv,
-                    Speed: SPEEDiv
+                    Speed: SPEEDiv,
+                    pokemonTotalIVs: parseFloat(IVtotal),
                 }, {
                     HP: pokemon.pokemonEVs.HP,
                     Attack: pokemon.pokemonEVs.Attack,
@@ -236,14 +244,17 @@ export default new Command({
                 const SPECDEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
                 const SPEEDiv: number = Math.floor(Math.random() * (31 - 1) + 1);
 
-                console.log("HP EV", pokemon);
+                const IVpercentage = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
+                const IVtotal: string = (IVpercentage / 186 * 100).toFixed(2);
+
                 await db.setNewPokemonOwner(generateFlake(), interaction.user.id, pokemon.pokemonPicture, pokemon.pokemonName, Nature[Math.random() * Nature.length>>0], Gender[Math.random() * Gender.length>>0], true, {
                     HP: HPiv,
                     Attack: ATKiv,
                     Defense: DEFiv,
                     SpecialAtk: SPECATKiv,
                     SpecialDef: SPECDEFiv,
-                    Speed: SPEEDiv
+                    Speed: SPEEDiv,
+                    pokemonTotalIVs: parseFloat(IVtotal),
                 }, {
                     HP: pokemon.pokemonEVs.HP,
                     Attack: pokemon.pokemonEVs.Attack,

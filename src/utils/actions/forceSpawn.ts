@@ -80,13 +80,17 @@ export default async function(interaction: Interaction, pokeName: string, server
         SPEEDiv = 31;
     }
 
+    const IVpercentage = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
+    const IVtotal: string = (IVpercentage / 186 * 100).toFixed(2);
+
     await db.spawnNewPokemon(guildId, channelId, spawnMessage.reactions.message.id, generatedId, pokemonToSpawn.pokemonName, pokemonToSpawn.pokemonPicture, randomizeGender(), randomizeNature(), levelGeneration, {
         HP: HPiv,
         Attack: ATKiv,
         Defense: DEFiv,
         SpecialAtk: SPECATKiv,
         SpecialDef: SPECDEFiv,
-        Speed: SPEEDiv
+        Speed: SPEEDiv,
+        pokemonTotalIVs: parseFloat(IVtotal),
     }, {
         HP: pokemonToSpawn.pokemonEVs.HP,
         Attack: pokemonToSpawn.pokemonEVs.Attack,

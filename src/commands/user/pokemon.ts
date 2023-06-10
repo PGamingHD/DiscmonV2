@@ -8,7 +8,7 @@ import {
 } from 'discord.js';
 import { Command } from '../../structures/Command';
 import db from "../../utils/database";
-import {userData} from "@prisma/client";
+import {Pokemons} from "@prisma/client";
 import {Colours} from "../../@types/Colours";
 import sendPagination from "../../utils/messages/sendPagination";
 import {capitalizeFirst} from "../../utils/misc";
@@ -20,6 +20,9 @@ export default new Command({
     noDefer: true,
     run: async ({ interaction, client }) => {
         const ownedPokemons: any[] = await db.getTrainerPokemons(interaction.user.id);
+        const findSelected: Pokemons | null = await db.findUserSelectedPokemon(interaction.user.id);
+        if (!findSelected || !findSelected.pokemonPlacementId) return;
+
 
         if (ownedPokemons.length === 0) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setDescription('You do not have any Pokémons that could be shown.').setColor(Colours.RED)]});
 
@@ -55,8 +58,6 @@ export default new Command({
             })
         }
 
-        await sendPagination(interaction, embeds, 120000, 120000, false);
-
-        return;
+        return sendPagination(interaction, embeds, 120000, 120000, false, 0);
     },
 });

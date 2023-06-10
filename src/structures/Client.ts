@@ -17,6 +17,7 @@ import path from 'path';
 import logger from '../utils/logger';
 import {hasUpperCase} from "../utils/misc";
 import {readdirSync} from "fs";
+import autoPoster from "../utils/actions/autoPoster";
 
 const globPromise = promisify(glob);
 
@@ -30,6 +31,7 @@ export class ExtendedClient extends Client {
     //GLOBAL TEMP VARIABLES
     awardCooldowns: Collection<string, string> = new Collection();
     xpCooldowns: Collection<string, string> = new Collection();
+    battleCooldowns: Collection<string, string> = new Collection();
     changelogFiles: Collection<number, any> = new Collection();
 
     constructor() {
@@ -62,7 +64,7 @@ export class ExtendedClient extends Client {
         if (guildId) {
             this.guilds.cache.get(guildId)?.commands.set(commands);
         } else {
-            this.application?.commands.set(commands);
+            this.application?.commands.set(commands);7
         }
     }
 
@@ -138,7 +140,7 @@ export class ExtendedClient extends Client {
             })
         });
 
-        this.on('ready', () => {
+        this.on('ready', async () => {
             this.registerCommands({
                 commands: globalCommands,
             });
@@ -150,6 +152,8 @@ export class ExtendedClient extends Client {
                 type: ActivityType.Watching,
                 name: 'In Development',
             });
+
+            await autoPoster(this);
         });
 
         // Events
