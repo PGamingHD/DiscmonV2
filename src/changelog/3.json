@@ -1,6 +1,6 @@
 {
   "ChangelogNumber": 3,
   "ChangelogTitle": "Changelog - V1.0.2_DEV",
-  "ChangelogDescription": "**New Features**\n\n*• Added codes system, redeem codes.*\n*• Added dev command to add new codes to the system*\n*• Added new incense system, enable incense in channel to get 5x spawn chance.*\n*• Added market system with 2 items (More coming)*\n*• Added new welcome message when inviting the bot.*",
+  "ChangelogDescription": "__**New Features**__\n\n*• Added codes system, redeem codes.*\n*• Added dev command to add new codes to the system*\n*• Added new incense system, enable incense in channel to get 5x spawn chance.*\n*• Added market system with 2 items (More coming)*\n*• Added new welcome message when inviting the bot.*\n\n__**Changed Features**__\n\n*• Revamped some Developer only commands for easier usage.*",
   "ChangelogTimestamp": "10. June [2023]"
 }

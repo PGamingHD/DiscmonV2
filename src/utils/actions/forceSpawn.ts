@@ -8,7 +8,7 @@ import {
 } from "@prisma/client";
 import {Colours} from "../../@types/Colours";
 
-export default async function(interaction: Interaction, pokeName: string, serverData: PokemonServer, pokeLevel: number, maxIV: boolean) {
+export default async function(interaction: Interaction, pokeName: string, serverData: PokemonServer, pokeLevel: number, maxIV: boolean, shiny: boolean) {
     if (!interaction.guild) return;
     if (!interaction.channel) return;
     if (interaction.channel.type !== ChannelType.GuildText) return;
@@ -30,6 +30,12 @@ export default async function(interaction: Interaction, pokeName: string, server
         channelToSend = interaction.channel;
     }
 
+    let pic = pokemonToSpawn.pokemonPicture;
+    if (shiny) {
+        pic = `https://pgaminghd.github.io/discmon-images/pokemon-sprites/shiny/${pokemonToSpawn.pokemonPokedex}.png`
+    }
+    console.log(pic);
+
     if (!channelToSend) return;
     if (!pokemonToSpawn) return;
 
@@ -41,7 +47,7 @@ export default async function(interaction: Interaction, pokeName: string, server
             new EmbedBuilder()
                 .setColor(Colours.YELLOW)
                 .setDescription(`A wild pokémon has been spawned by a Developer,\ncatch the spawned pokémon with \`/catch (name)\`\nbefore it flees!`)
-                .setImage(pokemonToSpawn.pokemonPicture)
+                .setImage(pic)
                 .setFooter({
                     text: generatedId
                 })
@@ -83,7 +89,7 @@ export default async function(interaction: Interaction, pokeName: string, server
     const IVpercentage = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
     const IVtotal: string = (IVpercentage / 186 * 100).toFixed(2);
 
-    await db.spawnNewPokemon(guildId, channelId, spawnMessage.reactions.message.id, generatedId, pokemonToSpawn.pokemonName, pokemonToSpawn.pokemonPicture, randomizeGender(), randomizeNature(), levelGeneration, {
+    await db.spawnNewPokemon(guildId, channelId, spawnMessage.reactions.message.id, generatedId, pokemonToSpawn.pokemonName, pic, randomizeGender(), randomizeNature(), levelGeneration, {
         HP: HPiv,
         Attack: ATKiv,
         Defense: DEFiv,

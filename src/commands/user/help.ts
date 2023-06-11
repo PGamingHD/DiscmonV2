@@ -25,16 +25,19 @@ export default new Command({
             color: Colours.MAIN,
             fields: [{
                 name: 'User Commands',
-                value: '\`catch\`, \`code\`, \`coins\`, \`pokedex\`, \`pokemon\`, \`pokemons\`, \`start\`',
+                value: '\`catch\`, \`code\`, \`coins\`, \`pokedex\`, \`pokemon\`, \`pokemons\`, \`start\`, \`help\`',
             }, {
-                name: 'Pokemon Commands',
+                name: 'Pokémon Commands',
                 value: '\`battle\`, \`favorite\`, \`hint\`, \`release\`, \`select\`, \`sort\`',
             }, {
                 name: 'Info Commands',
                 value: '\`changelogs\`, \`leaderboard\`',
             }, {
+                name: 'Server Commands',
+                value: '\`incense\`, \`invite\`, \`ping\`, \`vote\`'
+            }, {
                 name: 'Shop Commands',
-                value: '\`market\`, \`store\`',
+                value: '\`market\`, \`store\`, \`items\`',
             }, {
                 name: 'Admin Commands',
                 value: '\`settings\`, \`redirect\`',

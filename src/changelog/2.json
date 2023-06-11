@@ -1,6 +1,6 @@
 {
   "ChangelogNumber": 2,
   "ChangelogTitle": "Changelog - V1.0.1_DEV",
-  "ChangelogDescription": "**New Features**\n\n*• Added vote rewards, get Tokens from voting for us!*\n*• Added dev commands, may only be used by the developers.*\n*• Added pokédex command, view information about the Pokés.*\n*• Added store system, support us and get a few rewards.*\n*• Added battle system (ALPHA)*\n*• Added sort for sorting /pokemons*\n*• Added favorite command, favorite your Pokémons.*\n*• Added hint command, get hints about a spawned Pokémon.*\n*• Added release command, release your unwanted Pokémons.*\n*• Added leaderboard command, view our top trainers.*\n*• Added redirect system & settings for server Administrators.*",
+  "ChangelogDescription": "__**New Features**__\n\n*• Added vote rewards, get Tokens from voting for us!*\n*• Added dev commands, may only be used by the developers.*\n*• Added pokédex command, view information about the Pokés.*\n*• Added store system, support us and get a few rewards.*\n*• Added battle system (ALPHA)*\n*• Added sort for sorting /pokemons*\n*• Added favorite command, favorite your Pokémons.*\n*• Added hint command, get hints about a spawned Pokémon.*\n*• Added release command, release your unwanted Pokémons.*\n*• Added leaderboard command, view our top trainers.*\n*• Added redirect system & settings for server Administrators.*",
   "ChangelogTimestamp": "8. June [2023]"
 }

@@ -21,6 +21,9 @@ export default new Command({
     description: 'Start your new adventure as a Pokémon Trainer',
     noDefer: true,
     run: async ({ interaction, client }) => {
+        const trainerData: userData | null = await db.findPokemonTrainer(interaction.user.id);
+        if (trainerData) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('It seems like you already have an account, you may not register twice.')]});
+
         let nextTrainerId: userData | null | number = await db.findNextTrainerId();
         if (!nextTrainerId) {
             nextTrainerId = 1;

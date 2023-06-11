@@ -45,7 +45,7 @@ export default new Command({
             required: true
         }, {
             name: 'pokerarity',
-            description: 'common, uncommon, rare, legend, mythical, ultrabeast, shiny, staff, one only!',
+            description: 'common, uncommon, rare, legend, mythical, ultrabeast, shiny, developer, one only!',
             type: ApplicationCommandOptionType.String,
             required: true
         }, {
@@ -141,6 +141,11 @@ export default new Command({
             description: 'If the Pokémon should be max IV or randomized',
             type: ApplicationCommandOptionType.Boolean,
             required: true
+        }, {
+            name: 'shiny',
+            description: 'If the Pokémon spawned is shiny or not',
+            type: ApplicationCommandOptionType.Boolean,
+            required: true,
         }],
     }, {
         name: 'createcode',
@@ -377,13 +382,15 @@ export default new Command({
         }
 
         else if (interaction.options.getSubcommand() === "spawnpokemon") {
-            let pokeName: string | null = await interaction.options.getString('pokename');
-            const pokeLevel: number | null = await interaction.options.getInteger('pokelevel');
-            const maxIV: boolean | null = await interaction.options.getBoolean('maxiv');
+            let pokeName: string | null = interaction.options.getString('pokename');
+            const pokeLevel: number | null = interaction.options.getInteger('pokelevel');
+            const maxIV: boolean | null = interaction.options.getBoolean('maxiv');
+            const isShiny: boolean | null = interaction.options.getBoolean('shiny');
 
             if (!pokeName) return;
             if (!pokeLevel) return;
             if (maxIV === null) return;
+            if (isShiny === null) return;
             if (!interaction.guild) return;
 
             pokeName = capitalizeFirst(pokeName);
@@ -394,7 +401,7 @@ export default new Command({
             if (!getPokemon) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('No Pokémon was found with the specified name, is it valid?')]});
             if (!getPokemonServer) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('No Pokémon Server was found, please send a message first to initialize.')]})
 
-            await forceSpawn(interaction, pokeName, getPokemonServer, pokeLevel, maxIV);
+            await forceSpawn(interaction, pokeName, getPokemonServer, pokeLevel, maxIV, isShiny);
 
             return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription(`The Pokémon \`${pokeName}\` was successfully spawned with level \`${pokeLevel}\`!`)]});
         }

@@ -20,7 +20,7 @@ export default async function(client: ExtendedClient): Promise<void> {
 
     autoposter.on('error', (error: any) => {
         logger.autoposter(`[AUTOPOST ERROR] <==> || Ran into error explained below. <==> || [AUTOPOST ERROR]\n${error}`);
-    })
+    });
 
     server.post("/dblwebhook", webhook.listener(async (vote: any) => {
         const findregistered: userData | null = await db.findPokemonTrainer(vote.user);

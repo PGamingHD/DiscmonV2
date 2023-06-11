@@ -42,7 +42,7 @@ export default new Command({
 
         try {
             const spawnedMessage = await interaction.channel.messages.fetch(findSpawnedPokemon.spawnedMessage as string);
-            await spawnedMessage.edit({embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription(`This Pokémon has been caught by user ${interaction.user}!`)]});
+            await spawnedMessage.edit({embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription(`The Pokémon \`${findSpawnedPokemon.pokemonName}\` has been caught by user ${interaction.user}!`)]});
         } catch {}
 
         await db.setSpawnedOwner(findSpawnedPokemon.pokemonId, interaction.user.id, incrementId);
