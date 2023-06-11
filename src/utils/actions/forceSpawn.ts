@@ -1,6 +1,6 @@
 import {ChannelType, EmbedBuilder, Interaction, Message, TextChannel} from "discord.js";
 import db from "../database";
-import {generateFlake, randomizeGender, randomizeNature, randomNumber} from "../misc";
+import {generateFlake, randomizeGender, randomizeNature} from "../misc";
 import {
     Pokemon,
     Pokemons,
@@ -20,7 +20,7 @@ export default async function(interaction: Interaction, pokeName: string, server
     if (serverData.serverRedirect) {
         let redirectChannel;
         try {
-            redirectChannel = await interaction.guild.channels.fetch(`${serverData.serverRedirect}`);
+            redirectChannel = interaction.guild.channels.fetch(`${serverData.serverRedirect}`);
         } catch {
             redirectChannel = interaction.channel;
         }
@@ -34,7 +34,6 @@ export default async function(interaction: Interaction, pokeName: string, server
     if (shiny) {
         pic = `https://pgaminghd.github.io/discmon-images/pokemon-sprites/shiny/${pokemonToSpawn.pokemonPokedex}.png`
     }
-    console.log(pic);
 
     if (!channelToSend) return;
     if (!pokemonToSpawn) return;

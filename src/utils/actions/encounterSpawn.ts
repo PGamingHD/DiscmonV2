@@ -1,6 +1,6 @@
 import {ChannelType, EmbedBuilder, Message, TextChannel} from "discord.js";
 import db from "../database";
-import {generateFlake, randomizeGender, randomizeNature, randomNumber} from "../misc";
+import {generateFlake, randomizeGender, randomizeNature, randomizeNumber} from "../misc";
 import {
     Pokemon,
     PokemonRarity,
@@ -14,7 +14,7 @@ export default async function(message: Message<boolean>, spawnedRarity: string, 
     if (message.channel.type !== ChannelType.GuildText) return;
 
     const getPokemons: number = await db.getPokemonRarityCount(spawnedRarity.toUpperCase() as PokemonRarity);
-    const randomPokemon: number = randomNumber(1, getPokemons);
+    const randomPokemon: number = await randomizeNumber(1, getPokemons);
 
     const pokemonToSpawn: any = await db.getRandomPokemon(spawnedRarity.toUpperCase() as PokemonRarity, randomPokemon);
 

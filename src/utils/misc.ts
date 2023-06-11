@@ -9,7 +9,7 @@ import {
     WebhookClient
 } from "discord.js";
 import typeChart from "./charts/effectiveChart";
-import MoveChart from "./charts/moveChart";
+import randomNumber from 'random-number-csprng';
 const SnowflakeGenerator: Generator = new Generator(1420070400000);
 
 export function generateGuid(): string {
@@ -45,8 +45,8 @@ export function capitalizeFirst(string: string): string {
     return toReturn;
 }
 
-export function randomNumber(min: number, max: number): number{
-    return (Math.floor(Math.pow(10,14)*Math.random()*Math.random())%(max-min+1))+min;
+export async function randomizeNumber(min: number, max: number): Promise<number> {
+    return await randomNumber(min, max);
 }
 
 export function randomizeNature(): PokemonNature {
@@ -141,7 +141,7 @@ export function calculateDamage(attackerAttack: number, attackerLevel: number, d
     return damageDone;
 }
 
-export function hintGame(word: string): string {
+export async function hintGame(word: string): Promise<string> {
     let returnString: string = "";
     for (let i: number = 0; i < word.length; i++) {
         returnString += '_';
@@ -151,7 +151,7 @@ export function hintGame(word: string): string {
 
     let counter: number = 0;
     for (let i: number = 0; counter < Math.ceil(word.length / 2); i++) {
-        const randomNum: number = randomNumber(1, word.length);
+        const randomNum: number = await randomizeNumber(1, word.length);
         const char: string = returnString.charAt(randomNum);
 
         if (char === word.charAt(randomNum)) continue;

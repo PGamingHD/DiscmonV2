@@ -1,7 +1,7 @@
-import { randomNumber } from "../misc";
+import { randomizeNumber } from "../misc";
 
-export default function (): string {
-    const randomRarity: number = randomNumber(1, 50000);
+export default async function (): Promise<string> {
+    const randomRarity: number = await randomizeNumber(1, 50000);
 
     //COMMON 1-41950 - 41950/50000 TO GET
     //UNCOMMON 41950-46950 - 5000/50000 TO GET
