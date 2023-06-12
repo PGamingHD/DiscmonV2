@@ -36,6 +36,7 @@ model Pokemons {
   pokemonCatch    Boolean       @default(true)
   pokemonSelected Boolean       @default(false)
   pokemonFavorite Boolean       @default(false)
+  pokemonAuction  Boolean       @default(false)
   pokemonGender   PokemonGender @default(MALE)
   pokemonNature   PokemonNature @default(ADAMANT)
 
@@ -43,9 +44,10 @@ model Pokemons {
   spawnedChannel String? @db.VarChar(32)
   spawnedMessage String? @unique @db.VarChar(32)
 
-  PokemonIVs    PokemonsIVs?
-  PokemonBattle PokemonBattle?
-  PokemonsEVs   PokemonsEVs?
+  PokemonBattle   PokemonBattle?
+  PokemonIVs      PokemonsIVs?
+  PokemonsEVs     PokemonsEVs?
+  PokemonsAuction PokemonsAuction?
 }
 
 model PokemonType {
@@ -125,9 +127,10 @@ model userData {
   trainerRank     TrainerRanks @default(NORMAL_TRAINER)
   pokemonOrder    PokemonOrder @default(ID)
 
-  userCodes   userCodes?
-  userBag     userBag?
-  userPayment userPayment[]
+  userCodes       userCodes?
+  userBag         userBag?
+  userPayment     userPayment[]
+  userAuctionBids PokemonsAuction[]
 }
 
 model userBag {
@@ -177,6 +180,21 @@ model channelIncense {
 
   incenseEnabled Boolean
   incenseTimeout BigInt  @db.BigInt()
+}
+
+model PokemonsAuction {
+  pokemonId String   @id @unique @db.VarChar(32)
+  pokemon   Pokemons @relation(fields: [pokemonId], references: [pokemonId], onDelete: Cascade)
+
+  auctionId      Int    @unique @db.Int()
+  auctionStart   Int    @db.Int()
+  auctionCurrent Int    @db.Int()
+  endTime        BigInt @db.BigInt()
+  bidAmounts     Int    @db.Int()
+
+  leaderBidTime BigInt    @db.BigInt()
+  leaderData    String?   @db.VarChar(32)
+  leader        userData? @relation(fields: [leaderData], references: [userId], onDelete: Cascade)
 }
 
 enum PokemonRarity {

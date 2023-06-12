@@ -30,7 +30,7 @@ export default new Command({
 
         await db.setCoins(interaction.user.id, userData.userCoins - 1000);
 
-        const hintReturn: string = hintGame(spawnedPoke.pokemonName);
+        const hintReturn: string = await hintGame(spawnedPoke.pokemonName);
 
         return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription(`You paid 1,000 Pokécoins and recieved the hint \`${hintReturn}\``)]});
     }

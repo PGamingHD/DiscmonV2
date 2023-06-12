@@ -8,6 +8,7 @@ import {
     globalCodes,
     userCodes,
     channelIncense,
+    PokemonsAuction,
     PokemonGender,
     PokemonNature,
     PokemonRarity,
@@ -46,7 +47,7 @@ export class Database {
     getPokemon(pokemonName: string): Promise<Pokemon | null> {
         return this.prisma.pokemon.findFirst({
             where: {
-                pokemonName
+                pokemonName,
             },
             include: {
                 pokemonEvolve: true,
@@ -296,6 +297,29 @@ export class Database {
             },
             data: {
                 pokemonFavorite: favorite,
+            }
+        })
+    }
+
+    setPokemonAuction(pokemonId: string, auction: boolean): Promise<Pokemons | null> {
+        return this.prisma.pokemons.update({
+            where: {
+                pokemonId,
+            },
+            data: {
+                pokemonAuction: auction,
+            }
+        })
+    }
+
+    setPokemonOwner(pokemonId: string, newOwnerId: string, placementId: number): Promise<Pokemons | null> {
+        return this.prisma.pokemons.update({
+            where: {
+                pokemonId
+            },
+            data: {
+                pokemonOwner: newOwnerId,
+                pokemonPlacementId: placementId,
             }
         })
     }
@@ -754,6 +778,83 @@ export class Database {
             data: {
                 userId,
                 code,
+            }
+        });
+    }
+
+    /*
+    * AUCTIONS GETTERS & SETTERS
+    * */
+
+    addPokemonAuction(pokemonId: string, userId: string, endTime: number, auctionStart: number, auctionId: number, currentDate: number) {
+        return this.prisma.pokemonsAuction.create({
+            data: {
+                pokemonId,
+                leaderData: userId,
+                endTime,
+                auctionStart,
+                auctionId,
+                auctionCurrent: 0,
+                leaderBidTime: currentDate,
+                bidAmounts: 0,
+            }
+        })
+    }
+
+    setAuctionBid(auctionId: number, newBid: number, bidAmounts: number, bidTime: number, leader: string): Promise<PokemonsAuction | null> {
+        return this.prisma.pokemonsAuction.update({
+            where: {
+                auctionId,
+            },
+            data: {
+                auctionCurrent: newBid,
+                bidAmounts,
+                leaderData: leader,
+                leaderBidTime: bidTime,
+            }
+        })
+    }
+
+    findNextAuctionId(): Promise<PokemonsAuction | null> {
+        return this.prisma.pokemonsAuction.findFirst({
+            orderBy: [{
+                auctionId: 'asc',
+            }],
+            take: 1,
+        })
+    }
+
+    findAllAuctions(): Promise<PokemonsAuction[]> {
+        return this.prisma.pokemonsAuction.findMany({
+            include: {
+                pokemon: {
+                    include: {
+                        PokemonIVs: true,
+                    }
+                },
+                leader: true,
+            },
+            orderBy: [{
+                auctionId: 'asc',
+            }]
+        });
+    }
+
+    findSpecificAuction(auctionId: number): Promise<PokemonsAuction | null> {
+        return this.prisma.pokemonsAuction.findFirst({
+            where: {
+                auctionId,
+            },
+            include: {
+                pokemon: true
+            }
+        })
+    }
+
+    removePokemonAuction(pokemonId: string) {
+        return this.prisma.pokemonsAuction.delete({
+            where: {
+                pokemonId,
             }
         });
     }

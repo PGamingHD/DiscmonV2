@@ -20,14 +20,14 @@ export default async function(interaction: Interaction, pokeName: string, server
     if (serverData.serverRedirect) {
         let redirectChannel;
         try {
-            redirectChannel = interaction.guild.channels.fetch(`${serverData.serverRedirect}`);
+            redirectChannel = await interaction.guild.channels.fetch(`${serverData.serverRedirect}`);
         } catch {
             redirectChannel = interaction.channel;
         }
 
         channelToSend = redirectChannel as TextChannel;
     } else {
-        channelToSend = interaction.channel;
+        channelToSend = interaction.channel as TextChannel;
     }
 
     let pic = pokemonToSpawn.pokemonPicture;
