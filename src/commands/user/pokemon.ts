@@ -45,7 +45,7 @@ export default new Command({
             const IVtotal: string = (IVpercentage / 186 * 100).toFixed(2);
 
             embeds.push({
-                title: `Level. ${pokemon.pokemonLevel} ${pokemon.pokemonName}`,
+                title: `${pokemon.pokemonFavorite === true ? '⭐' : ''}${pokemon.pokemonPicture.includes('shiny') ? '✨' : ''}${pokemon.pokemonPicture.includes('alolan') ? '💿' : ''} Level. ${pokemon.pokemonLevel} ${pokemon.pokemonName}`,
                 description: `__**Details**__\n**XP:** ${pokemon.pokemonLevel === 100 ? totalLevelXP : pokemon.pokemonXP}/${totalLevelXP}\n**Gender:** ${capitalizeFirst(pokemon.pokemonGender)}\n**Nature:** ${capitalizeFirst(pokemon.pokemonNature)}\n\n__**Stats**__\n**HP:** ${pokemon.PokemonIVs.HP}/31\n**Attack:** ${pokemon.PokemonIVs.Attack}\n**Defense:** ${pokemon.PokemonIVs.Defense}/31\n**Special Attack:** ${pokemon.PokemonIVs.SpecialAtk}/31\n**Special Defense:** ${pokemon.PokemonIVs.SpecialDef}/31\n**Speed:** ${pokemon.PokemonIVs.Speed}/31\n**Total IVs:** ${IVtotal}%\n\n__**Extras**__\n**ID:** ${pokemon.pokemonPlacementId}\n**Pokemon ID:** ${pokemon.pokemonId}`,
                 image: {
                     url: pokemon.pokemonPicture
