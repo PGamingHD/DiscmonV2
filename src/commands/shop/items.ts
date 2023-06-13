@@ -19,7 +19,7 @@ export default new Command({
         const usersData: any = await db.findPokemonTrainer(interaction.user.id);
         if (!usersData) return;
 
-        return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.GREEN).setAuthor({name: interaction.user.username + '\'s items', iconURL: interaction.user.displayAvatarURL()}).setDescription(`• ${usersData.userBag.userRedeems} Redeems\n• ${usersData.userBag.spawnIncense}} Incenses`).setTimestamp()]});
+        return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.GREEN).setAuthor({name: interaction.user.username + '\'s items', iconURL: interaction.user.displayAvatarURL()}).setDescription(`• ${usersData.userBag.userRedeems} Redeems\n• ${usersData.userBag.spawnIncense} Incenses`).setTimestamp()]});
     },
 });
 

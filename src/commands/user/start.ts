@@ -14,7 +14,7 @@ import { Command } from '../../structures/Command';
 import db from "../../utils/database";
 import {Pokemon, PokemonGender, PokemonNature, userData} from "@prisma/client";
 import {Colours} from "../../@types/Colours";
-import {generateFlake} from "../../utils/misc";
+import {generateFlake, randomizeNumber} from "../../utils/misc";
 
 export default new Command({
     name: 'start',
@@ -100,12 +100,12 @@ export default new Command({
 
                 await db.registerNewUser(interaction.user.id, nextTrainerId as number);
 
-                const HPiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-                const ATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-                const DEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-                const SPECATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-                const SPECDEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-                const SPEEDiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+                const HPiv: number = await randomizeNumber(1, 31);
+                const ATKiv: number = await randomizeNumber(1, 31);
+                const DEFiv: number = await randomizeNumber(1, 31);
+                const SPECATKiv: number = await randomizeNumber(1, 31);
+                const SPECDEFiv: number = await randomizeNumber(1, 31);
+                const SPEEDiv: number = await randomizeNumber(1, 31);
 
                 const IVpercentage = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
                 const IVtotal: string = (IVpercentage / 186 * 100).toFixed(2);
@@ -170,12 +170,12 @@ export default new Command({
 
                 await db.registerNewUser(interaction.user.id, nextTrainerId as number);
 
-                const HPiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-                const ATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-                const DEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-                const SPECATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-                const SPECDEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-                const SPEEDiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+                const HPiv: number = await randomizeNumber(1, 31);
+                const ATKiv: number = await randomizeNumber(1, 31);
+                const DEFiv: number = await randomizeNumber(1, 31);
+                const SPECATKiv: number = await randomizeNumber(1, 31);
+                const SPECDEFiv: number = await randomizeNumber(1, 31);
+                const SPEEDiv: number = await randomizeNumber(1, 31);
 
                 const IVpercentage = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
                 const IVtotal: string = (IVpercentage / 186 * 100).toFixed(2);
@@ -240,12 +240,12 @@ export default new Command({
 
                 await db.registerNewUser(interaction.user.id, nextTrainerId as number);
 
-                const HPiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-                const ATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-                const DEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-                const SPECATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-                const SPECDEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-                const SPEEDiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+                const HPiv: number = await randomizeNumber(1, 31);
+                const ATKiv: number = await randomizeNumber(1, 31);
+                const DEFiv: number = await randomizeNumber(1, 31);
+                const SPECATKiv: number = await randomizeNumber(1, 31);
+                const SPECDEFiv: number = await randomizeNumber(1, 31);
+                const SPEEDiv: number = await randomizeNumber(1, 31);
 
                 const IVpercentage = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
                 const IVtotal: string = (IVpercentage / 186 * 100).toFixed(2);

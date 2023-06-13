@@ -135,6 +135,34 @@ export class Database {
         });
     }
 
+    spawnNewRedeemPokemon(pokemonId: string, ownerId: string, placementId: number, pokemonName: string, pokemonPicture: string, pokemonGender: PokemonGender, pokemonNature: PokemonNature, pokemonLevel: number, ivData: any, evData: any): Promise<Pokemons | null> {
+        return this.prisma.pokemons.create({
+            data: {
+                pokemonId,
+                pokemonName,
+                pokemonPicture,
+                pokemonLevel,
+                pokemonOwner: ownerId,
+                pokemonXP: 0,
+                pokemonCatch: false,
+                pokemonSelected: false,
+                pokemonFavorite: false,
+                pokemonPlacementId: placementId,
+                pokemonGender,
+                pokemonNature,
+                spawnedServer: null,
+                spawnedChannel: null,
+                spawnedMessage: null,
+                PokemonIVs: {
+                    create: ivData
+                },
+                PokemonsEVs: {
+                    create: evData
+                }
+            }
+        })
+    }
+
     findSpawnedPokemon(channelId: string, pokemonName: string): Promise<Pokemons | null> {
         return this.prisma.pokemons.findFirst({
             where: {
@@ -521,6 +549,21 @@ export class Database {
                 }
             }
         })
+    }
+
+    setUserRedeems(userId: string, amount: number): Promise<userData | null> {
+        return this.prisma.userData.update({
+            where: {
+                userId
+            },
+            data: {
+                userBag: {
+                    update: {
+                        userRedeems: amount,
+                    }
+                }
+            }
+        });
     }
 
     setTrainerOrder(userId: string, orderBy: PokemonOrder): Promise<userData | null> {

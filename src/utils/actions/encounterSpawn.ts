@@ -36,7 +36,7 @@ export default async function(message: Message<boolean>, spawnedRarity: string, 
     if (!channelToSend) return;
     if (!pokemonToSpawn) return;
 
-    const levelGeneration: number = Math.floor(Math.random() * (20 - 1) + 1);
+    const levelGeneration: number = await randomizeNumber(1, 20);
     const generatedId: string = generateFlake();
 
     const spawnMessage: Message<true> = await channelToSend.send({
@@ -67,12 +67,12 @@ export default async function(message: Message<boolean>, spawnedRarity: string, 
         await db.deleteSpawnedPokemon(hasSpawnedAlready.pokemonId);
     }
 
-    const HPiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-    const ATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-    const DEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-    const SPECATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-    const SPECDEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-    const SPEEDiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+    const HPiv: number = await randomizeNumber(1, 31);
+    const ATKiv: number = await randomizeNumber(1, 31);
+    const DEFiv: number = await randomizeNumber(1, 31);
+    const SPECATKiv: number = await randomizeNumber(1, 31);
+    const SPECDEFiv: number = await randomizeNumber(1, 31);
+    const SPEEDiv: number = await randomizeNumber(1, 31);
 
     const IVpercentage = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
     const IVtotal: string = (IVpercentage / 186 * 100).toFixed(2);

@@ -1,6 +1,6 @@
 import {ChannelType, EmbedBuilder, Interaction, Message, TextChannel} from "discord.js";
 import db from "../database";
-import {generateFlake, randomizeGender, randomizeNature} from "../misc";
+import {generateFlake, randomizeGender, randomizeNature, randomizeNumber} from "../misc";
 import {
     Pokemon,
     Pokemons,
@@ -69,12 +69,12 @@ export default async function(interaction: Interaction, pokeName: string, server
         await db.deleteSpawnedPokemon(hasSpawnedAlready.pokemonId);
     }
 
-    let HPiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-    let ATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-    let DEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-    let SPECATKiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-    let SPECDEFiv: number = Math.floor(Math.random() * (31 - 1) + 1);
-    let SPEEDiv: number = Math.floor(Math.random() * (31 - 1) + 1);
+    let HPiv: number = await randomizeNumber(1, 31);
+    let ATKiv: number = await randomizeNumber(1, 31);
+    let DEFiv: number = await randomizeNumber(1, 31);
+    let SPECATKiv: number = await randomizeNumber(1, 31);
+    let SPECDEFiv: number = await randomizeNumber(1, 31);
+    let SPEEDiv: number = await randomizeNumber(1, 31);
 
     if (maxIV) {
         HPiv = 31;
