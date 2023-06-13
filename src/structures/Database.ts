@@ -657,6 +657,17 @@ export class Database {
         });
     }
 
+    setAnnouncer(serverId: string, enabled: boolean): Promise<PokemonServer | null> {
+        return this.prisma.pokemonServer.update({
+            where: {
+                serverId
+            },
+            data: {
+                serverAnnouncer: enabled
+            }
+        })
+    }
+
     /*
     * PAYMENT GETTERS & SETTERS
     * */

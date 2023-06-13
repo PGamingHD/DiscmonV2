@@ -6,10 +6,12 @@ import {
 } from "discord.js";
 import {ExtendedClient} from "../../structures/Client";
 import db from "../database";
-import {Pokemon, Pokemons} from "@prisma/client";
+import {Pokemon, Pokemons, PokemonServer} from "@prisma/client";
+import {randomizeNumber} from "../misc";
 
 export default async function (message: Message<boolean>, client: ExtendedClient) {
     if (client.xpCooldowns.has(message.author.id)) return;
+    if (!message.guild) return;
 
     const findSelected: Pokemons | null = await db.findUserSelectedPokemon(message.author.id);
     if (!findSelected) return;
@@ -27,6 +29,7 @@ export default async function (message: Message<boolean>, client: ExtendedClient
         const levelPoke: Pokemons | null = await db.setPokemonLevelUp(findSelected.pokemonId);
         if (!levelPoke) return;
         const toEvolveTo: Pokemon | null = await db.getPokemon(pokemon.pokemonEvolve.nextEvolveName);
+        const serverData: PokemonServer | null = await db.getServer(message.guild.id);
 
         if (pokemon.pokemonEvolve.nextEvolveLevel <= levelPoke.pokemonLevel) {
             if (toEvolveTo) {
@@ -36,7 +39,8 @@ export default async function (message: Message<boolean>, client: ExtendedClient
                 if (!message.guild) return;
 
                 if (message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.SendMessages) && message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.ViewChannel)) {
-                    return message.channel.send(`${message.author} Congratulations, your ${findSelected.pokemonName} mysteriously evolved into a ${toEvolveTo.pokemonName} upon reaching level \`[${levelPoke.pokemonLevel}]\`!`);
+                    if (serverData?.serverAnnouncer) 
+                        return message.channel.send(`${message.author} Congratulations, your ${findSelected.pokemonName} mysteriously evolved into a ${toEvolveTo.pokemonName} upon reaching level \`[${levelPoke.pokemonLevel}]\`!`);
                 } else {
                     return;
                 }
@@ -46,7 +50,8 @@ export default async function (message: Message<boolean>, client: ExtendedClient
             if (!message.guild) return;
 
             if (message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.SendMessages) && message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.ViewChannel)) {
-                return message.channel.send(`${message.author} Congratulations, your ${findSelected.pokemonName} has just leveled up to level \`[${levelPoke.pokemonLevel}]\`!`);
+                if (serverData?.serverAnnouncer)
+                    return message.channel.send(`${message.author} Congratulations, your ${findSelected.pokemonName} has just leveled up to level \`[${levelPoke.pokemonLevel}]\`!`);
             } else {
                 return;
             }
@@ -54,7 +59,7 @@ export default async function (message: Message<boolean>, client: ExtendedClient
     }
 
     if (findSelected.pokemonLevel < 100) {
-        await db.setPokemonXP(findSelected.pokemonId, findSelected.pokemonLevel < 100 ? Math.floor(Math.random() * (30 - 10) + 10) : 0);
+        await db.setPokemonXP(findSelected.pokemonId, await randomizeNumber(10, 30));
 
         client.xpCooldowns.set(message.author.id, 'User set on a 5 second cooldown!');
         setTimeout(() => {

@@ -42,7 +42,7 @@ export default new Command({
                     new EmbedBuilder()
                         .setColor(Colours.MAIN)
                         .setTitle('⚙️ Guild Settings ⚙️')
-                        .setDescription(`__**Main Settings**__\n**Redirect Channel:** ${serverData.serverRedirect !== null ? channel : 'Not Set'}`)
+                        .setDescription(`__**Main Settings**__\n\n**Redirect Channel:** ${serverData.serverRedirect !== null ? channel : '\`Not Set\`'}\n**Server Announcements:** ${serverData.serverAnnouncer ? '\`Enabled\`' : '\`Disabled\`'}`)
                         .setFooter({text: 'Guild settings can only be modified by guild Administrators.'})
                         .setThumbnail('https://cdn.discordapp.com/attachments/1010999257899204769/1057280575465082890/4482f729452089.55f35b167dbbe.png')
                 ]
