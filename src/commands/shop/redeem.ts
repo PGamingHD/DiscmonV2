@@ -8,8 +8,9 @@ import {
 import { Command } from '../../structures/Command';
 import db from "../../utils/database";
 import {Colours} from "../../@types/Colours";
-import {Pokemons, userData} from "@prisma/client";
+import {PokemonRarity, Pokemons, userData} from "@prisma/client";
 import {capitalizeFirst, generateFlake, randomizeGender, randomizeNature, randomizeNumber} from "../../utils/misc";
+import getSpawnRarity from "../../utils/actions/getSpawnRarity";
 
 export default new Command({
     name: 'redeem',
@@ -18,7 +19,7 @@ export default new Command({
     noDefer: true,
     options: [{
         name: 'pokemon',
-        description: 'Redeem a Pokémon of your choice',
+        description: 'Redeem a Pokémon of your choice, costs 1 redeem',
         type: ApplicationCommandOptionType.Subcommand,
         options: [{
             name: 'name',
@@ -28,7 +29,11 @@ export default new Command({
         }],
     }, {
         name: 'pokecoins',
-        description: 'Redeem pokecoins and recieve 50,000 Pokécoins',
+        description: 'Redeem pokecoins and recieve 50,000 Pokécoins, costs 1 redeem',
+        type: ApplicationCommandOptionType.Subcommand,
+    }, {
+        name: 'shiny',
+        description: 'Redeem a random shiny Pokémon, costs 25 redeems',
         type: ApplicationCommandOptionType.Subcommand,
     }],
     run: async ({ interaction, client }) => {
@@ -95,6 +100,62 @@ export default new Command({
             await db.setUserRedeems(interaction.user.id, usersData.userBag.userRedeems - 1);
 
             return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription(`You have successfully redeemed 🪙 50,000 Pokécoins!`)]});
+        }
+
+        else if (interaction.options.getSubcommand() === "shiny") {
+            const usersData: any = await db.findPokemonTrainer(interaction.user.id);
+            if (!usersData) return;
+
+            if (usersData.userBag.userRedeems < 25) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You do not have enough redeems to do this action.')]});
+
+            const getRarity: string = await getSpawnRarity();
+            const getPokemons: number = await db.getPokemonRarityCount(getRarity.toUpperCase() as PokemonRarity);
+            const randomPokemon: number = await randomizeNumber(1, getPokemons);
+
+            const pokemonToSpawn: any = await db.getRandomPokemon(getRarity.toUpperCase() as PokemonRarity, randomPokemon - 1);
+
+            const shinyPic: string = `https://pgaminghd.github.io/discmon-images/pokemon-sprites/shiny/${pokemonToSpawn.pokemonPokedex}.png`;
+
+            const levelGeneration: number = await randomizeNumber(10, 30);
+            const generatedId: string = generateFlake();
+
+            const HPiv: number = await randomizeNumber(1, 31);
+            const ATKiv: number = await randomizeNumber(1, 31);
+            const DEFiv: number = await randomizeNumber(1, 31);
+            const SPECATKiv: number = await randomizeNumber(1, 31);
+            const SPECDEFiv: number = await randomizeNumber(1, 31);
+            const SPEEDiv: number = await randomizeNumber(1, 31);
+
+            const IVpercentage: number = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
+            const IVtotal: string = (IVpercentage / 186 * 100).toFixed(2);
+
+            const getHighestPoke: Pokemons[] = await db.getPokemonNextPokeId(interaction.user.id);
+
+            let incrementId;
+            if (getHighestPoke.length === 0 && getHighestPoke[0].pokemonPlacementId === null) incrementId = 1;
+            if (getHighestPoke.length >= 1 && getHighestPoke[0].pokemonPlacementId !== null) incrementId = getHighestPoke[0].pokemonPlacementId + 1;
+            if (!incrementId) incrementId = 1;
+
+            await db.spawnNewRedeemPokemon(generatedId, interaction.user.id, incrementId, pokemonToSpawn.pokemonName, shinyPic, randomizeGender(), randomizeNature(), levelGeneration, {
+                HP: HPiv,
+                Attack: ATKiv,
+                Defense: DEFiv,
+                SpecialAtk: SPECATKiv,
+                SpecialDef: SPECDEFiv,
+                Speed: SPEEDiv,
+                pokemonTotalIVs: parseFloat(IVtotal),
+            }, {
+                HP: pokemonToSpawn.pokemonEVs.HP,
+                Attack: pokemonToSpawn.pokemonEVs.Attack,
+                Defense: pokemonToSpawn.pokemonEVs.Defense,
+                SpecialAtk: pokemonToSpawn.pokemonEVs.SpecialAtk,
+                SpecialDef: pokemonToSpawn.pokemonEVs.SpecialDef,
+                Speed: pokemonToSpawn.pokemonEVs.Speed,
+            });
+
+            await db.setUserRedeems(interaction.user.id, usersData.userBag.userRedeems - 25);
+
+            return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription(`You have successfully redeemed a shiny level \`${levelGeneration}\` **${pokemonToSpawn.pokemonName}**!`)]});
         }
 
         else {

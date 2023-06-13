@@ -37,7 +37,7 @@ export default new Command({
                 value: '\`incense\`, \`invite\`, \`ping\`, \`vote\`'
             }, {
                 name: 'Shop Commands',
-                value: '\`market\`, \`store\`, \`items\`',
+                value: '\`market\`, \`store\`, \`items\`, \`redeem\`',
             }, {
                 name: 'Admin Commands',
                 value: '\`settings\`, \`redirect\`',

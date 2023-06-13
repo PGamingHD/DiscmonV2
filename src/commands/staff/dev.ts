@@ -26,9 +26,11 @@ import forceSpawn from "../../utils/actions/forceSpawn";
 export default new Command({
     name: 'dev',
     description: 'Developer commands, restricted to developers only',
+    defaultMemberPermissions: 'Administrator',
     developerRestricted: true,
     requireAccount: true,
     noDefer: true,
+    main: true,
     options: [{
         name: 'addpokemon',
         description: 'Add a new Pokémon to the database',
@@ -192,6 +194,10 @@ export default new Command({
             type: ApplicationCommandOptionType.String,
             required: true,
         }]
+    }, {
+        name: 'listguilds',
+        description: 'List all guilds the bot is currently in',
+        type: ApplicationCommandOptionType.Subcommand,
     }],
     run: async ({ interaction, client }) => {
         if (interaction.options.getSubcommand() === "addpokemon") {
@@ -436,6 +442,31 @@ export default new Command({
             await db.removeTrainerData(usersData.userId);
 
             return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription(`The users data has been successfully wiped.`)]});
+        }
+
+        else if (interaction.options.getSubcommand() === "listguilds") {
+            const guilds = client.guilds.cache;
+
+            const data: string[] = [];
+            guilds.map((guild) => data.push(`**[**\`${guild.id}\`**]** • ***${guild.name}*** • *${guild.memberCount} members*`));
+
+            const pages: string[][] = chunk(data, 15);
+            const embeds: APIEmbed[] = [];
+
+            let currentPage: number = 0;
+            for (const page of pages) {
+                currentPage++;
+                embeds.push({
+                    title: `🤖 Client Guilds 🤖`,
+                    description: `${page.join('\n')}`,
+                    footer: {
+                        text: `Page ${currentPage} of ${pages.length}`
+                    },
+                    color: Colours.MAIN
+                })
+            }
+
+            return sendPagination(interaction, embeds, 120000, 120000, true, 0);
         }
 
         else {
