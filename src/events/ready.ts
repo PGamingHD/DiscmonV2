@@ -1,10 +1,45 @@
 import {Event} from "../structures/Event";
-import {Events, Guild, Message, TextChannel} from "discord.js";
+import {ActivityType, Events, Guild, Message, TextChannel} from "discord.js";
 import db from "../utils/database";
 import logger from "../utils/logger";
 import {Pokemons, PokemonsAuction} from "@prisma/client";
+import {Cron} from "croner";
+import {client} from "../bot";
+import {randomizeNumber} from "../utils/misc";
 
 export default new Event(Events.ClientReady, async (client) => {
+    const activities: {activity: ActivityType, name: string}[] = [
+        {
+            activity: ActivityType.Watching,
+            name: `over ${client.guilds.cache.reduce((a, g) => a + g.memberCount,0)} users!`
+        },
+        {
+            activity: ActivityType.Playing,
+            name: `with ${client.guilds.cache.size} guilds!`
+        },
+        {
+            activity: ActivityType.Watching,
+            name: `over the official server!`
+        },
+        {
+            activity: ActivityType.Watching,
+            name: `Help @ /help!`
+        },
+        {
+            activity: ActivityType.Watching,
+            name: `Changes @ /changelogs`
+        },
+    ];
+
+    Cron('00 */5 * * * *', async () => {
+        const random = await randomizeNumber(1, activities.length);
+
+        client.user?.setActivity({
+            type: activities[random - 1].name.includes('Changes') ? ActivityType.Watching : activities[random].name.includes('guilds!') ? ActivityType.Playing : ActivityType.Watching,
+            name: activities[random - 1].name
+        });
+    });
+
     const auctions: any = await db.findAllAuctions();
     for (const auction of auctions) {
         const timeLeft: number = parseInt(auction.endTime) - Date.now();
@@ -41,7 +76,6 @@ export default new Event(Events.ClientReady, async (client) => {
     }
 
     const allPokemons: Pokemons[] = await db.findDeleteCatchablePokemon();
-
     for (const spawnedPokemon of allPokemons) {
         try {
             const guild: Guild = await client.guilds.fetch(spawnedPokemon.spawnedServer as string);

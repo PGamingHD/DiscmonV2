@@ -473,6 +473,15 @@ export class Database {
         })
     }
 
+    getTrainerTopBattles(): Promise<userData[]> {
+        return this.prisma.userData.findMany({
+            orderBy: [{
+                trainerBattles: 'desc',
+            }],
+            take: 10
+        })
+    }
+
     increaseBattlesWon(userId: string): Promise<userData | null> {
         return this.prisma.userData.update({
             where: {

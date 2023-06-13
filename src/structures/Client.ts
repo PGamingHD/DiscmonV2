@@ -18,7 +18,6 @@ import logger from '../utils/logger';
 import {hasUpperCase} from "../utils/misc";
 import {readdirSync} from "fs";
 import autoPoster from "../utils/actions/autoPoster";
-
 const globPromise = promisify(glob);
 
 export class ExtendedClient extends Client {
@@ -147,10 +146,6 @@ export class ExtendedClient extends Client {
             this.registerCommands({
                 commands: guildSpecfic,
                 guildId: process.env.guildId,
-            });
-            this.user?.setActivity({
-                type: ActivityType.Watching,
-                name: 'In Development',
             });
 
             await autoPoster(this);

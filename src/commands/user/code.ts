@@ -33,8 +33,8 @@ export default new Command({
         } else {
             const toRedeem: globalCodes | null = await db.findCode(redeem);
             const redeemUser: userCodes | null = await db.findUserCode(interaction.user.id, redeem);
-            if (!toRedeem) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('The code you have entered is invalid, please check the official discord for more information.')]});
-            if (redeemUser) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription(`It seems like you have already redeemed this code, please contact staff if this is wrong.`)]});
+            if (!toRedeem) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('The code you have entered is invalid!\n\n*Please check the official discord for more information.*')]});
+            if (redeemUser) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription(`It seems like you have already redeemed this code.\n\n*Please contact staff if this is wrong.*`)]});
             if (toRedeem.codeLimitation <= toRedeem.codeRedeemed) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription(`The code you have entered has already been used \`${toRedeem.codeLimitation}\` times.`)]});
 
             await db.increaseCodeRedeemed(redeem);

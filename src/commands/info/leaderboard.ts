@@ -47,18 +47,31 @@ export default new Command({
         }
         data.push(tokenText);
 
+        let battleText: string = ``;
+        let battleCounter: number = 0;
+        const topBattles: userData[] = await db.getTrainerTopBattles();
+        for (const userData of topBattles) {
+            battleCounter++;
+
+            try {
+                const fetchUser = await client.users.fetch(userData.userId);
+                battleText += `**[${battleCounter}]** \`${fetchUser.tag}\` • ${userData.trainerBattles} Battles Won\n`;
+            } catch {}
+        }
+        data.push(battleText);
+
         const embeds: APIEmbed[] = [];
 
         let currentPage: number = 0;
         for (const mainData of data) {
             embeds.push({
-                title: `${mainData.includes('Coins') ? '🪙 Coin Leaderboard 🪙' : mainData.includes('Tokens') ? '💎 Token Leaderboard 💎' : 'Leaderboard type not found'}`,
+                title: `${mainData.includes('Coins') ? '🪙 Coin Leaderboard 🪙' : mainData.includes('Tokens') ? '💎 Token Leaderboard 💎' : mainData.includes('Battles') ? '⚔️ Battles Leaderboard ⚔️' : 'Leaderboard type not found'}`,
                 description: `${mainData}`,
                 thumbnail: {
                     url: 'https://cdn.discordapp.com/attachments/1010999257899204769/1057280575465082890/4482f729452089.55f35b167dbbe.png',
                 },
                 footer: {
-                    text: `${mainData.includes('Coins') ? 'Showing: Coin Leaderboard' : mainData.includes('Tokens') ? 'Showing: Token Leaderboard' : 'Showing: Type not found'}`
+                    text: `${mainData.includes('Coins') ? 'Showing: Coin Leaderboard' : mainData.includes('Tokens') ? 'Showing: Token Leaderboard' : mainData.includes('Battles') ? 'Showing: Battles Leaderboard' : 'Showing: Type not found'}`
                 },
                 color: Colours.MAIN,
             })
