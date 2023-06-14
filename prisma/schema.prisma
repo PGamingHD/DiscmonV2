@@ -129,6 +129,7 @@ model userData {
 
   userCodes       userCodes?
   userBag         userBag?
+  userCatchBuddy  userCatchBuddy?
   userPayment     userPayment[]
   userAuctionBids PokemonsAuction[]
 }
@@ -137,8 +138,9 @@ model userBag {
   userId String   @id @unique @db.VarChar(32)
   user   userData @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
-  userRedeems  Int @db.Int()
-  spawnIncense Int @db.Int()
+  userRedeems     Int @db.Int()
+  spawnIncense    Int @db.Int()
+  catchBuddyCandy Int @db.Int()
 }
 
 model userPayment {
@@ -196,6 +198,22 @@ model PokemonsAuction {
   leaderBidTime BigInt    @db.BigInt()
   leaderData    String?   @db.VarChar(32)
   leader        userData? @relation(fields: [leaderData], references: [userId], onDelete: Cascade)
+}
+
+model userCatchBuddy {
+  userId String   @id @unique @db.VarChar(32)
+  user   userData @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  catcherEnabled Boolean @default(false)
+  catcherRefill  BigInt  @db.BigInt()
+  catcherLeft    BigInt  @db.BigInt()
+  catcherNext    BigInt  @db.BigInt()
+  catchAvailable Boolean @default(false)
+  catcherCaught  BigInt  @default(0) @db.BigInt()
+
+  pokemonDuration    Int @db.Int()
+  pokemonUpgrade     Int @db.Int()
+  pokemonLuckUpgrade Int @db.Int()
 }
 
 enum PokemonRarity {

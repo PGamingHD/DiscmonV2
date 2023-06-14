@@ -18,6 +18,7 @@ import logger from '../utils/logger';
 import {hasUpperCase} from "../utils/misc";
 import {readdirSync} from "fs";
 import autoPoster from "../utils/actions/autoPoster";
+import catchBuddy from "../utils/actions/catchBuddy";
 const globPromise = promisify(glob);
 
 export class ExtendedClient extends Client {
@@ -149,6 +150,7 @@ export class ExtendedClient extends Client {
             });
 
             await autoPoster(this);
+            await catchBuddy(this);
         });
 
         // Events

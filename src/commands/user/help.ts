@@ -37,10 +37,10 @@ export default new Command({
                 value: '\`incense\`, \`invite\`, \`ping\`, \`vote\`'
             }, {
                 name: 'Shop Commands',
-                value: '\`market\`, \`store\`, \`items\`, \`redeem\`',
+                value: '\`market\`, \`store\`, \`items\`, \`redeem\`, \`catchbuddy\`',
             }, {
                 name: 'Admin Commands',
-                value: '\`settings\`, \`redirect\`',
+                value: '\`settings\`, \`redirect\`, \`announcer\`',
             }],
             timestamp: `${new Date().toISOString()}`
         });

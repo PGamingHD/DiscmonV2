@@ -14,7 +14,7 @@ import {
     PokemonRarity,
     TrainerRanks,
     PokemonOrder,
-    RewardType,
+    RewardType, userCatchBuddy,
 } from '@prisma/client';
 
 export class Database {
@@ -399,8 +399,19 @@ export class Database {
                     create: {
                         userRedeems: 0,
                         spawnIncense: 0,
+                        catchBuddyCandy: 0,
                     }
                 },
+                userCatchBuddy: {
+                    create: {
+                        catcherRefill: 0,
+                        pokemonUpgrade: 0,
+                        pokemonLuckUpgrade: 0,
+                        pokemonDuration: 0,
+                        catcherLeft: 0,
+                        catcherNext: 0,
+                    }
+                }
             }
         });
     }
@@ -449,6 +460,7 @@ export class Database {
             },
             include: {
                 userBag: true,
+                userCatchBuddy: true,
             }
         });
     }
@@ -551,6 +563,21 @@ export class Database {
         })
     }
 
+    increaseUserBCandy(userId: string, amount: number): Promise<userData | null> {
+        return this.prisma.userData.update({
+            where: {
+                userId
+            },
+            data: {
+                userBag: {
+                    update: {
+                        catchBuddyCandy: {increment: amount}
+                    }
+                }
+            }
+        })
+    }
+
     setUserRedeems(userId: string, amount: number): Promise<userData | null> {
         return this.prisma.userData.update({
             where: {
@@ -564,6 +591,21 @@ export class Database {
                 }
             }
         });
+    }
+
+    setUserBCandy(userId: string, amount: number): Promise<userData | null> {
+        return this.prisma.userData.update({
+            where: {
+                userId
+            },
+            data: {
+                userBag: {
+                    update: {
+                        catchBuddyCandy: amount,
+                    }
+                }
+            }
+        })
     }
 
     setTrainerOrder(userId: string, orderBy: PokemonOrder): Promise<userData | null> {
@@ -918,6 +960,121 @@ export class Database {
         return this.prisma.pokemonsAuction.delete({
             where: {
                 pokemonId,
+            }
+        });
+    }
+
+    /*
+    * CATCHBUDDY GETTERS & SETTERS
+    * */
+
+    getAllBuddies(): Promise<userCatchBuddy[]> {
+        return this.prisma.userCatchBuddy.findMany();
+    }
+
+    getOneBuddy(userId: string): Promise<userCatchBuddy | null> {
+        return this.prisma.userCatchBuddy.findFirst({
+            where: {
+                userId
+            }
+        });
+    }
+
+    setCatchAvailableStatus(userId: string, status: boolean): Promise<userCatchBuddy> {
+        return this.prisma.userCatchBuddy.update({
+            where: {
+                userId
+            },
+            data: {
+                catchAvailable: status,
+            }
+        });
+    }
+
+    setCatcherEnabledStatus(userId: string, status: boolean) {
+        return this.prisma.userCatchBuddy.update({
+            where: {
+                userId,
+            },
+            data: {
+                catcherEnabled: status,
+            }
+        })
+    }
+
+    setCatcherNextTime(userId: string, nextTime: number): Promise<userCatchBuddy> {
+        return this.prisma.userCatchBuddy.update({
+            where: {
+                userId
+            },
+            data: {
+                catcherNext: nextTime
+            }
+        })
+    }
+
+    setCatcherRefillTime(userId: string, refillTime: number) {
+        return this.prisma.userCatchBuddy.update({
+            where: {
+                userId
+            },
+            data: {
+                catcherRefill: refillTime
+            }
+        })
+    }
+
+    setCatcherLeftTime(userId: string, leftTime: number) {
+        return this.prisma.userCatchBuddy.update({
+            where: {
+                userId
+            },
+            data: {
+                catcherLeft: leftTime
+            }
+        });
+    }
+
+    incremenetCatcherCaught(userId: string): Promise<userCatchBuddy> {
+        return this.prisma.userCatchBuddy.update({
+            where: {
+                userId,
+            },
+            data: {
+                catcherCaught: {increment: 1}
+            }
+        })
+    }
+
+    incrementPokemonUpgrade(userId: string): Promise<userCatchBuddy> {
+        return this.prisma.userCatchBuddy.update({
+            where: {
+                userId
+            },
+            data: {
+                pokemonUpgrade: {increment: 1}
+            }
+        });
+    }
+
+    incrementDurationUpgrade(userId: string): Promise<userCatchBuddy> {
+        return this.prisma.userCatchBuddy.update({
+            where: {
+                userId
+            },
+            data: {
+                pokemonDuration: {increment: 1}
+            }
+        });
+    }
+
+    incrementLuckUpgrade(userId: string): Promise<userCatchBuddy> {
+        return this.prisma.userCatchBuddy.update({
+            where: {
+                userId
+            },
+            data: {
+                pokemonLuckUpgrade: {increment: 1}
             }
         });
     }
