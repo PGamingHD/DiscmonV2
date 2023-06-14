@@ -1,14 +1,9 @@
 import axios from "axios";
-import {
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonInteraction,
-    ButtonStyle, ChatInputCommandInteraction,
-    EmbedBuilder,
-} from "discord.js";
+import {ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder,} from "discord.js";
 import {Colours} from "../../@types/Colours";
 import db from "../database";
 import {TrainerRanks, userData} from "@prisma/client";
+import {sendWebhook} from "../misc";
 
 export default async function(interaction: any, paymentAmount: number, paymentType: string, paymentReward: number | TrainerRanks, paymentGateways: string[]) {
     const createPaymentGateway = await axios({
@@ -145,6 +140,8 @@ export default async function(interaction: any, paymentAmount: number, paymentTy
                         }
                     }
                 }
+
+                await sendWebhook('https://canary.discord.com/api/webhooks/1118650376992870504/polp6TlzSDWweGX5rTnQodfMn8RwlbMyCMQkfxdPIm8mO32lU69kZ75L_3PZHVS8FzsH', '💰 Donation Recieved 💰', `*Payment recieved by* <@!${interaction.user.id}>\n\n**Type:** \`${paymentType}\`\n**Reward:** \`${paymentReward}\`\n**Amount:** \`${paymentAmount}\`USD`, Colours.GREEN);
 
                 return interaction.editReply({
                     embeds: [
