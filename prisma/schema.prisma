@@ -129,6 +129,7 @@ model userData {
 
   userCodes       userCodes?
   userBag         userBag?
+  voteStreak      VoteStreak?
   userCatchBuddy  userCatchBuddy?
   userPayment     userPayment[]
   userAuctionBids PokemonsAuction[]
@@ -214,6 +215,16 @@ model userCatchBuddy {
   pokemonDuration    Int @db.Int()
   pokemonUpgrade     Int @db.Int()
   pokemonLuckUpgrade Int @db.Int()
+}
+
+model VoteStreak {
+  userId String   @id @unique @db.VarChar(32)
+  user   userData @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  latestVote       BigInt @default(0) @db.BigInt()
+  latestVoteExpire BigInt @default(0) @db.BigInt()
+
+  voteStreak Int @default(0) @db.Int()
 }
 
 enum PokemonRarity {

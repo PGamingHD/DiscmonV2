@@ -14,7 +14,7 @@ import {
     PokemonRarity,
     TrainerRanks,
     PokemonOrder,
-    RewardType, userCatchBuddy,
+    RewardType, userCatchBuddy, VoteStreak,
 } from '@prisma/client';
 
 export class Database {
@@ -411,6 +411,12 @@ export class Database {
                         catcherLeft: 0,
                         catcherNext: 0,
                     }
+                },
+                voteStreak: {
+                    create: {
+                        voteStreak: 0,
+                        latestVote: 0,
+                    }
                 }
             }
         });
@@ -461,6 +467,7 @@ export class Database {
             include: {
                 userBag: true,
                 userCatchBuddy: true,
+                voteStreak: true,
             }
         });
     }
@@ -1075,6 +1082,43 @@ export class Database {
             },
             data: {
                 pokemonLuckUpgrade: {increment: 1}
+            }
+        });
+    }
+
+    /*
+    * VOTES GETTERS & SETTERS
+    * */
+
+    setNewVote(userId: string, voteTimestamp: number): Promise<VoteStreak> {
+        return this.prisma.voteStreak.update({
+            where: {
+                userId
+            },
+            data: {
+                latestVote: voteTimestamp
+            }
+        });
+    }
+
+    setNewExpireVote(userId: string, voteExpireTimestamp: number): Promise<VoteStreak> {
+        return this.prisma.voteStreak.update({
+            where: {
+                userId
+            },
+            data: {
+                latestVoteExpire: voteExpireTimestamp
+            }
+        });
+    }
+
+    incrementVoteStreak(userId: string): Promise<VoteStreak> {
+        return this.prisma.voteStreak.update({
+            where: {
+                userId
+            },
+            data: {
+                voteStreak: {increment: 1}
             }
         });
     }
