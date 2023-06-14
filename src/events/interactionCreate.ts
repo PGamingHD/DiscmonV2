@@ -11,7 +11,6 @@ import {TrainerRanks, userData} from "@prisma/client";
 import db from "../utils/database";
 import {Colours} from "../@types/Colours";
 
-
 export default new Event(Events.InteractionCreate, async interaction => {
     if (interaction.isChatInputCommand()) {
         const command: CommandType | undefined = client.commands.get(interaction.commandName);

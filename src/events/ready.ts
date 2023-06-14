@@ -33,7 +33,6 @@ export default new Event(Events.ClientReady, async (client) => {
 
     Cron('00 */5 * * * *', async () => {
         const random = await randomizeNumber(1, activities.length);
-
         client.user?.setActivity({
             type: activities[random - 1].name.includes('Changes') ? ActivityType.Watching : activities[random].name.includes('guilds!') ? ActivityType.Playing : ActivityType.Watching,
             name: activities[random - 1].name

@@ -1,23 +1,19 @@
-import {ExtendedClient} from "../../structures/Client";
 import db from "../database";
 import {Cron} from "croner";
 import {generateFlake, randomizeGender, randomizeNature, randomizeNumber} from "../misc";
 import {ActivityType} from "discord.js";
-import {PokemonRarity, Pokemons, userCatchBuddy} from "@prisma/client";
+import {PokemonRarity, Pokemons} from "@prisma/client";
 import getModifiedSpawnRarity from "./getModifiedSpawnRarity";
 import getSpawnRarity from "./getSpawnRarity";
 
-export default async function(client: ExtendedClient): Promise<void> {
-    const allBuddies: userCatchBuddy[] = await db.getAllBuddies();
-
-    for (const buddy of allBuddies) {
+export default async function(userId: string): Promise<void> {
         Cron('*/30 * * * * *', async () => {
-            let newBuddyData = await db.getOneBuddy(buddy.userId);
+            let newBuddyData = await db.getOneBuddy(userId);
             if (!newBuddyData) return;
 
             if (!newBuddyData.catcherEnabled) return;
 
-            if (newBuddyData.catcherNext <= Date.now() && Number(newBuddyData.catcherRefill) + 60000 >= Date.now()) newBuddyData = await db.setCatchAvailableStatus(buddy.userId, true);
+            if (newBuddyData.catcherNext <= Date.now() && Number(newBuddyData.catcherRefill) + 60000 >= Date.now()) newBuddyData = await db.setCatchAvailableStatus(newBuddyData.userId, true);
 
             if (newBuddyData.catchAvailable) {
                 let getRarity: string = ``;
@@ -46,14 +42,14 @@ export default async function(client: ExtendedClient): Promise<void> {
                 const IVpercentage: number = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
                 const IVtotal: string = (IVpercentage / 186 * 100).toFixed(2);
 
-                const getHighestPoke: Pokemons[] = await db.getPokemonNextPokeId(buddy.userId);
+                const getHighestPoke: Pokemons[] = await db.getPokemonNextPokeId(newBuddyData.userId);
 
                 let incrementId;
                 if (getHighestPoke.length === 0 && getHighestPoke[0].pokemonPlacementId === null) incrementId = 1;
                 if (getHighestPoke.length >= 1 && getHighestPoke[0].pokemonPlacementId !== null) incrementId = getHighestPoke[0].pokemonPlacementId + 1;
                 if (!incrementId) incrementId = 1;
 
-                await db.spawnNewRedeemPokemon(generatedId, buddy.userId, incrementId, pokemonToSpawn.pokemonName, pokemonToSpawn.pokemonPicture, randomizeGender(), randomizeNature(), levelGeneration, {
+                await db.spawnNewRedeemPokemon(generatedId, newBuddyData.userId, incrementId, pokemonToSpawn.pokemonName, pokemonToSpawn.pokemonPicture, randomizeGender(), randomizeNature(), levelGeneration, {
                     HP: HPiv,
                     Attack: ATKiv,
                     Defense: DEFiv,
@@ -70,18 +66,18 @@ export default async function(client: ExtendedClient): Promise<void> {
                     Speed: pokemonToSpawn.pokemonEVs.Speed,
                 });
 
-                newBuddyData = await db.setCatchAvailableStatus(buddy.userId, false);
-                newBuddyData = await db.setCatcherNextTime(buddy.userId, Math.floor(Date.now() + 1000 * 60 * (60 / (newBuddyData.pokemonUpgrade + 1))));
-                newBuddyData = await db.incremenetCatcherCaught(buddy.userId);
+                newBuddyData = await db.setCatchAvailableStatus(newBuddyData.userId, false);
+                newBuddyData = await db.setCatcherNextTime(newBuddyData.userId, Math.floor(Date.now() + 1000 * 60 * (60 / (newBuddyData.pokemonUpgrade + 1))));
+                newBuddyData = await db.incremenetCatcherCaught(newBuddyData.userId);
             }
 
-            if (buddy.catcherEnabled && buddy.catcherRefill >= Date.now() + 1000 * 60 * (60 / (newBuddyData.pokemonUpgrade + 1)) && buddy.catcherNext <= Date.now()) await db.setCatcherNextTime(buddy.userId, Math.floor(Date.now() + 1000 * 60 * (60 / (newBuddyData.pokemonUpgrade + 1))));
+            if (newBuddyData.catcherEnabled && newBuddyData.catcherRefill >= Date.now() + 1000 * 60 * (60 / (newBuddyData.pokemonUpgrade + 1)) && newBuddyData.catcherNext <= Date.now()) await db.setCatcherNextTime(newBuddyData.userId, Math.floor(Date.now() + 1000 * 60 * (60 / (newBuddyData.pokemonUpgrade + 1))));
 
             if (newBuddyData.catcherRefill < Date.now()) {
-                await db.setCatcherEnabledStatus(buddy.userId, false);
-                await db.setCatcherNextTime(buddy.userId, 0);
-                await db.setCatcherRefillTime(buddy.userId, 0);
+                await db.setCatcherEnabledStatus(newBuddyData.userId, false);
+                await db.setCatcherNextTime(newBuddyData.userId, 0);
+                await db.setCatcherRefillTime(newBuddyData.userId, 0);
             }
-        });
-    }
+
+    })
 }

@@ -15,6 +15,7 @@ import db from "../../utils/database";
 import {Pokemon, PokemonGender, PokemonNature, userData} from "@prisma/client";
 import {Colours} from "../../@types/Colours";
 import {generateFlake, randomizeNumber} from "../../utils/misc";
+import catchBuddyOne from "../../utils/actions/catchBuddyOne";
 
 export default new Command({
     name: 'start',
@@ -128,6 +129,8 @@ export default new Command({
                 });
 
                 await choiceMsg.edit({embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription('You have successfully chosen \`Bulbasaur\` as your starter Pokémon.')], components: []});
+
+                return catchBuddyOne(interaction.user.id);
             }
 
             if (i.customId === "charmander") {
@@ -198,6 +201,8 @@ export default new Command({
                 });
 
                 await choiceMsg.edit({embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription('You have successfully chosen \`Charmander\` as your starter Pokémon.')], components: []});
+
+                return catchBuddyOne(interaction.user.id);
             }
 
             if (i.customId === "squirtle") {
@@ -268,6 +273,8 @@ export default new Command({
                 });
 
                 await choiceMsg.edit({embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription('You have successfully chosen \`Squirtle\` as your starter Pokémon.')], components: []});
+
+                return catchBuddyOne(interaction.user.id);
             }
         });
 

@@ -59,7 +59,7 @@ export default async function (message: Message<boolean>, client: ExtendedClient
     }
 
     if (findSelected.pokemonLevel < 100) {
-        await db.setPokemonXP(findSelected.pokemonId, await randomizeNumber(10, 30));
+        await db.setPokemonXP(findSelected.pokemonId, await randomizeNumber(20, 50));
 
         client.xpCooldowns.set(message.author.id, 'User set on a 5 second cooldown!');
         setTimeout(() => {
