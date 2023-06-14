@@ -28,7 +28,7 @@ export default async function(client: ExtendedClient): Promise<void> {
         if (findregistered) {
             await sendWebhook("https://canary.discord.com/api/webhooks/1069643453631311932/SQ9yyjpRhGVPaocUZMAvJUmhuME2xPuezzt1VD11440QvRQzefFfokKyQFjg90jPe7yq", "🎉 New Registered Vote 🎉", `**A new vote was registered by <@!${vote.user}>!**\n\n*User has been successfully automatically given their voting rewards, make sure to vote below to get your own rewards!*\n\n*Click [here](https://top.gg/bot/1011002384064970944/vote) to vote for us and get free Pokétokens!*`, Colours.MAIN);
 
-            if (Number(findregistered.voteStreak.latestVoteExpire) > Date.now() + 86400000) {
+            if (Number(findregistered.voteStreak.latestVoteExpire) > Date.now()) {
                 await db.incrementVoteStreak(vote.user);
                 await db.setNewVote(vote.user, Date.now());
                 await db.setNewExpireVote(vote.user, Date.now() + 86400000);
