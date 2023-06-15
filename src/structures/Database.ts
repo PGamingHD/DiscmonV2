@@ -14,8 +14,10 @@ import {
     PokemonRarity,
     TrainerRanks,
     PokemonOrder,
-    RewardType, userCatchBuddy, VoteStreak,
+    RewardType, userCatchBuddy, VoteStreak, userChallenges,
 } from '@prisma/client';
+
+import {generateFlake} from "../utils/misc";
 
 export class Database {
     prisma: PrismaClient;
@@ -417,8 +419,68 @@ export class Database {
                         voteStreak: 0,
                         latestVote: 0,
                     }
-                }
+                },
             }
+        });
+    }
+
+    registerUserChallenges(userId: string) {
+        return this.prisma.userChallenges.createMany({
+            data: [{
+                challengesOwner: userId,
+                challengesName: 'Catch 20 Legendary Pokémons',
+                challengesDescription: 'These legendary Pokémons are known to be harder to catch, are you up for the challenge?',
+                challengesAmount: 25,
+                challengesCaughtAmount: 0,
+                challengesCompleted: false,
+                challengesToCatch: "legendary",
+                challengesTokenReward: 100,
+            }, {
+                challengesOwner: userId,
+                challengesName: 'Catch 10,000 Pokémons',
+                challengesDescription: 'There are tons of Pokémons out there, can you even reach this amount?',
+                challengesAmount: 10000,
+                challengesCaughtAmount: 0,
+                challengesCompleted: false,
+                challengesToCatch: "any",
+                challengesTokenReward: 100,
+            }, {
+                challengesOwner: userId,
+                challengesName: 'Catch 100 Pidgeys',
+                challengesDescription: 'These pidgeys have been flying all around the city, please catch them asap!',
+                challengesAmount: 100,
+                challengesCaughtAmount: 0,
+                challengesCompleted: false,
+                challengesToCatch: "Pidgey",
+                challengesCoinReward: 100000,
+            }, {
+                challengesOwner: userId,
+                challengesName: 'Catch 25 Bulbasaurs',
+                challengesDescription: 'Please catch them for me, these have been running around all day.',
+                challengesAmount: 25,
+                challengesCaughtAmount: 0,
+                challengesCompleted: false,
+                challengesToCatch: "Bulbasaur",
+                challengesCoinReward: 250000,
+            }, {
+                challengesOwner: userId,
+                challengesName: 'Catch 10 Shiny Pokémons',
+                challengesDescription: 'These Pokémons have a different color, these must be special.',
+                challengesAmount: 10,
+                challengesCaughtAmount: 0,
+                challengesCompleted: false,
+                challengesToCatch: "shiny",
+                challengesCoinReward: 2500000,
+            }, {
+                challengesOwner: userId,
+                challengesName: 'Catch 1 Mew',
+                challengesDescription: 'A very special Pokémon has been roaming around, could you try catch this?',
+                challengesAmount: 1,
+                challengesCaughtAmount: 0,
+                challengesCompleted: false,
+                challengesToCatch: "Mew",
+                challengesTokenReward: 25,
+            }]
         });
     }
 
@@ -468,6 +530,7 @@ export class Database {
                 userBag: true,
                 userCatchBuddy: true,
                 voteStreak: true,
+                userChallenges: true,
             }
         });
     }
@@ -837,6 +900,37 @@ export class Database {
             },
             data: {
                 userCoins: newCoins
+            }
+        })
+    }
+
+    findChallenge(userId: string, challengeId: number): Promise<userChallenges | null> {
+        return this.prisma.userChallenges.findFirst({
+            where: {
+                challengesOwner: userId,
+                challengesId: challengeId,
+            }
+        })
+    }
+
+    incrementChallengeCaught(challengesId: number): Promise<userChallenges | null> {
+        return this.prisma.userChallenges.update({
+            where: {
+                challengesId
+            },
+            data: {
+                challengesCaughtAmount: {increment: 1}
+            }
+        });
+    }
+
+    setChallengeCompleted(challengesId: number): Promise<userChallenges | null> {
+        return this.prisma.userChallenges.update({
+            where: {
+                challengesId
+            },
+            data: {
+                challengesCompleted: true
             }
         })
     }

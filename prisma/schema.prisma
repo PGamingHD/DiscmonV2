@@ -122,7 +122,7 @@ model userData {
   userBlacklisted Boolean      @default(false)
   userTokens      Int          @default(0) @db.Int()
   userCoins       Int          @default(500) @db.Int()
-  trainerNumber   Int          @unique @db.Int()
+  trainerNumber   Int          @unique @default(autoincrement()) @db.Int()
   trainerBattles  Int          @db.Int()
   trainerRank     TrainerRanks @default(NORMAL_TRAINER)
   pokemonOrder    PokemonOrder @default(ID)
@@ -133,6 +133,7 @@ model userData {
   userCatchBuddy  userCatchBuddy?
   userPayment     userPayment[]
   userAuctionBids PokemonsAuction[]
+  userChallenges  userChallenges[]
 }
 
 model userBag {
@@ -225,6 +226,26 @@ model VoteStreak {
   latestVoteExpire BigInt @default(0) @db.BigInt()
 
   voteStreak Int @default(0) @db.Int()
+}
+
+model userChallenges {
+  challengesId Int @id @unique @default(autoincrement()) @db.Int()
+
+  challengesOwner String   @db.VarChar(32)
+  user            userData @relation(fields: [challengesOwner], references: [userId], onDelete: Cascade)
+
+  challengesName        String @db.VarChar(64)
+  challengesDescription String @db.VarChar(256)
+  challengesAmount      Int    @db.Int()
+  challengesToCatch     String @db.VarChar(32)
+
+  challengesCaughtAmount Int     @default(0) @db.Int()
+  challengesCompleted    Boolean @default(false)
+
+  challengesCoinReward         Int?     @db.Int()
+  challengesTokenReward        Int?     @db.Int()
+  challengesPokemonReward      String?  @db.VarChar(32)
+  challengesPokemonRewardShiny Boolean? @default(false)
 }
 
 enum PokemonRarity {

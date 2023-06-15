@@ -23,6 +23,7 @@ export default new Command({
     noDefer: true,
     run: async ({ interaction, client }) => {
         const trainerData: userData | null = await db.findPokemonTrainer(interaction.user.id);
+        console.log(trainerData);
         if (trainerData) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('It seems like you already have an account, you may not register twice.')]});
 
         let nextTrainerId: userData | null | number = await db.findNextTrainerId();
@@ -101,6 +102,8 @@ export default new Command({
 
                 await db.registerNewUser(interaction.user.id, nextTrainerId as number);
 
+                await db.registerUserChallenges(interaction.user.id);
+
                 const HPiv: number = await randomizeNumber(1, 31);
                 const ATKiv: number = await randomizeNumber(1, 31);
                 const DEFiv: number = await randomizeNumber(1, 31);
@@ -173,6 +176,8 @@ export default new Command({
 
                 await db.registerNewUser(interaction.user.id, nextTrainerId as number);
 
+                await db.registerUserChallenges(interaction.user.id);
+
                 const HPiv: number = await randomizeNumber(1, 31);
                 const ATKiv: number = await randomizeNumber(1, 31);
                 const DEFiv: number = await randomizeNumber(1, 31);
@@ -244,6 +249,8 @@ export default new Command({
                 ]
 
                 await db.registerNewUser(interaction.user.id, nextTrainerId as number);
+
+                await db.registerUserChallenges(interaction.user.id);
 
                 const HPiv: number = await randomizeNumber(1, 31);
                 const ATKiv: number = await randomizeNumber(1, 31);
