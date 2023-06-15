@@ -16,7 +16,6 @@ import {Colours} from "../@types/Colours";
 
 export default new Event(Events.GuildCreate, async (guild) => {
     const guildData: PokemonServer | null = await db.getServer(guild.id);
-
     if (!guildData) await db.addServer(guild.id);
 
     try {
