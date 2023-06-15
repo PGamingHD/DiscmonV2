@@ -9,6 +9,7 @@ import getSpawnRarity from "./getSpawnRarity";
 export default async function(userId: string): Promise<void> {
         Cron('*/30 * * * * *', async () => {
             let newBuddyData = await db.getOneBuddy(userId);
+            const usersData: any = await db.findPokemonTrainer(userId);
             if (!newBuddyData) return;
 
             if (!newBuddyData.catcherEnabled) return;
@@ -49,6 +50,72 @@ export default async function(userId: string): Promise<void> {
                 if (getHighestPoke.length >= 1 && getHighestPoke[0].pokemonPlacementId !== null) incrementId = getHighestPoke[0].pokemonPlacementId + 1;
                 if (!incrementId) incrementId = 1;
 
+                let challengeObject: any = {};
+                if (Object.keys(challengeObject).length === 0) {
+                    for (const challenge of usersData.userChallenges) {
+                        const challengeToCatch = challenge.challengesToCatch;
+                        if (challengeToCatch.toLowerCase() === "shiny" && pokemonToSpawn.pokemonPicture.includes('shiny') && !challenge.challengesCompleted) {
+                            challengeObject = challenge;
+                            break;
+                        }
+                    }
+                }
+
+                if (Object.keys(challengeObject).length === 0) {
+                    for (const challenge of usersData.userChallenges) {
+                        const challengeToCatch = challenge.challengesToCatch;
+                        const getPokemon = await db.getPokemon(pokemonToSpawn.pokemonName);
+                        if (!getPokemon) return;
+                        if (challengeToCatch.toLowerCase() === "legendary" && getPokemon.pokemonRarity === "LEGEND" && !challenge.challengesCompleted) {
+                            challengeObject = challenge;
+                            break;
+                        }
+                    }
+                }
+
+                if (Object.keys(challengeObject).length === 0) {
+                    for (const challenge of usersData.userChallenges) {
+                        const challengeToCatch = challenge.challengesToCatch;
+                        if (challengeToCatch === pokemonToSpawn.pokemonName && !challenge.challengesCompleted) {
+                            challengeObject = challenge;
+                            break;
+                        }
+                    }
+                }
+
+                if (Object.keys(challengeObject).length === 0) {
+                    for (const challenge of usersData.userChallenges) {
+                        const challengeToCatch = challenge.challengesToCatch;
+                        if (challengeToCatch.toLowerCase() === "any" && !challenge.challengesCompleted) {
+                            challengeObject = challenge;
+                            break;
+                        }
+                    }
+                }
+
+                if (Object.keys(challengeObject).length !== 0) {
+                    const challenge: any = await db.findChallenge(userId, challengeObject.challengesId);
+                    let newChallenge: any = {};
+
+                    if (challenge && !challenge.challengesCompleted) {
+                        newChallenge = await db.incrementChallengeCaught(challenge.challengesId);
+                    }
+
+                    if (newChallenge && !newChallenge.challengesCompleted && newChallenge.challengesCaughtAmount === newChallenge.challengesAmount) {
+                        await db.setChallengeCompleted(newChallenge.challengesId);
+
+                        if (newChallenge.challengesCoinReward !== null) {
+                            await db.setCoins(usersData.userId, usersData.userCoins + newChallenge.challengesCoinReward);
+                        }
+
+                        if (newChallenge.challengesTokenReward !== null) {
+                            await db.setTokens(usersData.userId, usersData.userTokens + newChallenge.challengesTokenReward);
+                        }
+
+                        //ADD SAME FUNCTION IF POKEMON AWARD !== null HERE
+                    }
+                }
+
                 await db.spawnNewRedeemPokemon(generatedId, newBuddyData.userId, incrementId, pokemonToSpawn.pokemonName, pokemonToSpawn.pokemonPicture, randomizeGender(), randomizeNature(), levelGeneration, {
                     HP: HPiv,
                     Attack: ATKiv,
@@ -71,7 +138,9 @@ export default async function(userId: string): Promise<void> {
                 newBuddyData = await db.incremenetCatcherCaught(newBuddyData.userId);
             }
 
-            if (newBuddyData.catcherEnabled && newBuddyData.catcherRefill >= Date.now() + 1000 * 60 * (60 / (newBuddyData.pokemonUpgrade + 1)) && newBuddyData.catcherNext <= Date.now()) await db.setCatcherNextTime(newBuddyData.userId, Math.floor(Date.now() + 1000 * 60 * (60 / (newBuddyData.pokemonUpgrade + 1))));
+            if (newBuddyData.catcherEnabled && newBuddyData.catcherRefill >= Date.now() + 1000 * 60 * (60 / (newBuddyData.pokemonUpgrade + 1)) && newBuddyData.catcherNext <= Date.now()) {
+                await db.setCatcherNextTime(newBuddyData.userId, Math.floor(Date.now() + 1000 * 60 * (60 / (newBuddyData.pokemonUpgrade + 1))));
+            }
 
             if (newBuddyData.catcherRefill < Date.now()) {
                 await db.setCatcherEnabledStatus(newBuddyData.userId, false);

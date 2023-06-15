@@ -46,7 +46,7 @@ export function capitalizeFirst(string: string): string {
 }
 
 export async function randomizeNumber(min: number, max: number): Promise<number> {
-    if (min === max) return max;
+    if (min >= max) return min;
     return await randomNumber(min, max);
 }
 
