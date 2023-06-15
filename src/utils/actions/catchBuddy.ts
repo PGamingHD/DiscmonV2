@@ -143,7 +143,7 @@ export default async function(client: ExtendedClient): Promise<void> {
                 newBuddyData = await db.incremenetCatcherCaught(buddy.userId);
             }
 
-            if (buddy.catcherEnabled && buddy.catcherRefill >= Date.now() + 1000 * 60 * (60 / (newBuddyData.pokemonUpgrade + 1)) && buddy.catcherNext <= Date.now()) {
+            if (newBuddyData.catcherEnabled && newBuddyData.catcherRefill >= Date.now() + 1000 * 60 * (60 / (newBuddyData.pokemonUpgrade + 1)) && newBuddyData.catcherNext <= Date.now()) {
                 await db.setCatcherNextTime(buddy.userId, Math.floor(Date.now() + 1000 * 60 * (60 / (newBuddyData.pokemonUpgrade + 1))));
             }
 
