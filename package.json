@@ -27,7 +27,7 @@
     "biguint-format": "^1.0.2",
     "chalk": "^4.0.0",
     "croner": "^6.0.4",
-    "discord.js": "^14.11.0",
+    "discord.js": "^14.11.1-dev.1686787797-b61e4fb.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "form-data": "^4.0.0",

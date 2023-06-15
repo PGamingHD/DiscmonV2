@@ -29,7 +29,7 @@ export default new Command({
 
             try {
                 const fetchUser = await client.users.fetch(userData.userId);
-                coinText += `**[${coinCounter}]** \`${fetchUser.tag}\` • ${userData.userCoins} Coins\n`;
+                coinText += `**[${coinCounter}]** \`${fetchUser.username}\` • ${userData.userCoins} Coins\n`;
             } catch {}
         }
         data.push(coinText);
@@ -42,7 +42,7 @@ export default new Command({
 
             try {
                 const fetchUser = await client.users.fetch(userData.userId);
-                tokenText += `**[${tokenCounter}]** \`${fetchUser.tag}\` • ${userData.userTokens} Tokens\n`;
+                tokenText += `**[${tokenCounter}]** \`${fetchUser.username}\` • ${userData.userTokens} Tokens\n`;
             } catch {}
         }
         data.push(tokenText);
@@ -55,7 +55,7 @@ export default new Command({
 
             try {
                 const fetchUser = await client.users.fetch(userData.userId);
-                battleText += `**[${battleCounter}]** \`${fetchUser.tag}\` • ${userData.trainerBattles} Battles Won\n`;
+                battleText += `**[${battleCounter}]** \`${fetchUser.username}\` • ${userData.trainerBattles} Battles Won\n`;
             } catch {}
         }
         data.push(battleText);

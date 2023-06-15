@@ -1,6 +1,6 @@
 {
   "ChangelogNumber": 4,
   "ChangelogTitle": "Changelog - V1.0.5_DEV",
-  "ChangelogDescription": "__**New Features**__\n\n*• Added catchbuddy system, upgrades & more functional.*",
-  "ChangelogTimestamp": "14. June [2023]"
+  "ChangelogDescription": "__**New Features**__\n\n*• Added catchbuddy system, upgrades & more functional.*\n\n__**Changed Features**__\n\n*• Fixed Catchbuddy to not catch a Pokémon right away.*\n*• Remade leaderboard to use username instead of tag (API)*",
+  "ChangelogTimestamp": "15. June [2023]"
 }
