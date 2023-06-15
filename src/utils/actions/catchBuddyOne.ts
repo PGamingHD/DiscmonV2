@@ -13,7 +13,7 @@ export default async function(userId: string): Promise<void> {
 
             if (!newBuddyData.catcherEnabled) return;
 
-            if (newBuddyData.catcherNext <= Date.now() && Number(newBuddyData.catcherRefill) + 60000 >= Date.now()) newBuddyData = await db.setCatchAvailableStatus(newBuddyData.userId, true);
+            if (newBuddyData.catcherNext <= Date.now() && Number(newBuddyData.catcherRefill) + 60000 >= Date.now() && Number(newBuddyData.catcherNext) !== 0) newBuddyData = await db.setCatchAvailableStatus(newBuddyData.userId, true);
 
             if (newBuddyData.catchAvailable) {
                 let getRarity: string = ``;

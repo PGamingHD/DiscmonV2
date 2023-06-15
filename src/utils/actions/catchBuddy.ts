@@ -17,7 +17,7 @@ export default async function(client: ExtendedClient): Promise<void> {
 
             if (!newBuddyData.catcherEnabled) return;
 
-            if (newBuddyData.catcherNext <= Date.now() && Number(newBuddyData.catcherRefill) + 60000 >= Date.now()) newBuddyData = await db.setCatchAvailableStatus(buddy.userId, true);
+            if (newBuddyData.catcherNext <= Date.now() && Number(newBuddyData.catcherRefill) + 60000 >= Date.now() && Number(newBuddyData.catcherNext) !== 0) newBuddyData = await db.setCatchAvailableStatus(buddy.userId, true);
 
             if (newBuddyData.catchAvailable) {
                 let getRarity: string = ``;
