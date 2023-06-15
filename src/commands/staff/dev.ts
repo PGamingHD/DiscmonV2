@@ -22,6 +22,7 @@ import db from "../../utils/database";
 import {chunk} from "lodash";
 import sendPagination from "../../utils/messages/sendPagination";
 import forceSpawn from "../../utils/actions/forceSpawn";
+import logger from "../../utils/logger";
 
 export default new Command({
     name: 'dev',

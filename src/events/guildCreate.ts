@@ -15,7 +15,6 @@ import {PokemonServer} from "@prisma/client";
 import {Colours} from "../@types/Colours";
 
 export default new Event(Events.GuildCreate, async (guild) => {
-    logger.log("I just joined a guild called " + guild.name + " (" +  guild.id + ")");
     const guildData: PokemonServer | null = await db.getServer(guild.id);
 
     if (!guildData) await db.addServer(guild.id);
