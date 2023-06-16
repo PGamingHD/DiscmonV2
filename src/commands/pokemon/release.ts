@@ -29,6 +29,7 @@ export default new Command({
         const findPokemon = await db.findPlacementPokemon(interaction.user.id, pokeId);
         if (!findPokemon) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('The ID is not valid, please use \`/pokemons\` to find all IDs.')]});
         if (findPokemon.pokemonSelected) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You may not release one of your selected Pokémons.')]});
+        if (findPokemon.pokemonAuction) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You may not release a Pokémon that is added to the auction.')]});
 
         const confirmRow: any = new ActionRowBuilder()
         confirmRow.addComponents([

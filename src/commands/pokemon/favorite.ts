@@ -29,6 +29,7 @@ export default new Command({
 
         const findPokemon: Pokemons | null = await db.findPlacementPokemon(interaction.user.id, pokeId);
         if (!findPokemon) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('The ID is not valid, please use \`/pokemons\` to find all IDs.')]});
+        if (findPokemon.pokemonAuction) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You may not favorite a Pokémon that is added to the auction.')]});
         if (findPokemon.pokemonFavorite) {
             await db.setPokemonFavorite(findPokemon.pokemonId, false);
 

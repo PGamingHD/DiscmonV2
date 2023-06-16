@@ -31,6 +31,7 @@ export default new Command({
         if (!findPokemon) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('The ID is not valid, please use \`/pokemons\` to find all IDs.')]});
         if (!findSelected) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You do not have a selected Pokémon, please contact a Developer.')]});
         if (findPokemon.pokemonSelected) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('That Pokémon is already selected, please choose another one.')]});
+        if (findPokemon.pokemonAuction) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You may not select a Pokémon that is added to the auction.')]});
 
         await db.setPokemonSelected(findSelected.pokemonId, false);
         await db.setPokemonSelected(findPokemon.pokemonId, true);
