@@ -34,7 +34,7 @@ export default new Command({
             name: 'Favorite',
             value: 'fav'
         }],
-        required: true
+        required: true,
     }],
     run: async ({ interaction, client }) => {
         const sorting: string | null = interaction.options.getString('sorting');

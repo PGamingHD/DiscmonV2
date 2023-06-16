@@ -68,7 +68,7 @@ export default new Command({
             if (getHighestPoke.length >= 1 && getHighestPoke[0].pokemonPlacementId !== null) incrementId = getHighestPoke[0].pokemonPlacementId + 1;
             if (!incrementId) incrementId = 1;
 
-            await db.spawnNewRedeemPokemon(generatedId, interaction.user.id, incrementId, pokemon.pokemonName, pokemon.pokemonPicture, randomizeGender(), randomizeNature(), levelGeneration, {
+            await db.spawnNewRedeemPokemon(generatedId, interaction.user.id, incrementId, pokemon.pokemonName, pokemon.pokemonPicture, randomizeGender(), randomizeNature(), pokemon.pokemonRarity, levelGeneration, {
                 HP: HPiv,
                 Attack: ATKiv,
                 Defense: DEFiv,
@@ -136,7 +136,7 @@ export default new Command({
             if (getHighestPoke.length >= 1 && getHighestPoke[0].pokemonPlacementId !== null) incrementId = getHighestPoke[0].pokemonPlacementId + 1;
             if (!incrementId) incrementId = 1;
 
-            await db.spawnNewRedeemPokemon(generatedId, interaction.user.id, incrementId, pokemonToSpawn.pokemonName, shinyPic, randomizeGender(), randomizeNature(), levelGeneration, {
+            await db.spawnNewRedeemPokemon(generatedId, interaction.user.id, incrementId, pokemonToSpawn.pokemonName, shinyPic, randomizeGender(), randomizeNature(), pokemonToSpawn.pokemonRarity, levelGeneration, {
                 HP: HPiv,
                 Attack: ATKiv,
                 Defense: DEFiv,

@@ -123,7 +123,7 @@ export default async function(userId: string): Promise<void> {
                     }
                 }
 
-                await db.spawnNewRedeemPokemon(generatedId, newBuddyData.userId, incrementId, pokemonToSpawn.pokemonName, isShiny ? `https://pgaminghd.github.io/discmon-images/pokemon-sprites/shiny/${pokemonToSpawn.pokemonPokedex}.png` : pokemonToSpawn.pokemonPicture, randomizeGender(), randomizeNature(), levelGeneration, {
+                await db.spawnNewRedeemPokemon(generatedId, newBuddyData.userId, incrementId, pokemonToSpawn.pokemonName, isShiny ? `https://pgaminghd.github.io/discmon-images/pokemon-sprites/shiny/${pokemonToSpawn.pokemonPokedex}.png` : pokemonToSpawn.pokemonPicture, randomizeGender(), randomizeNature(), pokemonToSpawn.pokemonRarity, levelGeneration, {
                     HP: HPiv,
                     Attack: ATKiv,
                     Defense: DEFiv,

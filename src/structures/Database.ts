@@ -111,7 +111,7 @@ export class Database {
     * SPAWNED & CLAIMED GETTERS AND SETTERS!
     * */
 
-    spawnNewPokemon(serverId: string, channelId: string, messageId: string, pokemonId: string, pokemonName: string, pokemonPicture: string, pokemonGender: PokemonGender, pokemonNature: PokemonNature, pokemonLevel: number, ivData: any, evData: any): Promise<Pokemons | null> {
+    spawnNewPokemon(serverId: string, channelId: string, messageId: string, pokemonId: string, pokemonName: string, pokemonPicture: string, pokemonGender: PokemonGender, pokemonNature: PokemonNature, pokemonRarity: PokemonRarity, pokemonLevel: number, ivData: any, evData: any): Promise<Pokemons | null> {
         return this.prisma.pokemons.create({
             data: {
                 pokemonId,
@@ -124,6 +124,7 @@ export class Database {
                 pokemonFavorite: false,
                 pokemonGender,
                 pokemonNature,
+                pokemonRarity,
                 spawnedServer: serverId,
                 spawnedChannel: channelId,
                 spawnedMessage: messageId,
@@ -137,7 +138,7 @@ export class Database {
         });
     }
 
-    spawnNewRedeemPokemon(pokemonId: string, ownerId: string, placementId: number, pokemonName: string, pokemonPicture: string, pokemonGender: PokemonGender, pokemonNature: PokemonNature, pokemonLevel: number, ivData: any, evData: any): Promise<Pokemons | null> {
+    spawnNewRedeemPokemon(pokemonId: string, ownerId: string, placementId: number, pokemonName: string, pokemonPicture: string, pokemonGender: PokemonGender, pokemonNature: PokemonNature, pokemonRarity: PokemonRarity, pokemonLevel: number, ivData: any, evData: any): Promise<Pokemons | null> {
         return this.prisma.pokemons.create({
             data: {
                 pokemonId,
@@ -152,6 +153,7 @@ export class Database {
                 pokemonPlacementId: placementId,
                 pokemonGender,
                 pokemonNature,
+                pokemonRarity,
                 spawnedServer: null,
                 spawnedChannel: null,
                 spawnedMessage: null,
@@ -248,7 +250,7 @@ export class Database {
         });
     }
 
-    setNewPokemonOwner(pokemonId: string, pokemonOwner: string, pokemonPicture: string, pokemonName: string, pokemonNature: PokemonNature, pokemonGender: PokemonGender, pokemonSelected: boolean, ivData: any, evData: any): Promise<Pokemons | null> {
+    setNewPokemonOwner(pokemonId: string, pokemonOwner: string, pokemonPicture: string, pokemonName: string, pokemonNature: PokemonNature, pokemonGender: PokemonGender, pokemonRarity: PokemonRarity, pokemonSelected: boolean, ivData: any, evData: any): Promise<Pokemons | null> {
         return this.prisma.pokemons.create({
             data: {
                 pokemonId,
@@ -258,6 +260,7 @@ export class Database {
                 pokemonNature,
                 pokemonGender,
                 pokemonSelected,
+                pokemonRarity,
                 pokemonFavorite: false,
                 pokemonPlacementId: 1,
                 pokemonLevel: 1,
@@ -740,11 +743,18 @@ export class Database {
             include: {
                 PokemonIVs: true
             },
-            orderBy: [{
-                PokemonIVs: {
-                    pokemonTotalIVs: 'desc',
-                }
-            }]
+        });
+    }
+
+    displayTrainerPokemons(userId: string, Rarity: PokemonRarity): Promise<Pokemons[]> {
+        return this.prisma.pokemons.findMany({
+            where: {
+                pokemonOwner: userId,
+                pokemonRarity: Rarity,
+            },
+            include: {
+                PokemonIVs: true
+            },
         })
     }
 

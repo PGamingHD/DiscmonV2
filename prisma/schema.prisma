@@ -39,6 +39,7 @@ model Pokemons {
   pokemonAuction  Boolean       @default(false)
   pokemonGender   PokemonGender @default(MALE)
   pokemonNature   PokemonNature @default(ADAMANT)
+  pokemonRarity   PokemonRarity @default(COMMON)
 
   spawnedServer  String? @db.VarChar(32)
   spawnedChannel String? @db.VarChar(32)

@@ -114,7 +114,7 @@ export default new Command({
                 const IVpercentage = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
                 const IVtotal: string = (IVpercentage / 186 * 100).toFixed(2);
 
-                await db.setNewPokemonOwner(generateFlake(), interaction.user.id, pokemon.pokemonPicture, pokemon.pokemonName, Nature[Math.random() * Nature.length>>0], Gender[Math.random() * Gender.length>>0], true, {
+                await db.setNewPokemonOwner(generateFlake(), interaction.user.id, pokemon.pokemonPicture, pokemon.pokemonName, Nature[Math.random() * Nature.length>>0], Gender[Math.random() * Gender.length>>0], pokemon.pokemonRarity, true, {
                     HP: HPiv,
                     Attack: ATKiv,
                     Defense: DEFiv,
@@ -188,7 +188,7 @@ export default new Command({
                 const IVpercentage = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
                 const IVtotal: string = (IVpercentage / 186 * 100).toFixed(2);
 
-                await db.setNewPokemonOwner(generateFlake(), interaction.user.id, pokemon.pokemonPicture, pokemon.pokemonName, Nature[Math.random() * Nature.length>>0], Gender[Math.random() * Gender.length>>0], true, {
+                await db.setNewPokemonOwner(generateFlake(), interaction.user.id, pokemon.pokemonPicture, pokemon.pokemonName, Nature[Math.random() * Nature.length>>0], Gender[Math.random() * Gender.length>>0], pokemon.pokemonRarity, true, {
                     HP: HPiv,
                     Attack: ATKiv,
                     Defense: DEFiv,
@@ -262,7 +262,7 @@ export default new Command({
                 const IVpercentage = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
                 const IVtotal: string = (IVpercentage / 186 * 100).toFixed(2);
 
-                await db.setNewPokemonOwner(generateFlake(), interaction.user.id, pokemon.pokemonPicture, pokemon.pokemonName, Nature[Math.random() * Nature.length>>0], Gender[Math.random() * Gender.length>>0], true, {
+                await db.setNewPokemonOwner(generateFlake(), interaction.user.id, pokemon.pokemonPicture, pokemon.pokemonName, Nature[Math.random() * Nature.length>>0], Gender[Math.random() * Gender.length>>0], pokemon.pokemonRarity, true, {
                     HP: HPiv,
                     Attack: ATKiv,
                     Defense: DEFiv,
