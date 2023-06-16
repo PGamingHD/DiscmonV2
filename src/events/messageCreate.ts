@@ -39,9 +39,10 @@ export default new Event(Events.MessageCreate, async (message) => {
 
         if (newServer.serverSpawn >= 50) {
             const getRarity: string = await getSpawnRarity();
+            const getModifier: string = await getSpawnRarity();
 
             if (message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.ViewChannel) && message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.SendMessages) && message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.EmbedLinks)) {
-                await encounterSpawn(message, getRarity, newServer);
+                await encounterSpawn(message, getRarity, getModifier, newServer);
             }
         }
     } else {
@@ -50,9 +51,10 @@ export default new Event(Events.MessageCreate, async (message) => {
 
         if (serverExists.serverSpawn >= 50) {
             const getRarity: string = await getSpawnRarity();
+            const getModifier: string = await getSpawnRarity();
 
             if (message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.ViewChannel) && message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.SendMessages) && message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.EmbedLinks)) {
-                await encounterSpawn(message, getRarity, serverExists);
+                await encounterSpawn(message, getRarity, getModifier, serverExists);
             }
         }
     }

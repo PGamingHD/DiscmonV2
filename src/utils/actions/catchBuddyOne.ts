@@ -19,10 +19,17 @@ export default async function(userId: string): Promise<void> {
             if (newBuddyData.catchAvailable) {
                 let getRarity: string = ``;
 
+                let isShiny: boolean = false;
                 if (newBuddyData.pokemonLuckUpgrade >= 1) {
                     getRarity = await getModifiedSpawnRarity();
+                    const getModifier: string = await getModifiedSpawnRarity();
+
+                    if (getModifier === "SHINY") isShiny = true;
                 } else {
                     getRarity = await getSpawnRarity();
+                    const getModifier: string = await getSpawnRarity();
+
+                    if (getModifier === "SHINY") isShiny = true;
                 }
 
                 const getPokemons: number = await db.getPokemonRarityCount(getRarity.toUpperCase() as PokemonRarity);
@@ -116,7 +123,7 @@ export default async function(userId: string): Promise<void> {
                     }
                 }
 
-                await db.spawnNewRedeemPokemon(generatedId, newBuddyData.userId, incrementId, pokemonToSpawn.pokemonName, pokemonToSpawn.pokemonPicture, randomizeGender(), randomizeNature(), levelGeneration, {
+                await db.spawnNewRedeemPokemon(generatedId, newBuddyData.userId, incrementId, pokemonToSpawn.pokemonName, isShiny ? `https://pgaminghd.github.io/discmon-images/pokemon-sprites/shiny/${pokemonToSpawn.pokemonPokedex}.png` : pokemonToSpawn.pokemonPicture, randomizeGender(), randomizeNature(), levelGeneration, {
                     HP: HPiv,
                     Attack: ATKiv,
                     Defense: DEFiv,

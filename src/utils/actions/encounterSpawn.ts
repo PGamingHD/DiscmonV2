@@ -9,11 +9,14 @@ import {
 } from "@prisma/client";
 import {Colours} from "../../@types/Colours";
 
-export default async function(message: Message<boolean>, spawnedRarity: string, serverData: PokemonServer) {
+export default async function(message: Message<boolean>, spawnedRarity: string, modifierRarity: string, serverData: PokemonServer) {
     if (!message.guild) return;
     if (message.channel.type !== ChannelType.GuildText) return;
 
-    const getPokemons: number = await db.getPokemonRarityCount(spawnedRarity.toUpperCase() as PokemonRarity);
+    let isShiny: boolean = false;
+    if (modifierRarity === "SHINY") isShiny = true;
+
+    const getPokemons: number = await db.getPokemonRarityCount(spawnedRarity.toUpperCase() === "SHINY" ? "MYTHICAL" : spawnedRarity.toUpperCase() as PokemonRarity);
     const randomPokemon: number = await randomizeNumber(1, getPokemons);
 
     const pokemonToSpawn: any = await db.getRandomPokemon(spawnedRarity.toUpperCase() as PokemonRarity, randomPokemon - 1);
@@ -77,7 +80,7 @@ export default async function(message: Message<boolean>, spawnedRarity: string, 
     const IVpercentage = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
     const IVtotal: string = (IVpercentage / 186 * 100).toFixed(2);
 
-    await db.spawnNewPokemon(guildId, channelId, spawnMessage.reactions.message.id, generatedId, pokemonToSpawn.pokemonName, pokemonToSpawn.pokemonPicture, randomizeGender(), randomizeNature(), levelGeneration, {
+    await db.spawnNewPokemon(guildId, channelId, spawnMessage.reactions.message.id, generatedId, pokemonToSpawn.pokemonName, isShiny ? `https://pgaminghd.github.io/discmon-images/pokemon-sprites/shiny/${pokemonToSpawn.pokemonPokedex}.png` : pokemonToSpawn.pokemonPicture, randomizeGender(), randomizeNature(), levelGeneration, {
         HP: HPiv,
         Attack: ATKiv,
         Defense: DEFiv,
