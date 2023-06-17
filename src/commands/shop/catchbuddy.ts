@@ -8,7 +8,7 @@ import {
 import { Command } from '../../structures/Command';
 import db from "../../utils/database";
 import {Colours} from "../../@types/Colours";
-import {userCatchBuddy, userData} from "@prisma/client";
+import {TrainerRanks, userCatchBuddy, userData} from "@prisma/client";
 
 export default new Command({
     name: 'catchbuddy',
@@ -138,7 +138,7 @@ export default new Command({
             if (!usersData) return;
 
             if (usersData.userBag.catchBuddyCandy < 1) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You do not have enough Candy to refill your Catchbuddy.')]});
-            const extra: number = 1000 * 60 * 60 * (usersData.userCatchBuddy.pokemonDuration + 1);
+            const extra: number = (1000 * 60 * 60 * (usersData.userCatchBuddy.pokemonDuration + 1)) * (usersData.trainerRank === TrainerRanks.NORMAL_TRAINER ? 1 : usersData.trainerRank === TrainerRanks.BRONZE_TRAINER ? 1.2 : usersData.trainerRank === TrainerRanks.SILVER_TRAINER ? 1.4 : usersData.trainerRank === TrainerRanks.GOLD_TRAINER ? 1.6 : usersData.trainerRank === TrainerRanks.PLATINUM_TRAINER ? 1.8 : 1);
 
             if (usersData.userCatchBuddy.catcherEnabled) {
                 await db.setCatcherRefillTime(interaction.user.id, Number(usersData.userCatchBuddy.catcherRefill) + extra);

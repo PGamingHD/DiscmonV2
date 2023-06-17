@@ -14,7 +14,11 @@ import {
     PokemonRarity,
     TrainerRanks,
     PokemonOrder,
-    RewardType, userCatchBuddy, VoteStreak, userChallenges,
+    RewardType,
+    userCatchBuddy,
+    VoteStreak,
+    userChallenges,
+    lotteryGlobal,
 } from '@prisma/client';
 
 import {generateFlake} from "../utils/misc";
@@ -250,7 +254,7 @@ export class Database {
         });
     }
 
-    setNewPokemonOwner(pokemonId: string, pokemonOwner: string, pokemonPicture: string, pokemonName: string, pokemonNature: PokemonNature, pokemonGender: PokemonGender, pokemonRarity: PokemonRarity, pokemonSelected: boolean, ivData: any, evData: any): Promise<Pokemons | null> {
+    setNewPokemonOwner(pokemonId: string, pokemonOwner: string, pokemonPicture: string, pokemonName: string, pokemonNature: PokemonNature, pokemonGender: PokemonGender, pokemonRarity: PokemonRarity, pokemonSelected: boolean, pokemonPlacementId: number, ivData: any, evData: any): Promise<Pokemons | null> {
         return this.prisma.pokemons.create({
             data: {
                 pokemonId,
@@ -261,8 +265,8 @@ export class Database {
                 pokemonGender,
                 pokemonSelected,
                 pokemonRarity,
+                pokemonPlacementId,
                 pokemonFavorite: false,
-                pokemonPlacementId: 1,
                 pokemonLevel: 1,
                 pokemonXP: 0,
                 pokemonCatch: false,
@@ -1225,5 +1229,99 @@ export class Database {
                 voteStreak: {increment: 1}
             }
         });
+    }
+
+    /*
+    * LOTTERY GETTERS & SETTERS
+    * */
+
+    getLotteryGlobals(): Promise<lotteryGlobal | null> {
+        return this.prisma.lotteryGlobal.findFirst({
+            where: {
+                lotteryId: 1
+            }
+        });
+    }
+
+    countUserTickets(userId: string): Promise<number> {
+        return this.prisma.userTickets.count({
+            where: {
+                ticketsOwner: userId
+            }
+        });
+    }
+
+    countAllTickets(): Promise<number> {
+        return this.prisma.userTickets.count();
+    }
+
+    getSpecificTicket(randomSkip: number) {
+        return this.prisma.userTickets.findFirst({
+            skip: randomSkip,
+            take: 1,
+        })
+    }
+
+    findUserTickets(userId: string) {
+        return this.prisma.userTickets.findFirst({
+            where: {
+                ticketsOwner: userId
+            }
+        });
+    }
+
+    addNewTickets(data: any) {
+        return this.prisma.userTickets.createMany({data});
+    }
+
+    incrementLotteryPars() {
+        return this.prisma.lotteryGlobal.update({
+            where: {
+                lotteryId: 1
+            },
+            data: {
+                currentParticipants: {increment: 1}
+            }
+        });
+    }
+
+    incrementTotalEntries(entries: number) {
+        return this.prisma.lotteryGlobal.update({
+            where: {
+                lotteryId: 1
+            },
+            data: {
+                totalBought: {increment: entries}
+            }
+        });
+    }
+
+    incrementTotalJackpot(increment: number) {
+        return this.prisma.lotteryGlobal.update({
+            where: {
+                lotteryId: 1
+            },
+            data: {
+                currentJackpot: {increment: increment}
+            }
+        });
+    }
+
+    setNewGlobalLotteryData(currentJackpot: number, currentlyEnding: number, totalBought: number, currentParticipants: number) {
+        return this.prisma.lotteryGlobal.update({
+            where: {
+                lotteryId: 1
+            },
+            data: {
+                totalBought,
+                currentJackpot,
+                currentlyEnding,
+                currentParticipants,
+            }
+        });
+    }
+
+    deleteLotteryTickets() {
+        return this.prisma.userTickets.deleteMany({});
     }
 }

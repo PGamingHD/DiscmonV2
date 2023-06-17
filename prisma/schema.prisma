@@ -135,6 +135,7 @@ model userData {
   userPayment     userPayment[]
   userAuctionBids PokemonsAuction[]
   userChallenges  userChallenges[]
+  userTickets     userTickets[]
 }
 
 model userBag {
@@ -247,6 +248,23 @@ model userChallenges {
   challengesTokenReward        Int?     @db.Int()
   challengesPokemonReward      String?  @db.VarChar(32)
   challengesPokemonRewardShiny Boolean? @default(false)
+}
+
+model lotteryGlobal {
+  lotteryId Int @id @default(0) @db.Int()
+
+  currentJackpot      BigInt @db.BigInt()
+  currentParticipants Int    @db.Int()
+  currentlyEnding     BigInt @db.BigInt()
+
+  totalBought BigInt @db.BigInt()
+}
+
+model userTickets {
+  ticketId Int @id @unique @default(autoincrement()) @db.Int()
+
+  ticketsOwner String   @db.VarChar(32)
+  user         userData @relation(fields: [ticketsOwner], references: [userId], onDelete: Cascade)
 }
 
 enum PokemonRarity {

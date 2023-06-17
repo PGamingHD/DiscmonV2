@@ -18,7 +18,7 @@ import encounterSpawn from "../utils/actions/encounterSpawn";
 import pokemonFunction from "../utils/actions/pokemonFunction";
 
 export default new Event(Events.MessageCreate, async (message) => {
-    if (message.channel.type === ChannelType.DM) logger.log(`I WAS DMED, CONTENT: ${message.content}`);
+    if (message.channel.type === ChannelType.DM) return; //logger.log(`I WAS DMED, CONTENT: ${message.content}`);
     if (!message.guild) return;
     if (message.author.bot) return;
     if (!client || !client.user) return;
