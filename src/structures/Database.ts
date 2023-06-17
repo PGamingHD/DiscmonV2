@@ -18,7 +18,7 @@ import {
     userCatchBuddy,
     VoteStreak,
     userChallenges,
-    lotteryGlobal,
+    lotteryGlobal, userTickets,
 } from '@prisma/client';
 
 import {generateFlake} from "../utils/misc";
@@ -1253,6 +1253,10 @@ export class Database {
 
     countAllTickets(): Promise<number> {
         return this.prisma.userTickets.count();
+    }
+
+    findAllTickets(): Promise<userTickets[]> {
+        return this.prisma.userTickets.findMany({});
     }
 
     getSpecificTicket(randomSkip: number) {

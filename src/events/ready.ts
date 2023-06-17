@@ -3,18 +3,18 @@ import {ActivityType, Events, Guild, Message, TextChannel} from "discord.js";
 import db from "../utils/database";
 import logger from "../utils/logger";
 import {
-    lotteryGlobal, PokemonGender,
+    lotteryGlobal,
+    PokemonGender,
     PokemonNature,
     PokemonRarity,
     Pokemons,
-    PokemonsAuction,
     userData,
     userTickets
 } from "@prisma/client";
 import {Cron} from "croner";
-import {client} from "../bot";
-import {generateFlake, randomizeNumber} from "../utils/misc";
+import {generateFlake, randomizeNumber, sendWebhook} from "../utils/misc";
 import getSpawnRarity from "../utils/actions/getSpawnRarity";
+import {Colours} from "../@types/Colours";
 
 export default new Event(Events.ClientReady, async (client) => {
     const activities: {activity: ActivityType, name: string}[] = [
@@ -48,7 +48,6 @@ export default new Event(Events.ClientReady, async (client) => {
         });
     });
 
-    // 0 0 20 * * 2,4,5,0 (CRON JOB FOR LOTTERY)
     Cron('0 0 20 * * 2,4,5,0', async () => {
         const boughtTickets: number = await db.countAllTickets();
         if (boughtTickets === 0) return;
@@ -56,6 +55,29 @@ export default new Event(Events.ClientReady, async (client) => {
         const nextRun: any = Cron('0 0 20 * * 2,4,5,0').nextRun();
         const globalData: lotteryGlobal | null = await db.getLotteryGlobals();
         if (!globalData) return;
+
+        if (globalData.currentParticipants < 5) {
+            const allTickets = await db.findAllTickets();
+            const uniqueParticipants: string[] = [];
+            for (const ticket of allTickets) {
+                if (!uniqueParticipants.includes(ticket.ticketsOwner)) uniqueParticipants.push(`${ticket.ticketsOwner}`);
+            }
+
+            for (const userid of uniqueParticipants) {
+                const usersData = await db.findPokemonTrainer(userid);
+                if (!usersData) continue;
+
+                const usersTickets: number = await db.countUserTickets(userid);
+                await db.setCoins(userid, usersData.userCoins + (usersTickets * 10000));
+
+                try {
+                    const fetchUser = await client.users.fetch(userid);
+                    await fetchUser.send('The lottery did not have 5 or more users, it was cancelled. You have been fully refunded for this!');
+                } catch {}
+            }
+
+            return sendWebhook('https://canary.discord.com/api/webhooks/1119763216487162026/VlWm-1ajfdzRZtzY4S1PvgkggiEhhZZdHi83D-Z-QidmGTDwQYKt0u2vdZrprdTgAWw-', '🎟️ Lottery Results 🎟️', '*Due to less than 5 people participating, the lottery was concluded for this time, better luck next time!*', Colours.RED);
+        }
 
         //WINNER 1
 
@@ -184,6 +206,8 @@ export default new Event(Events.ClientReady, async (client) => {
 
         await db.setNewGlobalLotteryData(0, Math.floor(nextRun), 0, 0);
         await db.deleteLotteryTickets();
+
+        return sendWebhook('https://canary.discord.com/api/webhooks/1119763216487162026/VlWm-1ajfdzRZtzY4S1PvgkggiEhhZZdHi83D-Z-QidmGTDwQYKt0u2vdZrprdTgAWw-', '🎟️ Lottery Results 🎟️', `*Lottery winners has been drawn!*\n*Congratulations to all our winners, better luck next time to those who did not win.*\n\n**Winner #1:** <@!${winner1Data.userId}>\n**Winner #2:** <@!${winner2Data.userId}>\n**Winner #3:** <@!${winner3Data.userId}>`, Colours.RED);
     });
 
     const auctions: any = await db.findAllAuctions();
