@@ -1,6 +1,6 @@
 {
   "ChangelogNumber": 4,
   "ChangelogTitle": "Changelog - V1.0.5_DEV",
-  "ChangelogDescription": "__**New Features**__\n\n*• Added catchbuddy system, upgrades & more functional.*\n*• Added achievements to reach for users.*\n*• Added lottery system, purchase tickets and win the jackpot.*\n\n__**Changed Features**__\n\n*• Fixed Catchbuddy to not catch a Pokémon right away.*\n*• Remade leaderboard to use username instead of tag (API)*\n*• Added rank functions for rank rewards.*",
+  "ChangelogDescription": "__**New Features**__\n\n*• Added catchbuddy system, upgrades & more functional.*\n*• Added achievements to reach for users.*\n*• Added lottery system, purchase tickets and win the jackpot.*\n*• Added entire Generation 1, ready for official Alpha release!*\n\n__**Changed Features**__\n\n*• Fixed Catchbuddy to not catch a Pokémon right away.*\n*• Remade leaderboard to use username instead of tag (API)*\n*• Added rank functions for rank rewards.*",
   "ChangelogTimestamp": "15. June [2023]"
 }
