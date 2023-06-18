@@ -50,9 +50,14 @@ export default new Event(Events.ClientReady, async (client) => {
 
     Cron('0 0 20 * * 2,4,5,0', async () => {
         const boughtTickets: number = await db.countAllTickets();
-        if (boughtTickets === 0) return;
+        if (boughtTickets === 0) {
+            const nextRun: any = Cron('0 0 20 * * 2,4,5,0').nextRun();
+            await db.setNewGlobalLotteryData(0, Math.floor(nextRun), 0, 0);
+            await db.deleteLotteryTickets();
 
-        const nextRun: any = Cron('0 0 20 * * 2,4,5,0').nextRun();
+            return sendWebhook('https://canary.discord.com/api/webhooks/1119763216487162026/VlWm-1ajfdzRZtzY4S1PvgkggiEhhZZdHi83D-Z-QidmGTDwQYKt0u2vdZrprdTgAWw-', '🎟️ Lottery Results 🎟️', '*Due to less than 5 people participating, the lottery was concluded for this time, better luck next time!*', Colours.RED);
+        }
+
         const globalData: lotteryGlobal | null = await db.getLotteryGlobals();
         if (!globalData) return;
 
@@ -75,6 +80,10 @@ export default new Event(Events.ClientReady, async (client) => {
                     await fetchUser.send('The lottery did not have 5 or more users, it was cancelled. You have been fully refunded for this!');
                 } catch {}
             }
+
+            const nextRun: any = Cron('0 0 20 * * 2,4,5,0').nextRun();
+            await db.setNewGlobalLotteryData(0, Math.floor(nextRun), 0, 0);
+            await db.deleteLotteryTickets();
 
             return sendWebhook('https://canary.discord.com/api/webhooks/1119763216487162026/VlWm-1ajfdzRZtzY4S1PvgkggiEhhZZdHi83D-Z-QidmGTDwQYKt0u2vdZrprdTgAWw-', '🎟️ Lottery Results 🎟️', '*Due to less than 5 people participating, the lottery was concluded for this time, better luck next time!*', Colours.RED);
         }
@@ -202,11 +211,6 @@ export default new Event(Events.ClientReady, async (client) => {
             await fetchedUser.send(`Congratulations <@!${winner3Data.userId}>, you won the lottery as winner #3!`);
         } catch {}
 
-        //RESET EVERYTHING FOR NEW LOTTERY TIME
-
-        await db.setNewGlobalLotteryData(0, Math.floor(nextRun), 0, 0);
-        await db.deleteLotteryTickets();
-
         return sendWebhook('https://canary.discord.com/api/webhooks/1119763216487162026/VlWm-1ajfdzRZtzY4S1PvgkggiEhhZZdHi83D-Z-QidmGTDwQYKt0u2vdZrprdTgAWw-', '🎟️ Lottery Results 🎟️', `*Lottery winners has been drawn!*\n*Congratulations to all our winners, better luck next time to those who did not win.*\n\n**Winner #1:** <@!${winner1Data.userId}>\n**Winner #2:** <@!${winner2Data.userId}>\n**Winner #3:** <@!${winner3Data.userId}>`, Colours.RED);
     });
 
@@ -256,6 +260,10 @@ export default new Event(Events.ClientReady, async (client) => {
             logger.warning(`Successfully removed Pokémon ${spawnedPokemon.pokemonName} from guild ${spawnedPokemon.spawnedServer} in channel ${spawnedPokemon.spawnedChannel}!`);
         } catch {}
     }
+
+    const nextRun: any = Cron('0 0 20 * * 2,4,5,0').nextRun();
+    await db.setNewGlobalLotteryData(0, Math.floor(nextRun), 0, 0);
+    await db.deleteLotteryTickets();
 
     await db.deleteCatchablePokemon().then(() => logger.warning('Successfully removed all catchable Pokémons!'));
 });
