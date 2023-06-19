@@ -33,6 +33,9 @@ export class ExtendedClient extends Client {
     xpCooldowns: Collection<string, string> = new Collection();
     battleCooldowns: Collection<string, string> = new Collection();
     changelogFiles: Collection<number, any> = new Collection();
+    messagesSent: Collection<string, number> = new Collection<string, number>;
+    firstMsgDate: Collection<string, number> = new Collection<string, number>;
+    captchaSent: Collection<string, boolean> = new Collection<string, boolean>;
 
     constructor() {
         super({

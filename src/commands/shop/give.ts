@@ -54,12 +54,12 @@ export default new Command({
 
             const valueToGive: number | undefined = parseNumber(value);
             if (!valueToGive) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('Invalid number provided, please provide a number or abbreviation for number such as 1k, 1m, 1b.')]});
-            if (valueToGive > usersData.userTokens) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You have insufficient funds, please try a lower amount.')]});
+            if (valueToGive > usersData.userCoins) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You have insufficient funds, please try a lower amount.')]});
 
             await db.setCoins(usersData.userId, usersData.userCoins - valueToGive);
             await db.setCoins(targetsData.userId, targetsData.userCoins + valueToGive);
 
-            return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription(`You have successfully given user ${trainer} 💎 **${valueToGive.toLocaleString('en-US')}**`)]});
+            return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription(`You have successfully given user ${trainer} 🪙 **${valueToGive.toLocaleString('en-US')}** Pokécoins.`)]});
         }
 
         else if (type === "poketokens") {
@@ -80,7 +80,7 @@ export default new Command({
             await db.setTokens(usersData.userId, usersData.userTokens - valueToGive);
             await db.setTokens(targetsData.userId, targetsData.userTokens + valueToGive);
 
-            return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription(`You have successfully given user ${trainer} 💎 **${valueToGive.toLocaleString('en-US')}**`)]});
+            return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.GREEN).setDescription(`You have successfully given user ${trainer} 💎 **${valueToGive.toLocaleString('en-US')}** Pokétokens.`)]});
         }
 
         else {

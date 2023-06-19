@@ -3,11 +3,10 @@ import {
     ChannelType,
     Events,
     GuildMember,
-    PermissionFlagsBits
+    PermissionFlagsBits,
 } from 'discord.js';
 import { Event } from '../structures/Event';
 import { client } from "../bot";
-import logger from "../utils/logger";
 import db from "../utils/database";
 import {PokemonServer, userData} from "@prisma/client";
 
@@ -16,6 +15,7 @@ import increaseSpawnChance from "../utils/actions/increaseSpawnChance";
 import getSpawnRarity from "../utils/actions/getSpawnRarity";
 import encounterSpawn from "../utils/actions/encounterSpawn";
 import pokemonFunction from "../utils/actions/pokemonFunction";
+import antiCheatSystem from "../utils/actions/antiCheatSystem";
 
 export default new Event(Events.MessageCreate, async (message) => {
     if (message.channel.type === ChannelType.DM) return; //logger.log(`I WAS DMED, CONTENT: ${message.content}`);
@@ -26,6 +26,17 @@ export default new Event(Events.MessageCreate, async (message) => {
     const findUser: userData | null = await db.findPokemonTrainer(message.author.id);
 
     if (findUser) {
+        if (findUser.userBlacklisted) return;
+
+        if (findUser && findUser.userTimeoutDate < Date.now()) {
+            await db.setTimeoutStatus(findUser.userId, false, 0);
+        }
+
+        if (findUser && findUser.userTimeout) return;
+
+        if (client.captchaSent.has(findUser.userId)) return;
+
+        await antiCheatSystem(findUser, message, client);
         await pokemonFunction(message, client);
     }
 

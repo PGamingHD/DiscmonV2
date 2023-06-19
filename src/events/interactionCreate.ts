@@ -1,12 +1,18 @@
 import {
     CommandInteractionOptionResolver,
     ModalSubmitFields,
-    Events, EmbedBuilder
+    Events,
+    EmbedBuilder,
 } from 'discord.js';
 import { client } from '../bot';
 import { Event } from '../structures/Event';
 import logger from '../utils/logger';
-import {ButtonType, CommandType, MenuType, ModalType} from "../@types/Command";
+import {
+    ButtonType,
+    CommandType,
+    MenuType,
+    ModalType,
+} from "../@types";
 import {TrainerRanks, userData} from "@prisma/client";
 import db from "../utils/database";
 import {Colours} from "../@types/Colours";
@@ -26,6 +32,22 @@ export default new Event(Events.InteractionCreate, async interaction => {
         if (findUser && command.adminRestricted && findUser.trainerRank !== TrainerRanks.ADMINISTRATOR && findUser.trainerRank !== TrainerRanks.DEVELOPER) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You require the permission \`Administrator\` to execute this command.')]});
         if (findUser && command.modRestricted && findUser.trainerRank !== TrainerRanks.MODERATOR && findUser.trainerRank !== TrainerRanks.ADMINISTRATOR && findUser.trainerRank !== TrainerRanks.DEVELOPER) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You require the permission \`Moderator\` to execute this command.')]});
         if (command.requireAccount && !findUser) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You require an account to execute this command, please use \`/start\` to start your adventure.')]});
+        if (findUser && findUser.userBlacklisted) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setTitle(':x: Account has been disabled :x:').setDescription('*Your account has been permanently suspended.*\n\n**Please contact Staff for more information.**')]});
+        if (findUser && findUser.userTimeout && findUser.userTimeoutDate < Date.now()) {
+            await db.setTimeoutStatus(findUser.userId, false, 0);
+
+            try {
+                await command.run({
+                    interaction,
+                    client,
+                    args: interaction.options as CommandInteractionOptionResolver,
+                });
+            } catch (e) {
+                logger.error(e);
+            }
+        }
+
+        if (findUser && findUser.userTimeout) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setTitle(':x: Account has been timed out :x:').setDescription(`*Your account has been temporarily suspended until <t:${Math.floor((Number(findUser.userTimeoutDate)) / 1000)}:R> for suspicious activity.*\n\n**Please contact Staff for more information.**`)]});
 
         try {
             await command.run({

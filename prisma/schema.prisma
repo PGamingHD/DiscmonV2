@@ -128,6 +128,10 @@ model userData {
   trainerRank     TrainerRanks @default(NORMAL_TRAINER)
   pokemonOrder    PokemonOrder @default(ID)
 
+  userTimeout       Boolean @default(false)
+  userTimeoutDate   BigInt  @default(0) @db.BigInt()
+  userTotalTimeouts Int     @default(0) @db.Int()
+
   userCodes       userCodes?
   userBag         userBag?
   voteStreak      VoteStreak?

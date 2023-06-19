@@ -770,6 +770,40 @@ export class Database {
         })
     }
 
+    setTimeoutStatus(userId: string, status: boolean, date: number) {
+        return this.prisma.userData.update({
+            where: {
+                userId
+            },
+            data: {
+                userTimeout: status,
+                userTimeoutDate: date,
+            }
+        })
+    }
+
+    incrementTotalTimeouts(userId: string) {
+        return this.prisma.userData.update({
+            where: {
+                userId
+            },
+            data: {
+                userTotalTimeouts: {increment: 1}
+            }
+        })
+    }
+
+    setUserBlacklistedStatus(userId: string, status: boolean) {
+        return this.prisma.userData.update({
+            where: {
+                userId
+            },
+            data: {
+                userBlacklisted: status
+            }
+        });
+    }
+
     /*
     * SERVER GETTERS & SETTERS
     * */
