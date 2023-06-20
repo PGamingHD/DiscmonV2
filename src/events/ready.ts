@@ -98,9 +98,5 @@ export default new Event(Events.ClientReady, async (client) => {
         } catch {}
     }
 
-    const nextRun: any = Cron('0 0 20 * * 2,4,5,0').nextRun();
-    await db.setNewGlobalLotteryData(0, Math.floor(nextRun), 0, 0);
-    await db.deleteLotteryTickets();
-
     await db.deleteCatchablePokemon().then(() => logger.warning('Successfully removed all catchable Pokémons!'));
 });
