@@ -92,10 +92,12 @@ export function randomizeGender(): PokemonGender {
 }
 
 export function formatSeconds(seconds: number): string {
+    const days: number = Math.floor(seconds / (24 * 60 * 60))
     const hours: number = Math.floor(seconds / (60 * 60));
     const minutes: number = Math.floor((seconds % (60 * 60)) / 60);
     const secs: number = Math.floor(seconds % 60);
     const time: string[] = [];
+    if (days >= 1) time.push(`${days}d`)
     if (hours >= 1) time.push(`${hours}h`);
     if (minutes >= 1) time.push(`${minutes}m`);
     if (seconds >= 1) time.push(`${secs}s`);
