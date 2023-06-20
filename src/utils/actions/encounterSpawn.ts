@@ -1,12 +1,7 @@
 import {ChannelType, EmbedBuilder, Message, TextChannel} from "discord.js";
 import db from "../database";
-import {generateFlake, randomizeGender, randomizeNature, randomizeNumber} from "../misc";
-import {
-    Pokemon,
-    PokemonRarity,
-    Pokemons,
-    PokemonServer
-} from "@prisma/client";
+import {generateFlake, randomizeGender, randomizeNature, randomizeNumber, sendWebhookWithImage} from "../misc";
+import {PokemonRarity, Pokemons, PokemonServer} from "@prisma/client";
 import {Colours} from "../../@types/Colours";
 
 export default async function(message: Message<boolean>, spawnedRarity: string, modifierRarity: string, serverData: PokemonServer) {
@@ -36,6 +31,11 @@ export default async function(message: Message<boolean>, spawnedRarity: string, 
         channelToSend = message.channel;
     }
 
+    let pic = pokemonToSpawn.pokemonPicture;
+    if (isShiny) {
+        pic = `https://pgaminghd.github.io/discmon-images/pokemon-sprites/shiny/${pokemonToSpawn.pokemonPokedex}.png`
+    }
+
     if (!channelToSend) return;
     if (!pokemonToSpawn) return;
 
@@ -47,12 +47,16 @@ export default async function(message: Message<boolean>, spawnedRarity: string, 
             new EmbedBuilder()
                 .setColor(Colours.YELLOW)
                 .setDescription(`A wild pokémon has spawned, catch the spawned\n pokémon with \`/catch (name)\` before it flees!`)
-                .setImage(pokemonToSpawn.pokemonPicture)
+                .setImage(pic)
                 .setFooter({
                     text: generatedId
                 })
         ]
     });
+
+    if (pokemonToSpawn.pokemonRarity === PokemonRarity.LEGEND || isShiny || pokemonToSpawn.pokemonRarity === PokemonRarity.ULTRABEAST || pokemonToSpawn.pokemonRarity === PokemonRarity.MYTHICAL) {
+        await sendWebhookWithImage('https://canary.discord.com/api/webhooks/1120752699860860968/CF7WjmkTsFmCXtMFQGMtASRgnxKfRGVUvBvY9mvlz45p6BHunjmzan83fRRMeld797fw', '👑 Rare Spawn Detected 👑', '**A rare spawn has been detected in a guild**', pic, Colours.MAIN);
+    }
 
     const guildId: string = message.guild.id;
     const channelId: string = channelToSend.id;
@@ -80,7 +84,7 @@ export default async function(message: Message<boolean>, spawnedRarity: string, 
     const IVpercentage = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
     const IVtotal: string = (IVpercentage / 186 * 100).toFixed(2);
 
-    await db.spawnNewPokemon(guildId, channelId, spawnMessage.reactions.message.id, generatedId, pokemonToSpawn.pokemonName, isShiny ? `https://pgaminghd.github.io/discmon-images/pokemon-sprites/shiny/${pokemonToSpawn.pokemonPokedex}.png` : pokemonToSpawn.pokemonPicture, randomizeGender(), randomizeNature(), pokemonToSpawn.pokemonRarity, levelGeneration, {
+    await db.spawnNewPokemon(guildId, channelId, spawnMessage.reactions.message.id, generatedId, pokemonToSpawn.pokemonName, pic, randomizeGender(), randomizeNature(), pokemonToSpawn.pokemonRarity, levelGeneration, {
         HP: HPiv,
         Attack: ATKiv,
         Defense: DEFiv,

@@ -1,8 +1,8 @@
 import {ChannelType, EmbedBuilder, Interaction, Message, TextChannel} from "discord.js";
 import db from "../database";
-import {generateFlake, randomizeGender, randomizeNature, randomizeNumber} from "../misc";
+import {generateFlake, randomizeGender, randomizeNature, randomizeNumber, sendWebhookWithImage} from "../misc";
 import {
-    Pokemon,
+    Pokemon, PokemonRarity,
     Pokemons,
     PokemonServer
 } from "@prisma/client";
@@ -52,6 +52,10 @@ export default async function(interaction: Interaction, pokeName: string, server
                 })
         ]
     });
+
+    if (pokemonToSpawn.pokemonRarity === PokemonRarity.LEGEND || shiny || pokemonToSpawn.pokemonRarity === PokemonRarity.ULTRABEAST || pokemonToSpawn.pokemonRarity === PokemonRarity.MYTHICAL) {
+        await sendWebhookWithImage('https://canary.discord.com/api/webhooks/1120752699860860968/CF7WjmkTsFmCXtMFQGMtASRgnxKfRGVUvBvY9mvlz45p6BHunjmzan83fRRMeld797fw', '👑 Rare Spawn Detected 👑', '**A rare spawn has been detected in a guild**', pic, Colours.MAIN);
+    }
 
     const guildId: string = interaction.guild.id;
     const channelId: string = channelToSend.id;

@@ -1,6 +1,6 @@
 {
   "ChangelogNumber": 5,
   "ChangelogTitle": "Changelog - V1.0.7_DEV",
-  "ChangelogDescription": "__**New Features**__\n\n*• Added experimental anticheat system. (HIGHLY EXPERIMENTAL)*\n*• Added a /status command to view client status.*\n\n__**Fixed Bugs**__\n\n*• Fixed an issue where lottery would reset each restart.*",
+  "ChangelogDescription": "__**New Features**__\n\n*• Added experimental anticheat system. (HIGHLY EXPERIMENTAL)*\n*• Added a /status command to view client status.*\n*• Added global spawn webhooks to official discord for rare spawns.*\n\n__**Fixed Bugs**__\n\n*• Fixed an issue where lottery would reset each restart.*",
   "ChangelogTimestamp": "19. June [2023]"
 }

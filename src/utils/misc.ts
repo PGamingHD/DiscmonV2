@@ -186,3 +186,20 @@ export async function sendWebhook(webhookLink: string, webhookTitle: string, web
         ]
     });
 }
+
+export async function sendWebhookWithImage(webhookLink: string, webhookTitle: string, webhookDesc: string, webhookImage: string, webhookColor: Colours) {
+    const webhook: WebhookClient = new WebhookClient({
+        url: webhookLink
+    });
+
+    await webhook.send({
+        embeds: [
+            new EmbedBuilder()
+                .setColor(webhookColor)
+                .setTitle(webhookTitle)
+                .setDescription(webhookDesc)
+                .setTimestamp()
+                .setImage(webhookImage)
+        ]
+    });
+}
