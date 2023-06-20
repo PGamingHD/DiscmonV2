@@ -1,6 +1,6 @@
 {
   "ChangelogNumber": 5,
   "ChangelogTitle": "Changelog - V1.0.7_DEV",
-  "ChangelogDescription": "__**New Features**__\n\n*• Added experimental anticheat system. (HIGHLY EXPERIMENTAL)*",
+  "ChangelogDescription": "__**New Features**__\n\n*• Added experimental anticheat system. (HIGHLY EXPERIMENTAL)*\n*• Added a /status command to view client status.*",
   "ChangelogTimestamp": "19. June [2023]"
 }
