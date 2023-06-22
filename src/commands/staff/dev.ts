@@ -2,7 +2,7 @@ import {
     APIEmbed,
     ApplicationCommandOptionType,
     ChannelType,
-    EmbedBuilder, Message, TextChannel,
+    EmbedBuilder, GuildBasedChannel, GuildMember, Message, PermissionFlagsBits, TextChannel,
     TextInputStyle
 } from 'discord.js';
 import { Command } from '../../structures/Command';
@@ -22,7 +22,7 @@ import db from "../../utils/database";
 import {chunk} from "lodash";
 import sendPagination from "../../utils/messages/sendPagination";
 import forceSpawn from "../../utils/actions/forceSpawn";
-import logger from "../../utils/logger";
+import {inspect} from "util";
 
 export default new Command({
     name: 'dev',
@@ -199,6 +199,16 @@ export default new Command({
         name: 'listguilds',
         description: 'List all guilds the bot is currently in',
         type: ApplicationCommandOptionType.Subcommand,
+    }, {
+        name: 'eval',
+        description: 'Evaluate an exprecion with the API',
+        type: ApplicationCommandOptionType.Subcommand,
+        options: [{
+            name: 'toeval',
+            description: 'The code to evaluate',
+            type: ApplicationCommandOptionType.String,
+            required: true,
+        }]
     }],
     run: async ({ interaction, client }) => {
         if (interaction.options.getSubcommand() === "addpokemon") {
@@ -468,6 +478,36 @@ export default new Command({
             }
 
             return sendPagination(interaction, embeds, 120000, 120000, true, 0);
+        }
+
+        else if (interaction.options.getSubcommand() === "eval") {
+            if (interaction.user.id !== "266726434855321600") return;
+            const evalMsg: string | null = interaction.options.getString('toeval');
+
+            if (!evalMsg) return interaction.reply({embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription(`Please insert arguments to evaluate.`)],});
+
+            let evaled;
+            try {
+                if (evalMsg.includes(`token`)) return;
+
+                evaled = await eval(evalMsg);
+                let string: string = inspect(evaled);
+                if (!client.token) return;
+                if (!client.user) return;
+
+                if (string.includes(client.token)) return;
+
+                let evalEmbed: EmbedBuilder = new EmbedBuilder().setTitle(`${client.user.username} | EVALUTION`);
+                evalEmbed.setDescription(`***Input:***\n\`\`\`js\n${evalMsg}\n\`\`\`\n***Output:***\n\`\`\`js\n${string}\n\`\`\``);
+                return interaction.reply({embeds: [evalEmbed.setColor(Colours.MAIN).setTimestamp()]});
+            } catch (e: any) {
+                const evalEmbed2 = new EmbedBuilder();
+                evalEmbed2.setTitle(`Something went wrong`);
+                evalEmbed2.setDescription(`\`\`\`${e.message}\`\`\``);
+                return interaction.reply({
+                    embeds: [evalEmbed2.setColor(Colours.RED).setTimestamp()]
+                });
+            }
         }
 
         else {
