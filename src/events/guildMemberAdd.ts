@@ -1,13 +1,11 @@
 import {Event} from "../structures/Event";
 import {
-    AttachmentBuilder,
     ChannelType,
     Events,
     PermissionFlagsBits,
     TextChannel,
 } from "discord.js";
 import {client} from "../bot";
-const {createCanvas, loadImage} = require("@napi-rs/canvas");
 
 export default new Event(Events.GuildMemberAdd, async (member) => {
     if (member.guild.id === "1010999169676222514") {

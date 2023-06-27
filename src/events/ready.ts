@@ -3,18 +3,10 @@ import {ActivityType, Events, Guild, Message, TextChannel} from "discord.js";
 import db from "../utils/database";
 import logger from "../utils/logger";
 import {
-    lotteryGlobal,
-    PokemonGender,
-    PokemonNature,
-    PokemonRarity,
     Pokemons,
-    userData,
-    userTickets
 } from "@prisma/client";
 import {Cron} from "croner";
-import {generateFlake, randomizeNumber, sendWebhook} from "../utils/misc";
-import getSpawnRarity from "../utils/actions/getSpawnRarity";
-import {Colours} from "../@types/Colours";
+import {randomizeNumber} from "../utils/misc";
 import lotterySystem from "../utils/actions/lotterySystem";
 
 export default new Event(Events.ClientReady, async (client) => {

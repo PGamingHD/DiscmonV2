@@ -3,14 +3,12 @@ import {
     ChannelType,
     EmbedBuilder,
     Events,
-    Guild, GuildBasedChannel,
+    GuildBasedChannel,
     GuildMember,
-    Message,
     PermissionFlagsBits,
     TextChannel
 } from "discord.js";
 import db from "../utils/database";
-import logger from "../utils/logger";
 import {PokemonServer} from "@prisma/client";
 import {Colours} from "../@types/Colours";
 

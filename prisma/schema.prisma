@@ -177,12 +177,12 @@ model globalCodes {
 }
 
 model PokemonServer {
-  serverId          String  @id @unique @db.VarChar(32)
-  serverBlacklisted Boolean @default(false)
-  serverAnnouncer   Boolean @default(true)
-  serverRedirect    String? @db.VarChar(32)
-  serverSpawn       Int     @db.Int()
-  serverLanguage    String  @db.VarChar(6)
+  serverId          String          @id @unique @db.VarChar(32)
+  serverBlacklisted Boolean         @default(false)
+  serverAnnouncer   Boolean         @default(true)
+  serverRedirect    String?         @db.VarChar(32)
+  serverSpawn       Int             @db.Int()
+  serverLanguage    ServerLanguages @default(en)
 }
 
 model channelIncense {
@@ -269,6 +269,10 @@ model userTickets {
 
   ticketsOwner String   @db.VarChar(32)
   user         userData @relation(fields: [ticketsOwner], references: [userId], onDelete: Cascade)
+}
+
+enum ServerLanguages {
+  en
 }
 
 enum PokemonRarity {
