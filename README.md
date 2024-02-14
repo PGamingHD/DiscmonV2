@@ -4,7 +4,7 @@
 
 *If you intend on forking/downloading your own version of this, I assume you know how to install it aswell.*
 
-**ENV CONFIG:**
+**.env file:**
 
 ```
 DATABASE_URL="mysql://USERNAME:PASSWORD@localhost:3306/DATABASE"
