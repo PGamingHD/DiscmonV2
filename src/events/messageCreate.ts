@@ -1,14 +1,13 @@
 import {
-    ButtonStyle,
-    ChannelType,
-    Events,
-    GuildMember,
-    PermissionFlagsBits,
-} from 'discord.js';
-import { Event } from '../structures/Event';
+  ChannelType,
+  Events,
+  GuildMember,
+  PermissionFlagsBits,
+} from "discord.js";
+import { Event } from "../structures/Event";
 import { client } from "../bot";
 import db from "../utils/database";
-import {PokemonServer, userData} from "@prisma/client";
+import { PokemonServer, userData } from "@prisma/client";
 
 // ACTIONS
 import increaseSpawnChance from "../utils/actions/increaseSpawnChance";
@@ -18,59 +17,83 @@ import pokemonFunction from "../utils/actions/pokemonFunction";
 import antiCheatSystem from "../utils/actions/antiCheatSystem";
 
 export default new Event(Events.MessageCreate, async (message) => {
-    if (message.channel.type === ChannelType.DM) return; //logger.log(`I WAS DMED, CONTENT: ${message.content}`);
-    if (!message.guild) return;
-    if (message.author.bot) return;
-    if (!client || !client.user) return;
+  if (message.channel.type === ChannelType.DM) return; //logger.log(`I WAS DMED, CONTENT: ${message.content}`);
+  if (!message.guild) return;
+  if (message.author.bot) return;
+  if (!client || !client.user) return;
 
-    const findUser: userData | null = await db.findPokemonTrainer(message.author.id);
+  const findUser: userData | null = await db.findPokemonTrainer(
+    message.author.id
+  );
 
-    if (findUser) {
-        if (findUser.userBlacklisted) return;
+  if (findUser) {
+    if (findUser.userBlacklisted) return;
 
-        if (findUser && findUser.userTimeoutDate < Date.now()) {
-            await db.setTimeoutStatus(findUser.userId, false, 0);
-        }
-
-        if (findUser && findUser.userTimeout) return;
-
-        if (client.captchaSent.has(findUser.userId)) return;
-
-        await antiCheatSystem(findUser, message, client);
-        await pokemonFunction(message, client);
+    if (findUser && findUser.userTimeoutDate < Date.now()) {
+      await db.setTimeoutStatus(findUser.userId, false, 0);
     }
 
-    const serverExists: PokemonServer | null = await db.getServer(message.guild.id);
+    if (findUser && findUser.userTimeout) return;
 
-    if (!serverExists) {
-        if (message.channel.type !== ChannelType.GuildText) return;
-        const newServer: PokemonServer = await db.addServer(message.guild.id);
+    if (client.captchaSent.has(findUser.userId)) return;
 
-        await increaseSpawnChance(newServer, client, message);
+    await antiCheatSystem(findUser, message, client);
+    await pokemonFunction(message, client);
+  }
 
-        if (newServer.serverSpawn >= 50) {
-            const getRarity: string = await getSpawnRarity();
-            const getModifier: string = await getSpawnRarity();
+  const serverExists: PokemonServer | null = await db.getServer(
+    message.guild.id
+  );
 
-            if (message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.ViewChannel) && message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.SendMessages) && message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.EmbedLinks)) {
-                await encounterSpawn(message, getRarity, getModifier, newServer);
-            }
-        }
-    } else {
-        if (message.channel.type !== ChannelType.GuildText) return;
-        await increaseSpawnChance(serverExists, client, message);
+  if (!serverExists) {
+    if (message.channel.type !== ChannelType.GuildText) return;
+    const newServer: PokemonServer = await db.addServer(message.guild.id);
 
-        if (serverExists.serverSpawn >= 50) {
-            const getRarity: string = await getSpawnRarity();
-            const getModifier: string = await getSpawnRarity();
+    await increaseSpawnChance(newServer, client, message);
 
-            if (message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.ViewChannel) && message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.SendMessages) && message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.EmbedLinks)) {
-                await encounterSpawn(message, getRarity, getModifier, serverExists);
-            }
-        }
+    if (newServer.serverSpawn >= 50) {
+      const getRarity: string = await getSpawnRarity();
+      const getModifier: string = await getSpawnRarity();
+
+      if (
+        message.channel
+          .permissionsFor(message.guild.members.me as GuildMember)
+          .has(PermissionFlagsBits.ViewChannel) &&
+        message.channel
+          .permissionsFor(message.guild.members.me as GuildMember)
+          .has(PermissionFlagsBits.SendMessages) &&
+        message.channel
+          .permissionsFor(message.guild.members.me as GuildMember)
+          .has(PermissionFlagsBits.EmbedLinks)
+      ) {
+        await encounterSpawn(message, getRarity, getModifier, newServer);
+      }
     }
+  } else {
+    if (message.channel.type !== ChannelType.GuildText) return;
+    await increaseSpawnChance(serverExists, client, message);
 
-    /*const prefix: string = '!';
+    if (serverExists.serverSpawn >= 50) {
+      const getRarity: string = await getSpawnRarity();
+      const getModifier: string = await getSpawnRarity();
+
+      if (
+        message.channel
+          .permissionsFor(message.guild.members.me as GuildMember)
+          .has(PermissionFlagsBits.ViewChannel) &&
+        message.channel
+          .permissionsFor(message.guild.members.me as GuildMember)
+          .has(PermissionFlagsBits.SendMessages) &&
+        message.channel
+          .permissionsFor(message.guild.members.me as GuildMember)
+          .has(PermissionFlagsBits.EmbedLinks)
+      ) {
+        await encounterSpawn(message, getRarity, getModifier, serverExists);
+      }
+    }
+  }
+
+  /*const prefix: string = '!';
     const prefixRegex: RegExp = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(prefix)})`);
     if (!prefixRegex.users(message.content)) return;
 

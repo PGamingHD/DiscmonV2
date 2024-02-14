@@ -1,71 +1,110 @@
 import {
-    ChannelType,
-    GuildMember,
-    Message,
-    PermissionFlagsBits
+  ChannelType,
+  GuildMember,
+  Message,
+  PermissionFlagsBits,
 } from "discord.js";
-import {ExtendedClient} from "../../structures/Client";
+import { ExtendedClient } from "../../structures/Client";
 import db from "../database";
-import {Pokemon, Pokemons, PokemonServer} from "@prisma/client";
-import {randomizeNumber} from "../misc";
+import { Pokemon, Pokemons, PokemonServer } from "@prisma/client";
+import { randomizeNumber } from "../misc";
 
-export default async function (message: Message<boolean>, client: ExtendedClient) {
-    if (client.xpCooldowns.has(message.author.id)) return;
-    if (!message.guild) return;
+export default async function (
+  message: Message<boolean>,
+  client: ExtendedClient
+) {
+  if (client.xpCooldowns.has(message.author.id)) return;
+  if (!message.guild) return;
 
-    const findSelected: Pokemons | null = await db.findUserSelectedPokemon(message.author.id);
-    if (!findSelected) return;
-    const pokemon: any = await db.getPokemon(findSelected.pokemonName);
-    if (!pokemon) return;
+  const findSelected: Pokemons | null = await db.findUserSelectedPokemon(
+    message.author.id
+  );
+  if (!findSelected) return;
+  const pokemon: any = await db.getPokemon(findSelected.pokemonName);
+  if (!pokemon) return;
 
-    let newLevelXP;
-    if (findSelected.pokemonLevel === 1) {
-        newLevelXP = 500;
-    } else {
-        newLevelXP = findSelected.pokemonLevel * 750;
-    }
+  let newLevelXP;
+  if (findSelected.pokemonLevel === 1) {
+    newLevelXP = 500;
+  } else {
+    newLevelXP = findSelected.pokemonLevel * 750;
+  }
 
-    if (findSelected.pokemonXP >= newLevelXP && findSelected.pokemonLevel < 100) {
-        const levelPoke: Pokemons | null = await db.setPokemonLevelUp(findSelected.pokemonId);
-        if (!levelPoke) return;
-        const toEvolveTo: Pokemon | null = await db.getPokemon(pokemon.pokemonEvolve.nextEvolveName);
-        const serverData: PokemonServer | null = await db.getServer(message.guild.id);
+  if (findSelected.pokemonXP >= newLevelXP && findSelected.pokemonLevel < 100) {
+    const levelPoke: Pokemons | null = await db.setPokemonLevelUp(
+      findSelected.pokemonId
+    );
+    if (!levelPoke) return;
+    const toEvolveTo: Pokemon | null = await db.getPokemon(
+      pokemon.pokemonEvolve.nextEvolveName
+    );
+    const serverData: PokemonServer | null = await db.getServer(
+      message.guild.id
+    );
 
-        if (pokemon.pokemonEvolve.nextEvolveLevel <= levelPoke.pokemonLevel) {
-            if (toEvolveTo) {
-                await db.setPokemonEvolve(findSelected.pokemonId, toEvolveTo.pokemonName, toEvolveTo.pokemonPicture);
+    if (pokemon.pokemonEvolve.nextEvolveLevel <= levelPoke.pokemonLevel) {
+      if (toEvolveTo) {
+        await db.setPokemonEvolve(
+          findSelected.pokemonId,
+          toEvolveTo.pokemonName,
+          toEvolveTo.pokemonPicture
+        );
 
-                if (message.channel.type !== ChannelType.GuildText) return;
-                if (!message.guild) return;
+        if (message.channel.type !== ChannelType.GuildText) return;
+        if (!message.guild) return;
 
-                if (message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.SendMessages) && message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.ViewChannel)) {
-                    if (serverData?.serverAnnouncer) 
-                        return message.channel.send(`${message.author} Congratulations, your ${findSelected.pokemonName} mysteriously evolved into a ${toEvolveTo.pokemonName} upon reaching level \`[${levelPoke.pokemonLevel}]\`!`);
-                } else {
-                    return;
-                }
-            }
+        if (
+          message.channel
+            .permissionsFor(message.guild.members.me as GuildMember)
+            .has(PermissionFlagsBits.SendMessages) &&
+          message.channel
+            .permissionsFor(message.guild.members.me as GuildMember)
+            .has(PermissionFlagsBits.ViewChannel)
+        ) {
+          if (serverData?.serverAnnouncer)
+            return message.channel.send(
+              `${message.author} Congratulations, your ${findSelected.pokemonName} mysteriously evolved into a ${toEvolveTo.pokemonName} upon reaching level \`[${levelPoke.pokemonLevel}]\`!`
+            );
         } else {
-            if (message.channel.type !== ChannelType.GuildText) return;
-            if (!message.guild) return;
-
-            if (message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.SendMessages) && message.channel.permissionsFor(message.guild.members.me as GuildMember).has(PermissionFlagsBits.ViewChannel)) {
-                if (serverData?.serverAnnouncer)
-                    return message.channel.send(`${message.author} Congratulations, your ${findSelected.pokemonName} has just leveled up to level \`[${levelPoke.pokemonLevel}]\`!`);
-            } else {
-                return;
-            }
+          return;
         }
+      }
+    } else {
+      if (message.channel.type !== ChannelType.GuildText) return;
+      if (!message.guild) return;
+
+      if (
+        message.channel
+          .permissionsFor(message.guild.members.me as GuildMember)
+          .has(PermissionFlagsBits.SendMessages) &&
+        message.channel
+          .permissionsFor(message.guild.members.me as GuildMember)
+          .has(PermissionFlagsBits.ViewChannel)
+      ) {
+        if (serverData?.serverAnnouncer)
+          return message.channel.send(
+            `${message.author} Congratulations, your ${findSelected.pokemonName} has just leveled up to level \`[${levelPoke.pokemonLevel}]\`!`
+          );
+      } else {
+        return;
+      }
     }
+  }
 
-    if (findSelected.pokemonLevel < 100) {
-        await db.setPokemonXP(findSelected.pokemonId, await randomizeNumber(20, 50));
+  if (findSelected.pokemonLevel < 100) {
+    await db.setPokemonXP(
+      findSelected.pokemonId,
+      await randomizeNumber(20, 50)
+    );
 
-        client.xpCooldowns.set(message.author.id, 'User set on a 5 second cooldown!');
-        setTimeout(() => {
-            client.xpCooldowns.delete(message.author.id);
-        }, 1000 * 5);
-    }
+    client.xpCooldowns.set(
+      message.author.id,
+      "User set on a 5 second cooldown!"
+    );
+    setTimeout(() => {
+      client.xpCooldowns.delete(message.author.id);
+    }, 1000 * 5);
+  }
 
-    return;
+  return;
 }

@@ -1,7 +1,7 @@
-import { ModalType } from '../@types/Command';
+import { ModalType } from "../@types/Command";
 
 export class Modal {
-    constructor(modalOptions: ModalType) {
-        Object.assign(this, modalOptions);
-    }
+  constructor(modalOptions: ModalType) {
+    Object.assign(this, modalOptions);
+  }
 }
