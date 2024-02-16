@@ -17,15 +17,20 @@ export default new Command({
     if (!joinedat.joinedTimestamp) return;
     const newjoined = Math.floor(joinedat.joinedTimestamp / 1000);
 
-    let platform: string = "";
-    //@ts-ignore
-    if (os.platform == "win32") {
-      platform = "Windows";
-    }
+    let platform: string = "Unknown";
+    const currentOs = os.platform();
 
-    //@ts-ignore
-    if (os.platform == "linux") {
-      platform = "Linux (Ubuntu)";
+    if (
+      currentOs == "linux" ||
+      currentOs == "aix" ||
+      currentOs == "darwin" ||
+      currentOs == "freebsd" ||
+      currentOs == "openbsd" ||
+      currentOs == "sunos"
+    ) {
+      platform = "Linux";
+    } else {
+      platform = "Windows";
     }
 
     return interaction.reply({
