@@ -28,6 +28,19 @@ export default new Command({
     pokeName = pokeName.toLowerCase();
     pokeName = capitalizeFirst(pokeName);
 
+    const pokemon = await db.getPokemon(pokeName);
+
+    if (pokemon) {
+      const pokedexStatus = await db.getPokemonTrainerDex(
+        pokemon.pokemonId,
+        interaction.user.id
+      );
+
+      if (!pokedexStatus?.caught) {
+        await db.setPokemonTrainerDex(interaction.user.id, pokemon.pokemonId);
+      }
+    }
+
     const findSpawnedPokemon: Pokemons | null = await db.findSpawnedPokemon(
       interaction.channel.id,
       pokeName

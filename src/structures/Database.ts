@@ -71,6 +71,20 @@ export class Database {
       ],
       include: {
         pokemonType: true,
+        pokedexEntries: true,
+      },
+    });
+  }
+
+  getAllDexPokemons(userId: string) {
+    return this.prisma.pokemon.findMany({
+      include: {
+        pokemonType: true,
+        pokedexEntries: {
+          where: {
+            userId,
+          },
+        },
       },
     });
   }
@@ -505,6 +519,38 @@ export class Database {
     });
   }
 
+  registerUserPokedex(userId: string, pokemonId: string) {
+    return this.prisma.pokemon
+      .findMany()
+      .then((allPokemons: Pokemon[]) => {
+        const dexEntries = allPokemons.map((pokemon: Pokemon) => {
+          if (pokemon.pokemonId === pokemonId) {
+            return {
+              pokemonId: pokemon.pokemonId,
+              caught: true,
+              userId: userId,
+            };
+          }
+          return {
+            pokemonId: pokemon.pokemonId,
+            caught: false,
+            userId: userId,
+          };
+        });
+
+        return this.prisma.pokedexEntry.createMany({
+          data: dexEntries,
+        });
+      })
+      .then((createdEntries) => {
+        return createdEntries;
+      })
+      .catch((error) => {
+        console.error("Error registering user Pokedex:", error);
+        throw error;
+      });
+  }
+
   registerUserChallenges(userId: string) {
     return this.prisma.userChallenges.createMany({
       data: [
@@ -639,6 +685,12 @@ export class Database {
     });
   }
 
+  getPokemonTrainerDex(pokemonId: string, userId: string) {
+    return this.prisma.pokedexEntry.findFirst({
+      where: { pokemonId, userId },
+    });
+  }
+
   getPokemonNextPokeId(userId: string): Promise<Pokemons[]> {
     return this.prisma.pokemons.findMany({
       where: {
@@ -765,6 +817,13 @@ export class Database {
           },
         },
       },
+    });
+  }
+
+  setPokemonTrainerDex(userId: string, pokemonId: string) {
+    return this.prisma.pokedexEntry.update({
+      where: { pokemonId_userId: { pokemonId, userId } },
+      data: { caught: true },
     });
   }
 

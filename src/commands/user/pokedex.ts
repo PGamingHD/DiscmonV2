@@ -26,7 +26,7 @@ export default new Command({
   run: async ({ interaction, client }) => {
     const search: string | null = interaction.options.getString("search");
     if (!search) {
-      const pokedexMons: any = await db.getAllPokemons();
+      const pokedexMons = await db.getAllDexPokemons(interaction.user.id);
       const pokemonData: string[] = [];
 
       for (const pokemon of pokedexMons) {
@@ -34,8 +34,11 @@ export default new Command({
         for (const type of pokemon.pokemonType) {
           types.push(capitalizeFirst(type.pokemonType));
         }
+
         pokemonData.push(
-          `\`${pokemon.pokemonPokedex}\` *${
+          `${
+            pokemon.pokedexEntries[0].caught ? ":white_check_mark:" : ":x:"
+          } \`${pokemon.pokemonPokedex}\` *${
             pokemon.pokemonName
           }* • *${types.join(", ")}* • __*${capitalizeFirst(
             pokemon.pokemonRarity
@@ -77,13 +80,17 @@ export default new Command({
             ],
           });
 
+        const getDexStatus = await db.getPokemonTrainerDex(
+          pokedexMons.pokemonId,
+          interaction.user.id
+        );
+
         const types: string[] = [];
         for (const type of pokedexMons.pokemonType) {
           types.push(capitalizeFirst(type.pokemonType));
         }
 
         return interaction.reply({
-          ephemeral: true,
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.MAIN)
@@ -96,7 +103,9 @@ export default new Command({
                   pokedexMons.pokemonPokedex
                 }\n**Pokémon Rarity:** ${capitalizeFirst(
                   pokedexMons.pokemonRarity
-                )}\n\n__**Base EVs**__\n**HP:** ${
+                )}\n**Caught:** ${
+                  getDexStatus?.caught ? ":white_check_mark:" : ":x:"
+                }\n\n__**Base EVs**__\n**HP:** ${
                   pokedexMons.pokemonEVs.HP
                 }\n**Attack:** ${pokedexMons.pokemonEVs.Attack}\n**Defense:** ${
                   pokedexMons.pokemonEVs.Defense
@@ -124,13 +133,17 @@ export default new Command({
             ],
           });
 
+        const getDexStatus = await db.getPokemonTrainerDex(
+          pokedexMons.pokemonId,
+          interaction.user.id
+        );
+
         const types: string[] = [];
         for (const type of pokedexMons.pokemonType) {
           types.push(capitalizeFirst(type.pokemonType));
         }
 
         return interaction.reply({
-          ephemeral: true,
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.MAIN)
@@ -143,7 +156,9 @@ export default new Command({
                   pokedexMons.pokemonPokedex
                 }\n**Pokémon Rarity:** ${capitalizeFirst(
                   pokedexMons.pokemonRarity
-                )}\n\n__**Base EVs**__\n**HP:** ${
+                )}\n**Caught:** ${
+                  getDexStatus?.caught ? ":white_check_mark:" : ":x:"
+                }\n\n__**Base EVs**__\n**HP:** ${
                   pokedexMons.pokemonEVs.HP
                 }\n**Attack:** ${pokedexMons.pokemonEVs.Attack}\n**Defense:** ${
                   pokedexMons.pokemonEVs.Defense

@@ -139,6 +139,8 @@ export default new Command({
 
           await db.registerUserChallenges(interaction.user.id);
 
+          await db.registerUserPokedex(interaction.user.id, pokemon.pokemonId);
+
           const HPiv: number = await randomizeNumber(1, 31);
           const ATKiv: number = await randomizeNumber(1, 31);
           const DEFiv: number = await randomizeNumber(1, 31);
@@ -237,6 +239,8 @@ export default new Command({
 
           await db.registerUserChallenges(interaction.user.id);
 
+          await db.registerUserPokedex(interaction.user.id, pokemon.pokemonId);
+
           const HPiv: number = await randomizeNumber(1, 31);
           const ATKiv: number = await randomizeNumber(1, 31);
           const DEFiv: number = await randomizeNumber(1, 31);
@@ -334,6 +338,8 @@ export default new Command({
           );
 
           await db.registerUserChallenges(interaction.user.id);
+
+          await db.registerUserPokedex(interaction.user.id, pokemon.pokemonId);
 
           const HPiv: number = await randomizeNumber(1, 31);
           const ATKiv: number = await randomizeNumber(1, 31);

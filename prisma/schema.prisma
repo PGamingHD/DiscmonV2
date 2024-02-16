@@ -19,9 +19,10 @@ model Pokemon {
   pokemonAlolanPicture String?       @db.VarChar(120)
   pokemonRarity        PokemonRarity @default(COMMON)
 
-  pokemonType   PokemonType[]
-  pokemonEvolve PokemonEvolve?
-  pokemonEVs    PokemonEVs?
+  pokedexEntries  PokedexEntry[]
+  pokemonType     PokemonType[]
+  pokemonEvolve   PokemonEvolve?
+  pokemonEVs      PokemonEVs?
 }
 
 model Pokemons {
@@ -118,6 +119,17 @@ model PokemonBattle {
   mainHP      Int    @db.Int()
 }
 
+model PokedexEntry {
+  id            Int      @id @default(autoincrement()) @db.Int()
+  pokemon       Pokemon  @relation(fields: [pokemonId], references: [pokemonId], onDelete: Cascade)
+  pokemonId     String   @db.VarChar(32)
+  caught        Boolean  @default(false) // Indicates whether the Pokemon has been caught
+  userData      userData @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId        String   @db.VarChar(32)
+
+  @@unique([pokemonId, userId]) // Ensure only one entry per Pokemon per user
+}
+
 model userData {
   userId          String       @id @unique @db.VarChar(32)
   userBlacklisted Boolean      @default(false)
@@ -127,6 +139,7 @@ model userData {
   trainerBattles  Int          @db.Int()
   trainerRank     TrainerRanks @default(NORMAL_TRAINER)
   pokemonOrder    PokemonOrder @default(ID)
+  pokedex        PokedexEntry[]
 
   userTimeout       Boolean @default(false)
   userTimeoutDate   BigInt  @default(0) @db.BigInt()

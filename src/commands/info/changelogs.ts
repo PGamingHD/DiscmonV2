@@ -45,6 +45,13 @@ export default new Command({
       });
     }
 
-    return sendPagination(interaction, embeds, 120000, 120000, false, 0);
+    return sendPagination(
+      interaction,
+      embeds,
+      120000,
+      120000,
+      false,
+      embeds.length - 1
+    );
   },
 });
