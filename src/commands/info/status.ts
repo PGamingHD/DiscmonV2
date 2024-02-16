@@ -113,7 +113,7 @@ export default new Command({
             },
             {
               name: "Project Version",
-              value: `\`V1.0.7_DEV\``,
+              value: `\`V1.0.75_DEV\``,
               inline: true,
             },
           ]),
