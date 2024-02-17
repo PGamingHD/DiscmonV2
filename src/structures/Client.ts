@@ -52,11 +52,11 @@ export class ExtendedClient extends Client {
   }
 
   start() {
-    this.registerModules();
+    this.RegisterModules();
     this.login(process.env.token);
   }
 
-  async importFile(filePath: string) {
+  async ImportFile(filePath: string) {
     return (await import(filePath))?.default;
   }
 
@@ -68,7 +68,7 @@ export class ExtendedClient extends Client {
     }
   }
 
-  async registerModules() {
+  async RegisterModules() {
     const globalCommands: ApplicationCommandDataResolvable[] = [];
     const guildSpecfic: ApplicationCommandDataResolvable[] = [];
 
@@ -87,7 +87,7 @@ export class ExtendedClient extends Client {
     });
 
     for (const filePath of commandFiles) {
-      const command: CommandType | MenuType = await this.importFile(filePath);
+      const command: CommandType | MenuType = await this.ImportFile(filePath);
       if (!command.name) continue;
 
       if (command?.main) {
@@ -115,7 +115,7 @@ export class ExtendedClient extends Client {
     }
 
     for (const filePath of textFiles) {
-      const command: TextType = await this.importFile(filePath);
+      const command: TextType = await this.ImportFile(filePath);
       if (HasUpperCase(command.name))
         logger.error("Text commands may not be uppercased!");
       if (!command.name) continue;
@@ -126,14 +126,14 @@ export class ExtendedClient extends Client {
     }
 
     for (const filePath of modalFiles) {
-      const modal: ModalType = await this.importFile(filePath);
+      const modal: ModalType = await this.ImportFile(filePath);
       if (!modal.customId) continue;
 
       this.modals.set(modal.customId, modal as ModalType);
     }
 
     for (const filePath of buttonFiles) {
-      const button: ButtonType = await this.importFile(filePath);
+      const button: ButtonType = await this.ImportFile(filePath);
       if (!button.customId) continue;
 
       this.buttons.set(button.customId, button as ButtonType);
@@ -166,7 +166,7 @@ export class ExtendedClient extends Client {
     // Events
     const eventFiles = await globPromise("/events/*{.ts,.js}", { root });
     for (const filePath of eventFiles) {
-      const event: Event<keyof ClientEvents> = await this.importFile(filePath);
+      const event: Event<keyof ClientEvents> = await this.ImportFile(filePath);
       logger.event(`Loaded event "${event.event}"!`);
       this.on(event.event, event.run);
     }
