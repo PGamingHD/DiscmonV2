@@ -92,10 +92,13 @@ export default new Command({
           ],
         });
 
-      await db.setCoins(usersData.userId, usersData.userCoins - valueToGive);
+      await db.setCoins(
+        usersData.userId,
+        parseInt(usersData.userCoins.toString()) - valueToGive
+      );
       await db.setCoins(
         targetsData.userId,
-        targetsData.userCoins + valueToGive
+        parseInt(targetsData.userCoins.toString()) + valueToGive
       );
 
       return interaction.reply({
@@ -159,10 +162,13 @@ export default new Command({
           ],
         });
 
-      await db.setTokens(usersData.userId, usersData.userTokens - valueToGive);
+      await db.setTokens(
+        usersData.userId,
+        parseInt(usersData.userTokens.toString()) - valueToGive
+      );
       await db.setTokens(
         targetsData.userId,
-        targetsData.userTokens + valueToGive
+        parseInt(targetsData.userTokens.toString()) + valueToGive
       );
 
       return interaction.reply({

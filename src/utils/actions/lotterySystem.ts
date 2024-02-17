@@ -46,7 +46,10 @@ export default async function (client: Client) {
         if (!usersData) continue;
 
         const usersTickets: number = await db.countUserTickets(userid);
-        await db.setCoins(userid, usersData.userCoins + usersTickets * 10000);
+        await db.setCoins(
+          userid,
+          parseInt(usersData.userCoins.toString()) + usersTickets * 10000
+        );
 
         try {
           const fetchUser = await client.users.fetch(userid);
@@ -84,7 +87,7 @@ export default async function (client: Client) {
 
     await db.setCoins(
       winner1Data.userId,
-      Math.floor(winner1Data.userCoins + winner1Award)
+      Math.floor(parseInt(winner1Data.userCoins.toString()) + winner1Award)
     );
 
     const spawnedRarity = await getSpawnRarity();
@@ -206,7 +209,7 @@ export default async function (client: Client) {
 
     await db.setCoins(
       winner2Data.userId,
-      Math.floor(winner2Data.userCoins + winner2Award)
+      Math.floor(parseInt(winner2Data.userCoins.toString()) + winner2Award)
     );
 
     try {
@@ -232,7 +235,7 @@ export default async function (client: Client) {
 
     await db.setCoins(
       winner3Data.userId,
-      Math.floor(winner3Data.userCoins + winner3Award)
+      Math.floor(parseInt(winner3Data.userCoins.toString()) + winner3Award)
     );
 
     try {

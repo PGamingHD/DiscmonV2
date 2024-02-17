@@ -101,9 +101,15 @@ export default new Command({
             auction.auctionCurrent === 0
               ? auction.auctionStart.toLocaleString("en-US")
               : auction.auctionCurrent.toLocaleString("en-US")
-          } Pokétokens • <@!${auction.leaderData}> • Bid placed <t:${Math.floor(
-            parseInt(auction.leaderBidTime) / 1000
-          )}:R> • Bids: ${auction.bidAmounts}`
+          } Pokétokens • <@!${auction.leaderData}> • ${
+            auction.bidAmounts == 0
+              ? `Auction created <t:${Math.floor(
+                  parseInt(auction.leaderBidTime) / 100
+                )}:R>`
+              : `Bid placed <t:${Math.floor(
+                  parseInt(auction.leaderBidTime) / 1000
+                )}:R>`
+          } • Bids: ${auction.bidAmounts}`
         );
       }
 
@@ -323,7 +329,8 @@ export default new Command({
           if (findAuction.leaderData !== findAuction.pokemon.pokemonOwner) {
             await db.setTokens(
               findAuction.leaderData,
-              findUser.userTokens - findAuction.auctionCurrent
+              parseInt(findUser.userTokens.toString()) -
+                findAuction.auctionCurrent
             );
             await db.setTokens(
               findAuction.pokemon.pokemonOwner,

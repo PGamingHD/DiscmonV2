@@ -1,6 +1,6 @@
 {
   "ChangelogNumber": 6,
   "ChangelogTitle": "Changelog - V1.0.75_DEV",
-  "ChangelogDescription": "\n\n__**Changed Features**__\n\n*• Added search function for help command!*\n*• Changed pokedex to feature caught list for each trainer*",
+  "ChangelogDescription": "\n\n__**Changed Features**__\n\n*• Added search function for help command!*\n*• Changed pokedex to feature caught list for each trainer*\n*• Changed the way auctions display bid, if no bid is placed*\n*• Changes to devtools made*\n*• Changed userData coins/tokens to BigInts*",
   "ChangelogTimestamp": "16. February [2024]"
 }

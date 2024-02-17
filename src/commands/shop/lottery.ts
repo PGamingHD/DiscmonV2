@@ -123,7 +123,10 @@ export default new Command({
 
       const findTickets = await db.findUserTickets(interaction.user.id);
 
-      await db.setCoins(interaction.user.id, usersData.userCoins - buy * 10000);
+      await db.setCoins(
+        interaction.user.id,
+        parseInt(usersData.userCoins.toString()) - buy * 10000
+      );
 
       await db.addNewTickets(toPush);
       await db.incrementTotalEntries(buy);

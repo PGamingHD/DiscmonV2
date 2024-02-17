@@ -133,8 +133,8 @@ model PokedexEntry {
 model userData {
   userId          String       @id @unique @db.VarChar(32)
   userBlacklisted Boolean      @default(false)
-  userTokens      Int          @default(0) @db.Int()
-  userCoins       Int          @default(500) @db.Int()
+  userTokens      BigInt          @default(0) @db.BigInt()
+  userCoins       BigInt          @default(500) @db.BigInt()
   trainerNumber   Int          @unique @default(autoincrement()) @db.Int()
   trainerBattles  Int          @db.Int()
   trainerRank     TrainerRanks @default(NORMAL_TRAINER)

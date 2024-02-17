@@ -94,7 +94,8 @@ export default new Event(Events.ClientReady, async (client) => {
         if (findAuction.leaderData !== findAuction.pokemon.pokemonOwner) {
           await db.setTokens(
             findAuction.leaderData,
-            findUser.userTokens - findAuction.auctionCurrent
+            parseInt(findUser.userTokens.toString()) -
+              findAuction.auctionCurrent
           );
           await db.setTokens(
             findAuction.pokemon.pokemonOwner,

@@ -428,7 +428,7 @@ export default new Command({
                   await db.increaseBattlesWon(targetUser.id);
                   await db.setTokens(
                     targetUser.id,
-                    targetTrainer.userTokens + 1
+                    parseInt(targetTrainer.userTokens.toString()) + 1
                   );
 
                   const fetchedMsg: Message<boolean> =
@@ -523,7 +523,7 @@ export default new Command({
                   await db.increaseBattlesWon(interaction.user.id);
                   await db.setTokens(
                     interaction.user.id,
-                    userTrainer.userTokens + 1
+                    parseInt(userTrainer.userTokens.toString()) + 1
                   );
 
                   const fetchedMsg: Message<boolean> =

@@ -137,8 +137,37 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
         client,
         args: interaction.options as CommandInteractionOptionResolver,
       });
-    } catch (e) {
-      logger.error(e);
+    } catch (e: any) {
+      if (e.message === "Missing Permissions") {
+        if (interaction.deferred) {
+          return interaction.followUp({
+            ephemeral: true,
+            embeds: [
+              new EmbedBuilder()
+                .setTitle(":warning: Missing Permissions :warning:")
+                .setDescription(
+                  "*I am missing the required permissions to execute this command.*\n\n**Contact the Server Staff for more information.**"
+                )
+                .setColor(Colours.RED),
+            ],
+          });
+        }
+
+        return interaction.reply({
+          ephemeral: true,
+          embeds: [
+            new EmbedBuilder()
+              .setTitle(":warning: Missing Permissions :warning:")
+              .setDescription(
+                "*I am missing the required permissions to execute this command.*\n\n**Contact the Server Staff for more information.**"
+              )
+              .setColor(Colours.RED),
+          ],
+        });
+      } else {
+        console.log(e.message);
+        logger.error(e);
+      }
     }
   } else if (
     interaction.isMessageContextMenuCommand() ||
