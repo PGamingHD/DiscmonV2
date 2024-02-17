@@ -38,15 +38,15 @@ export default new Command({
             ),
         ],
       });
-    const usersData: any = await db.findPokemonTrainer(interaction.user.id);
-    const incenseData: channelIncense | null = await db.findChannelIncense(
+    const usersData: any = await db.FindPokemonTrainer(interaction.user.id);
+    const incenseData: channelIncense | null = await db.FindChannelIncense(
       enableChannel.id,
       interaction.guild.id
     );
 
     if (incenseData) {
       if (incenseData.incenseTimeout <= Date.now()) {
-        await db.removeChannelIncense(enableChannel.id);
+        await db.RemoveChannelIncense(enableChannel.id);
       } else {
         return interaction.reply({
           ephemeral: true,
@@ -73,12 +73,12 @@ export default new Command({
         ],
       });
 
-    await db.setTrainerIncenses(
+    await db.SetTrainerIncenses(
       interaction.user.id,
       usersData.userBag.spawnIncense - 1
     );
 
-    await db.addChannelIncense(
+    await db.AddChannelIncense(
       interaction.guild.id,
       enableChannel.id,
       true,

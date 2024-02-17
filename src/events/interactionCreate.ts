@@ -24,7 +24,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
     if (command.noDefer) bla = "hey";
     else await interaction.deferReply();
 
-    const findUser: userData | null = await db.findPokemonTrainer(
+    const findUser: userData | null = await db.FindPokemonTrainer(
       interaction.user.id
     );
     if (
@@ -103,7 +103,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
       findUser.userTimeout &&
       findUser.userTimeoutDate < Date.now()
     ) {
-      await db.setTimeoutStatus(findUser.userId, false, 0);
+      await db.SetTimeoutStatus(findUser.userId, false, 0);
 
       try {
         await command.run({

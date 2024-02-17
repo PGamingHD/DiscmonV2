@@ -11,7 +11,7 @@ export default new Command({
   noDefer: true,
   run: async ({ interaction, client }) => {
     if (!interaction.guild) return;
-    const serverData: PokemonServer | null = await db.getServer(
+    const serverData: PokemonServer | null = await db.GetServer(
       interaction.guild.id
     );
 

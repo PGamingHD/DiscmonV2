@@ -10,7 +10,7 @@ export default new Command({
   requireAccount: true,
   noDefer: true,
   run: async ({ interaction, client }) => {
-    const usersData: userData | null = await db.findPokemonTrainer(
+    const usersData: userData | null = await db.FindPokemonTrainer(
       interaction.user.id
     );
     if (!usersData) return;

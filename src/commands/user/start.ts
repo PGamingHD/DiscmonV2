@@ -21,7 +21,7 @@ export default new Command({
   description: "Start your new adventure as a Pokémon Trainer",
   noDefer: true,
   run: async ({ interaction, client }) => {
-    const trainerData: userData | null = await db.findPokemonTrainer(
+    const trainerData: userData | null = await db.FindPokemonTrainer(
       interaction.user.id
     );
 
@@ -37,7 +37,7 @@ export default new Command({
         ],
       });
 
-    let nextTrainerId: userData | null | number = await db.findNextTrainerId();
+    let nextTrainerId: userData | null | number = await db.FindNextTrainerId();
     if (!nextTrainerId) {
       nextTrainerId = 1;
     } else {
@@ -96,7 +96,7 @@ export default new Command({
         if (!i.deferred) await i.deferUpdate();
 
         if (i.customId === "bulbasaur") {
-          const pokemon: any = await db.getPokemon("Bulbasaur");
+          const pokemon: any = await db.GetPokemon("Bulbasaur");
           if (!pokemon) return;
 
           const Nature: PokemonNature[] = [
@@ -132,14 +132,14 @@ export default new Command({
             PokemonGender.FEMALE,
           ];
 
-          await db.registerNewUser(
+          await db.RegisterNewUser(
             interaction.user.id,
             nextTrainerId as number
           );
 
-          await db.registerUserChallenges(interaction.user.id);
+          await db.RegisterUserChallenges(interaction.user.id);
 
-          await db.registerUserPokedex(interaction.user.id, pokemon.pokemonId);
+          await db.RegisterUserPokedex(interaction.user.id, pokemon.pokemonId);
 
           const HPiv: number = await randomizeNumber(1, 31);
           const ATKiv: number = await randomizeNumber(1, 31);
@@ -152,7 +152,7 @@ export default new Command({
             HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
           const IVtotal: string = ((IVpercentage / 186) * 100).toFixed(2);
 
-          await db.setNewPokemonOwner(
+          await db.SetNewPokemonOwner(
             generateFlake(),
             interaction.user.id,
             pokemon.pokemonPicture,
@@ -196,7 +196,7 @@ export default new Command({
         }
 
         if (i.customId === "charmander") {
-          const pokemon: any = await db.getPokemon("Charmander");
+          const pokemon: any = await db.GetPokemon("Charmander");
           if (!pokemon) return;
 
           const Nature: PokemonNature[] = [
@@ -232,14 +232,14 @@ export default new Command({
             PokemonGender.FEMALE,
           ];
 
-          await db.registerNewUser(
+          await db.RegisterNewUser(
             interaction.user.id,
             nextTrainerId as number
           );
 
-          await db.registerUserChallenges(interaction.user.id);
+          await db.RegisterUserChallenges(interaction.user.id);
 
-          await db.registerUserPokedex(interaction.user.id, pokemon.pokemonId);
+          await db.RegisterUserPokedex(interaction.user.id, pokemon.pokemonId);
 
           const HPiv: number = await randomizeNumber(1, 31);
           const ATKiv: number = await randomizeNumber(1, 31);
@@ -252,7 +252,7 @@ export default new Command({
             HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
           const IVtotal: string = ((IVpercentage / 186) * 100).toFixed(2);
 
-          await db.setNewPokemonOwner(
+          await db.SetNewPokemonOwner(
             generateFlake(),
             interaction.user.id,
             pokemon.pokemonPicture,
@@ -296,7 +296,7 @@ export default new Command({
         }
 
         if (i.customId === "squirtle") {
-          const pokemon: any = await db.getPokemon("Squirtle");
+          const pokemon: any = await db.GetPokemon("Squirtle");
           if (!pokemon) return;
 
           const Nature: PokemonNature[] = [
@@ -332,14 +332,14 @@ export default new Command({
             PokemonGender.FEMALE,
           ];
 
-          await db.registerNewUser(
+          await db.RegisterNewUser(
             interaction.user.id,
             nextTrainerId as number
           );
 
-          await db.registerUserChallenges(interaction.user.id);
+          await db.RegisterUserChallenges(interaction.user.id);
 
-          await db.registerUserPokedex(interaction.user.id, pokemon.pokemonId);
+          await db.RegisterUserPokedex(interaction.user.id, pokemon.pokemonId);
 
           const HPiv: number = await randomizeNumber(1, 31);
           const ATKiv: number = await randomizeNumber(1, 31);
@@ -352,7 +352,7 @@ export default new Command({
             HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
           const IVtotal: string = ((IVpercentage / 186) * 100).toFixed(2);
 
-          await db.setNewPokemonOwner(
+          await db.SetNewPokemonOwner(
             generateFlake(),
             interaction.user.id,
             pokemon.pokemonPicture,

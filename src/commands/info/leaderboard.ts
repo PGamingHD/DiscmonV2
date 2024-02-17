@@ -26,7 +26,7 @@ export default new Command({
 
     let coinText: string = ``;
     let coinCounter: number = 0;
-    const topCoins: userData[] = await db.getTrainerTopCoins();
+    const topCoins: userData[] = await db.GetTrainerTopCoins();
     for (const userData of topCoins) {
       coinCounter++;
 
@@ -39,7 +39,7 @@ export default new Command({
 
     let tokenText: string = ``;
     let tokenCounter: number = 0;
-    const topTokens: userData[] = await db.getTrainerTopTokens();
+    const topTokens: userData[] = await db.GetTrainerTopTokens();
     for (const userData of topTokens) {
       tokenCounter++;
 
@@ -52,7 +52,7 @@ export default new Command({
 
     let battleText: string = ``;
     let battleCounter: number = 0;
-    const topBattles: userData[] = await db.getTrainerTopBattles();
+    const topBattles: userData[] = await db.GetTrainerTopBattles();
     for (const userData of topBattles) {
       battleCounter++;
 

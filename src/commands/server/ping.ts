@@ -11,7 +11,7 @@ export default new Command({
     if (!client.user) return;
 
     const timeBefore = new Date().getTime();
-    await db.findPokemonTrainer(interaction.user.id);
+    await db.FindPokemonTrainer(interaction.user.id);
     const timeAfter = new Date().getTime();
     const evaled = timeAfter - timeBefore;
 

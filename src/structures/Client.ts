@@ -69,7 +69,6 @@ export class ExtendedClient extends Client {
   }
 
   async registerModules() {
-    // Commands
     const globalCommands: ApplicationCommandDataResolvable[] = [];
     const guildSpecfic: ApplicationCommandDataResolvable[] = [];
 

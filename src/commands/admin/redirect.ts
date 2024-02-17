@@ -52,7 +52,7 @@ export default new Command({
           ],
         });
 
-      await db.setRedirectChannel(interaction.guild.id, channel.id);
+      await db.SetRedirectChannel(interaction.guild.id, channel.id);
 
       return interaction.reply({
         ephemeral: true,
@@ -68,7 +68,7 @@ export default new Command({
       if (!interaction.channel) return;
       if (!interaction.guild) return;
 
-      await db.setRedirectChannel(interaction.guild.id, null);
+      await db.SetRedirectChannel(interaction.guild.id, null);
 
       return interaction.reply({
         ephemeral: true,

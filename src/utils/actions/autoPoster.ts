@@ -31,7 +31,7 @@ export default async function (client: ExtendedClient): Promise<void> {
   server.post(
     "/dblwebhook",
     webhook.listener(async (vote: any) => {
-      const findregistered: any = await db.findPokemonTrainer(vote.user);
+      const findregistered: any = await db.FindPokemonTrainer(vote.user);
 
       if (findregistered) {
         await sendWebhook(
@@ -42,28 +42,28 @@ export default async function (client: ExtendedClient): Promise<void> {
         );
 
         if (Number(findregistered.voteStreak.latestVoteExpire) > Date.now()) {
-          await db.incrementVoteStreak(vote.user);
-          await db.setNewVote(vote.user, Date.now());
-          await db.setNewExpireVote(vote.user, Date.now() + 86400000);
+          await db.IncrementVoteStreak(vote.user);
+          await db.SetNewVote(vote.user, Date.now());
+          await db.SetNewExpireVote(vote.user, Date.now() + 86400000);
         }
 
         if (
           Number(findregistered.voteStreak.latestVoteExpire) <
           Date.now() + 86400000
         ) {
-          await db.setNewVote(vote.user, Date.now());
-          await db.setNewExpireVote(vote.user, Date.now() + 86400000);
+          await db.SetNewVote(vote.user, Date.now());
+          await db.SetNewExpireVote(vote.user, Date.now() + 86400000);
         }
 
         if (Number(findregistered.voteStreak.voteStreak) < 10) {
-          await db.increaseTokens(vote.user, 1);
+          await db.IncreaseTokens(vote.user, 1);
         } else if (
           Number(findregistered.voteStreak.voteStreak) >= 10 &&
           Number(findregistered.voteStreak.voteStreak) < 25
         ) {
-          await db.increaseTokens(vote.user, 2);
+          await db.IncreaseTokens(vote.user, 2);
         } else if (Number(findregistered.voteStreak.voteStreak) >= 25) {
-          await db.increaseTokens(vote.user, 5);
+          await db.IncreaseTokens(vote.user, 5);
         }
       } else {
         await sendWebhook(

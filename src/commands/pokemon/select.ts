@@ -20,11 +20,11 @@ export default new Command({
     const pokeId: number | null = interaction.options.getInteger("pokeid");
     if (!pokeId) return;
 
-    const findPokemon = await db.findPlacementPokemon(
+    const findPokemon = await db.FindPlacementPokemon(
       interaction.user.id,
       pokeId
     );
-    const findSelected = await db.findUserSelectedPokemon(interaction.user.id);
+    const findSelected = await db.FindUserSelectedPokemon(interaction.user.id);
     if (!findPokemon)
       return interaction.reply({
         ephemeral: true,
@@ -70,8 +70,8 @@ export default new Command({
         ],
       });
 
-    await db.setPokemonSelected(findSelected.pokemonId, false);
-    await db.setPokemonSelected(findPokemon.pokemonId, true);
+    await db.SetPokemonSelected(findSelected.pokemonId, false);
+    await db.SetPokemonSelected(findPokemon.pokemonId, true);
 
     return interaction.reply({
       ephemeral: true,

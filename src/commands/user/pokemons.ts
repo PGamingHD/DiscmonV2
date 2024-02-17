@@ -57,22 +57,22 @@ export default new Command({
     const rarity: string | null = interaction.options.getString("rarity");
 
     if (rarity) {
-      const pokemonTrainer: userData | null = await db.findPokemonTrainer(
+      const pokemonTrainer: userData | null = await db.FindPokemonTrainer(
         interaction.user.id
       );
       if (!pokemonTrainer) return;
 
       let ownedPokemons: any;
       if (pokemonTrainer.pokemonOrder === PokemonOrder.LEVEL) {
-        ownedPokemons = await db.sortTrainerPokemonsLevel(interaction.user.id);
+        ownedPokemons = await db.SortTrainerPokemonsLevel(interaction.user.id);
       } else if (pokemonTrainer.pokemonOrder === PokemonOrder.FAVORITE) {
-        ownedPokemons = await db.sortTrainerPokemonsFavorite(
+        ownedPokemons = await db.SortTrainerPokemonsFavorite(
           interaction.user.id
         );
       } else if (pokemonTrainer.pokemonOrder === PokemonOrder.IV) {
-        ownedPokemons = await db.sortTrainerPokemonsIV(interaction.user.id);
+        ownedPokemons = await db.SortTrainerPokemonsIV(interaction.user.id);
       } else {
-        ownedPokemons = await db.getTrainerPokemons(interaction.user.id);
+        ownedPokemons = await db.GetTrainerPokemons(interaction.user.id);
       }
 
       //const ownedPokemons: any = await db.getTrainerPokemons(interaction.user.id);
@@ -143,20 +143,20 @@ export default new Command({
       return sendPagination(interaction, embeds, 120000, 120000, false, 0);
     }
 
-    const pokemonTrainer: userData | null = await db.findPokemonTrainer(
+    const pokemonTrainer: userData | null = await db.FindPokemonTrainer(
       interaction.user.id
     );
     if (!pokemonTrainer) return;
 
     let ownedPokemons: any;
     if (pokemonTrainer.pokemonOrder === PokemonOrder.LEVEL) {
-      ownedPokemons = await db.sortTrainerPokemonsLevel(interaction.user.id);
+      ownedPokemons = await db.SortTrainerPokemonsLevel(interaction.user.id);
     } else if (pokemonTrainer.pokemonOrder === PokemonOrder.FAVORITE) {
-      ownedPokemons = await db.sortTrainerPokemonsFavorite(interaction.user.id);
+      ownedPokemons = await db.SortTrainerPokemonsFavorite(interaction.user.id);
     } else if (pokemonTrainer.pokemonOrder === PokemonOrder.IV) {
-      ownedPokemons = await db.sortTrainerPokemonsIV(interaction.user.id);
+      ownedPokemons = await db.SortTrainerPokemonsIV(interaction.user.id);
     } else {
-      ownedPokemons = await db.getTrainerPokemons(interaction.user.id);
+      ownedPokemons = await db.GetTrainerPokemons(interaction.user.id);
     }
 
     //const ownedPokemons: any = await db.getTrainerPokemons(interaction.user.id);

@@ -20,8 +20,8 @@ export default new Command({
     const buy: number | null = interaction.options.getInteger("buy");
 
     if (!buy) {
-      const globals: lotteryGlobal | null = await db.getLotteryGlobals();
-      const countTotalTickets: number = await db.countUserTickets(
+      const globals: lotteryGlobal | null = await db.GetLotteryGlobals();
+      const countTotalTickets: number = await db.CountUserTickets(
         interaction.user.id
       );
       if (!globals) return;
@@ -85,8 +85,8 @@ export default new Command({
         ],
       });
     } else {
-      const usersData = await db.findPokemonTrainer(interaction.user.id);
-      const findGlobals = await db.getLotteryGlobals();
+      const usersData = await db.FindPokemonTrainer(interaction.user.id);
+      const findGlobals = await db.GetLotteryGlobals();
       if (!usersData) return;
       if (!findGlobals) return;
 
@@ -121,17 +121,17 @@ export default new Command({
         toPush.push({ ticketsOwner: interaction.user.id });
       }
 
-      const findTickets = await db.findUserTickets(interaction.user.id);
+      const findTickets = await db.FindUserTickets(interaction.user.id);
 
-      await db.setCoins(
+      await db.SetCoins(
         interaction.user.id,
         parseInt(usersData.userCoins.toString()) - buy * 10000
       );
 
-      await db.addNewTickets(toPush);
-      await db.incrementTotalEntries(buy);
-      await db.incrementTotalJackpot((buy * 10000) / 2);
-      if (!findTickets) await db.incrementLotteryPars();
+      await db.AddNewTickets(toPush);
+      await db.IncrementTotalEntries(buy);
+      await db.IncrementTotalJackpot((buy * 10000) / 2);
+      if (!findTickets) await db.IncrementLotteryPars();
 
       return interaction.reply({
         ephemeral: true,

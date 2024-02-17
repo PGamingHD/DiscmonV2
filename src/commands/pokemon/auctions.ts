@@ -63,7 +63,7 @@ export default new Command({
   ],
   run: async ({ interaction, client }) => {
     if (interaction.options.getSubcommand() === "view") {
-      const auctions: any = await db.findAllAuctions();
+      const auctions: any = await db.FindAllAuctions();
 
       if (auctions.length === 0)
         return interaction.reply({
@@ -137,8 +137,8 @@ export default new Command({
       if (!id) return;
       if (!amount) return;
 
-      const auction: any = await db.findSpecificAuction(id);
-      const usersData = await db.findPokemonTrainer(interaction.user.id);
+      const auction: any = await db.FindSpecificAuction(id);
+      const usersData = await db.FindPokemonTrainer(interaction.user.id);
       if (!usersData) return;
 
       if (!auction)
@@ -199,7 +199,7 @@ export default new Command({
           ],
         });
 
-      await db.setAuctionBid(
+      await db.SetAuctionBid(
         id,
         amount,
         auction.bidAmounts + 1,
@@ -224,7 +224,7 @@ export default new Command({
       if (!id) return;
       if (!start) return;
 
-      const pokemonData: Pokemons | null = await db.findPlacementPokemon(
+      const pokemonData: Pokemons | null = await db.FindPlacementPokemon(
         interaction.user.id,
         id
       );
@@ -274,11 +274,11 @@ export default new Command({
         });
 
       let incrementAucId: number = 1;
-      const findFirstId: PokemonsAuction | null = await db.findNextAuctionId();
+      const findFirstId: PokemonsAuction | null = await db.FindNextAuctionId();
       if (findFirstId) incrementAucId = findFirstId.auctionId + 1;
 
-      await db.setPokemonAuction(pokemonData.pokemonId, true);
-      await db.addPokemonAuction(
+      await db.SetPokemonAuction(pokemonData.pokemonId, true);
+      await db.AddPokemonAuction(
         pokemonData.pokemonId,
         interaction.user.id,
         Date.now() + 86400000,
@@ -288,23 +288,23 @@ export default new Command({
       );
 
       setTimeout(async (): Promise<void> => {
-        const findAuction: any = await db.findSpecificAuction(incrementAucId);
+        const findAuction: any = await db.FindSpecificAuction(incrementAucId);
 
         if (findAuction) {
-          await db.setPokemonAuction(pokemonData.pokemonId, false);
-          await db.removePokemonAuction(pokemonData.pokemonId);
+          await db.SetPokemonAuction(pokemonData.pokemonId, false);
+          await db.RemovePokemonAuction(pokemonData.pokemonId);
 
           if (!findAuction.leaderData) return;
 
-          const findUser = await db.findPokemonTrainer(findAuction.leaderData);
-          const findSeller = await db.findPokemonTrainer(
+          const findUser = await db.FindPokemonTrainer(findAuction.leaderData);
+          const findSeller = await db.FindPokemonTrainer(
             findAuction.pokemon.pokemonOwner
           );
 
           if (!findUser) return;
           if (!findSeller) return;
 
-          const getHighestPoke: Pokemons[] = await db.getPokemonNextPokeId(
+          const getHighestPoke: Pokemons[] = await db.GetPokemonNextPokeId(
             findAuction.leaderData
           );
 
@@ -321,18 +321,18 @@ export default new Command({
             incrementId = getHighestPoke[0].pokemonPlacementId + 1;
           if (!incrementId) incrementId = 1;
 
-          await db.setPokemonOwner(
+          await db.SetPokemonOwner(
             pokemonData.pokemonId,
             findAuction.leaderData,
             incrementId
           );
           if (findAuction.leaderData !== findAuction.pokemon.pokemonOwner) {
-            await db.setTokens(
+            await db.SetTokens(
               findAuction.leaderData,
               parseInt(findUser.userTokens.toString()) -
                 findAuction.auctionCurrent
             );
-            await db.setTokens(
+            await db.SetTokens(
               findAuction.pokemon.pokemonOwner,
               findSeller.userTokens + findAuction.auctionCurrent
             );

@@ -12,8 +12,8 @@ import getSpawnRarity from "./getSpawnRarity";
 
 export default async function (userId: string): Promise<void> {
   Cron("*/30 * * * * *", async () => {
-    let newBuddyData = await db.getOneBuddy(userId);
-    const usersData: any = await db.findPokemonTrainer(userId);
+    let newBuddyData = await db.GetOneBuddy(userId);
+    const usersData: any = await db.FindPokemonTrainer(userId);
     if (!newBuddyData) return;
 
     if (!newBuddyData.catcherEnabled) return;
@@ -23,7 +23,7 @@ export default async function (userId: string): Promise<void> {
       Number(newBuddyData.catcherRefill) + 60000 >= Date.now() &&
       Number(newBuddyData.catcherNext) !== 0
     )
-      newBuddyData = await db.setCatchAvailableStatus(
+      newBuddyData = await db.SetCatchAvailableStatus(
         newBuddyData.userId,
         true
       );
@@ -44,12 +44,12 @@ export default async function (userId: string): Promise<void> {
         if (getModifier === "SHINY") isShiny = true;
       }
 
-      const getPokemons: number = await db.getPokemonRarityCount(
+      const getPokemons: number = await db.GetPokemonRarityCount(
         getRarity.toUpperCase() as PokemonRarity
       );
       const randomPokemon: number = await randomizeNumber(1, getPokemons);
 
-      const pokemonToSpawn: any = await db.getRandomPokemon(
+      const pokemonToSpawn: any = await db.GetRandomPokemon(
         getRarity.toUpperCase() as PokemonRarity,
         randomPokemon - 1
       );
@@ -68,7 +68,7 @@ export default async function (userId: string): Promise<void> {
         HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
       const IVtotal: string = ((IVpercentage / 186) * 100).toFixed(2);
 
-      const getHighestPoke: Pokemons[] = await db.getPokemonNextPokeId(
+      const getHighestPoke: Pokemons[] = await db.GetPokemonNextPokeId(
         newBuddyData.userId
       );
 
@@ -103,7 +103,7 @@ export default async function (userId: string): Promise<void> {
       if (Object.keys(challengeObject).length === 0) {
         for (const challenge of usersData.userChallenges) {
           const challengeToCatch = challenge.challengesToCatch;
-          const getPokemon = await db.getPokemon(pokemonToSpawn.pokemonName);
+          const getPokemon = await db.GetPokemon(pokemonToSpawn.pokemonName);
           if (!getPokemon) return;
           if (
             challengeToCatch.toLowerCase() === "legendary" &&
@@ -143,14 +143,14 @@ export default async function (userId: string): Promise<void> {
       }
 
       if (Object.keys(challengeObject).length !== 0) {
-        const challenge: any = await db.findChallenge(
+        const challenge: any = await db.FindChallenge(
           userId,
           challengeObject.challengesId
         );
         let newChallenge: any = {};
 
         if (challenge && !challenge.challengesCompleted) {
-          newChallenge = await db.incrementChallengeCaught(
+          newChallenge = await db.IncrementChallengeCaught(
             challenge.challengesId
           );
         }
@@ -160,17 +160,17 @@ export default async function (userId: string): Promise<void> {
           !newChallenge.challengesCompleted &&
           newChallenge.challengesCaughtAmount === newChallenge.challengesAmount
         ) {
-          await db.setChallengeCompleted(newChallenge.challengesId);
+          await db.SetChallengeCompleted(newChallenge.challengesId);
 
           if (newChallenge.challengesCoinReward !== null) {
-            await db.setCoins(
+            await db.SetCoins(
               usersData.userId,
               usersData.userCoins + newChallenge.challengesCoinReward
             );
           }
 
           if (newChallenge.challengesTokenReward !== null) {
-            await db.setTokens(
+            await db.SetTokens(
               usersData.userId,
               usersData.userTokens + newChallenge.challengesTokenReward
             );
@@ -180,7 +180,7 @@ export default async function (userId: string): Promise<void> {
         }
       }
 
-      await db.spawnNewRedeemPokemon(
+      await db.SpawnNewRedeemPokemon(
         generatedId,
         newBuddyData.userId,
         incrementId,
@@ -211,17 +211,17 @@ export default async function (userId: string): Promise<void> {
         }
       );
 
-      newBuddyData = await db.setCatchAvailableStatus(
+      newBuddyData = await db.SetCatchAvailableStatus(
         newBuddyData.userId,
         false
       );
-      newBuddyData = await db.setCatcherNextTime(
+      newBuddyData = await db.SetCatcherNextTime(
         newBuddyData.userId,
         Math.floor(
           Date.now() + 1000 * 60 * (60 / (newBuddyData.pokemonUpgrade + 1))
         )
       );
-      newBuddyData = await db.incremenetCatcherCaught(newBuddyData.userId);
+      newBuddyData = await db.IncremenetCatcherCaught(newBuddyData.userId);
     }
 
     if (
@@ -230,7 +230,7 @@ export default async function (userId: string): Promise<void> {
         Date.now() + 1000 * 60 * (60 / (newBuddyData.pokemonUpgrade + 1)) &&
       newBuddyData.catcherNext <= Date.now()
     ) {
-      await db.setCatcherNextTime(
+      await db.SetCatcherNextTime(
         newBuddyData.userId,
         Math.floor(
           Date.now() + 1000 * 60 * (60 / (newBuddyData.pokemonUpgrade + 1))
@@ -239,9 +239,9 @@ export default async function (userId: string): Promise<void> {
     }
 
     if (newBuddyData.catcherRefill < Date.now()) {
-      await db.setCatcherEnabledStatus(newBuddyData.userId, false);
-      await db.setCatcherNextTime(newBuddyData.userId, 0);
-      await db.setCatcherRefillTime(newBuddyData.userId, 0);
+      await db.SetCatcherEnabledStatus(newBuddyData.userId, false);
+      await db.SetCatcherNextTime(newBuddyData.userId, 0);
+      await db.SetCatcherRefillTime(newBuddyData.userId, 0);
     }
   });
 }

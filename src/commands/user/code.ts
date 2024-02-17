@@ -47,8 +47,8 @@ export default new Command({
         ],
       });
     } else {
-      const toRedeem: globalCodes | null = await db.findCode(redeem);
-      const redeemUser: userCodes | null = await db.findUserCode(
+      const toRedeem: globalCodes | null = await db.FindCode(redeem);
+      const redeemUser: userCodes | null = await db.FindUserCode(
         interaction.user.id,
         redeem
       );
@@ -86,13 +86,13 @@ export default new Command({
           ],
         });
 
-      await db.increaseCodeRedeemed(redeem);
-      await db.redeemAttempt(interaction.user.id, redeem);
+      await db.IncreaseCodeRedeemed(redeem);
+      await db.RedeemAttempt(interaction.user.id, redeem);
 
       if (toRedeem.rewardType === RewardType.COINS) {
-        await db.increaseCoins(interaction.user.id, toRedeem.rewardAmount);
+        await db.IncreaseCoins(interaction.user.id, toRedeem.rewardAmount);
       } else if (toRedeem.rewardType === RewardType.TOKENS) {
-        await db.increaseTokens(interaction.user.id, toRedeem.rewardAmount);
+        await db.IncreaseTokens(interaction.user.id, toRedeem.rewardAmount);
       }
 
       return interaction.reply({

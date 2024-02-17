@@ -33,15 +33,15 @@ export class Database {
    * POKEMON GETTERS & SETTERS
    * */
 
-  addNewPokemon(data: any): Promise<Pokemon> {
+  AddNewPokemon(data: any): Promise<Pokemon> {
     return this.prisma.pokemon.create({ data });
   }
 
-  getPokemonCount(): Promise<number> {
+  GetPokemonCount(): Promise<number> {
     return this.prisma.pokemon.count();
   }
 
-  getPokemonRarityCount(pokemonRarity: PokemonRarity): Promise<number> {
+  GetPokemonRarityCount(pokemonRarity: PokemonRarity): Promise<number> {
     return this.prisma.pokemon.count({
       where: {
         pokemonRarity,
@@ -49,7 +49,7 @@ export class Database {
     });
   }
 
-  getPokemon(pokemonName: string): Promise<Pokemon | null> {
+  GetPokemon(pokemonName: string): Promise<Pokemon | null> {
     return this.prisma.pokemon.findFirst({
       where: {
         pokemonName,
@@ -62,7 +62,7 @@ export class Database {
     });
   }
 
-  getAllPokemons(): Promise<Pokemon[]> {
+  GetAllPokemons(): Promise<Pokemon[]> {
     return this.prisma.pokemon.findMany({
       orderBy: [
         {
@@ -76,7 +76,7 @@ export class Database {
     });
   }
 
-  getAllDexPokemons(userId: string) {
+  GetAllDexPokemons(userId: string) {
     return this.prisma.pokemon.findMany({
       include: {
         pokemonType: true,
@@ -89,7 +89,7 @@ export class Database {
     });
   }
 
-  getSpecificPokemonName(name: string): Promise<Pokemon | null> {
+  GetSpecificPokemonName(name: string): Promise<Pokemon | null> {
     return this.prisma.pokemon.findFirst({
       where: {
         pokemonName: name,
@@ -101,7 +101,7 @@ export class Database {
     });
   }
 
-  getSpecificPokemonId(id: number): Promise<Pokemon | null> {
+  GetSpecificPokemonId(id: number): Promise<Pokemon | null> {
     return this.prisma.pokemon.findFirst({
       where: {
         pokemonPokedex: id,
@@ -113,7 +113,7 @@ export class Database {
     });
   }
 
-  getRandomPokemon(
+  GetRandomPokemon(
     pokemonRarity: PokemonRarity,
     randomSkip: number
   ): Promise<Pokemon | null> {
@@ -133,7 +133,7 @@ export class Database {
    * SPAWNED & CLAIMED GETTERS AND SETTERS!
    * */
 
-  spawnNewPokemon(
+  SpawnNewPokemon(
     serverId: string,
     channelId: string,
     messageId: string,
@@ -173,7 +173,7 @@ export class Database {
     });
   }
 
-  spawnNewRedeemPokemon(
+  SpawnNewRedeemPokemon(
     pokemonId: string,
     ownerId: string,
     placementId: number,
@@ -214,7 +214,7 @@ export class Database {
     });
   }
 
-  findSpawnedPokemon(
+  FindSpawnedPokemon(
     channelId: string,
     pokemonName: string
   ): Promise<Pokemons | null> {
@@ -227,7 +227,7 @@ export class Database {
     });
   }
 
-  findOneSpawnedPokemon(channelId: string): Promise<Pokemons | null> {
+  FindOneSpawnedPokemon(channelId: string): Promise<Pokemons | null> {
     return this.prisma.pokemons.findFirst({
       where: {
         spawnedChannel: channelId,
@@ -236,7 +236,7 @@ export class Database {
     });
   }
 
-  findSpawnedExactPokemon(
+  FindSpawnedExactPokemon(
     pokemonId: string,
     channelId: string
   ): Promise<Pokemons | null> {
@@ -249,7 +249,7 @@ export class Database {
     });
   }
 
-  findDeleteCatchablePokemon(): Promise<Pokemons[]> {
+  FindDeleteCatchablePokemon(): Promise<Pokemons[]> {
     return this.prisma.pokemons.findMany({
       where: {
         pokemonCatch: true,
@@ -257,7 +257,7 @@ export class Database {
     });
   }
 
-  findUserSelectedPokemon(userId: string): Promise<Pokemons | null> {
+  FindUserSelectedPokemon(userId: string): Promise<Pokemons | null> {
     return this.prisma.pokemons.findFirst({
       where: {
         pokemonSelected: true,
@@ -270,7 +270,7 @@ export class Database {
     });
   }
 
-  findAllPokemons(): Promise<Pokemons[]> {
+  FindAllPokemons(): Promise<Pokemons[]> {
     return this.prisma.pokemons.findMany({
       include: {
         PokemonIVs: true,
@@ -278,7 +278,7 @@ export class Database {
     });
   }
 
-  findPlacementPokemon(
+  FindPlacementPokemon(
     userId: string,
     placementId: number
   ): Promise<Pokemons | null> {
@@ -290,7 +290,7 @@ export class Database {
     });
   }
 
-  setSpawnedOwner(
+  SetSpawnedOwner(
     pokemonId: string,
     pokemonOwner: string,
     placementId: number
@@ -310,7 +310,7 @@ export class Database {
     });
   }
 
-  setNewPokemonOwner(
+  SetNewPokemonOwner(
     pokemonId: string,
     pokemonOwner: string,
     pokemonPicture: string,
@@ -348,7 +348,7 @@ export class Database {
     });
   }
 
-  setPokemonEvolve(
+  SetPokemonEvolve(
     pokemonId: string,
     evolveName: string,
     evolvePic: string
@@ -365,7 +365,7 @@ export class Database {
     });
   }
 
-  setPokemonLevelUp(pokemonId: string): Promise<Pokemons | null> {
+  SetPokemonLevelUp(pokemonId: string): Promise<Pokemons | null> {
     return this.prisma.pokemons.update({
       where: {
         pokemonId,
@@ -377,7 +377,7 @@ export class Database {
     });
   }
 
-  setPokemonXP(pokemonId: string, XP: number): Promise<Pokemons | null> {
+  SetPokemonXP(pokemonId: string, XP: number): Promise<Pokemons | null> {
     return this.prisma.pokemons.update({
       where: {
         pokemonId,
@@ -388,7 +388,7 @@ export class Database {
     });
   }
 
-  setPokemonSelected(
+  SetPokemonSelected(
     pokemonId: string,
     selected: boolean
   ): Promise<Pokemons | null> {
@@ -402,7 +402,7 @@ export class Database {
     });
   }
 
-  setPokemonFavorite(
+  SetPokemonFavorite(
     pokemonId: string,
     favorite: boolean
   ): Promise<Pokemons | null> {
@@ -416,7 +416,7 @@ export class Database {
     });
   }
 
-  setPokemonAuction(
+  SetPokemonAuction(
     pokemonId: string,
     auction: boolean
   ): Promise<Pokemons | null> {
@@ -430,7 +430,7 @@ export class Database {
     });
   }
 
-  setPokemonOwner(
+  SetPokemonOwner(
     pokemonId: string,
     newOwnerId: string,
     placementId: number
@@ -446,7 +446,7 @@ export class Database {
     });
   }
 
-  deleteSpawnedPokemon(pokemonId: string) {
+  DeleteSpawnedPokemon(pokemonId: string) {
     return this.prisma.pokemons.delete({
       where: {
         pokemonId,
@@ -454,7 +454,7 @@ export class Database {
     });
   }
 
-  deleteCatchablePokemon() {
+  DeleteCatchablePokemon() {
     return this.prisma.pokemons.deleteMany({
       where: {
         pokemonCatch: true,
@@ -462,7 +462,7 @@ export class Database {
     });
   }
 
-  deleteCaughtPokemon(pokemonId: string) {
+  DeleteCaughtPokemon(pokemonId: string) {
     return this.prisma.pokemons.delete({
       where: {
         pokemonId,
@@ -470,7 +470,7 @@ export class Database {
     });
   }
 
-  deleteAllTrainerPokemons(userId: string) {
+  DeleteAllTrainerPokemons(userId: string) {
     return this.prisma.pokemons.deleteMany({
       where: {
         pokemonOwner: userId,
@@ -482,7 +482,7 @@ export class Database {
    * TRAINER GETTERS AND SETTERS!
    * */
 
-  registerNewUser(
+  RegisterNewUser(
     userid: string,
     nextTrainerNum: number
   ): Promise<userData | null> {
@@ -519,7 +519,7 @@ export class Database {
     });
   }
 
-  registerUserPokedex(userId: string, pokemonId: string) {
+  RegisterUserPokedex(userId: string, pokemonId: string) {
     return this.prisma.pokemon
       .findMany()
       .then((allPokemons: Pokemon[]) => {
@@ -551,7 +551,7 @@ export class Database {
       });
   }
 
-  registerUserChallenges(userId: string) {
+  RegisterUserChallenges(userId: string) {
     return this.prisma.userChallenges.createMany({
       data: [
         {
@@ -624,7 +624,7 @@ export class Database {
     });
   }
 
-  addChannelIncense(
+  AddChannelIncense(
     serverId: string,
     channelId: string,
     enabled: boolean,
@@ -640,7 +640,7 @@ export class Database {
     });
   }
 
-  removeChannelIncense(channelId: string) {
+  RemoveChannelIncense(channelId: string) {
     return this.prisma.channelIncense.delete({
       where: {
         channelId,
@@ -648,7 +648,7 @@ export class Database {
     });
   }
 
-  findChannelIncense(
+  FindChannelIncense(
     channelId: string,
     serverId: string
   ): Promise<channelIncense | null> {
@@ -660,7 +660,7 @@ export class Database {
     });
   }
 
-  findNextTrainerId(): Promise<userData | null> {
+  FindNextTrainerId(): Promise<userData | null> {
     return this.prisma.userData.findFirst({
       orderBy: [
         {
@@ -671,7 +671,7 @@ export class Database {
     });
   }
 
-  findPokemonTrainer(userId: string): Promise<userData | null> {
+  FindPokemonTrainer(userId: string): Promise<userData | null> {
     return this.prisma.userData.findFirst({
       where: {
         userId,
@@ -685,13 +685,13 @@ export class Database {
     });
   }
 
-  getPokemonTrainerDex(pokemonId: string, userId: string) {
+  GetPokemonTrainerDex(pokemonId: string, userId: string) {
     return this.prisma.pokedexEntry.findFirst({
       where: { pokemonId, userId },
     });
   }
 
-  getPokemonNextPokeId(userId: string): Promise<Pokemons[]> {
+  GetPokemonNextPokeId(userId: string): Promise<Pokemons[]> {
     return this.prisma.pokemons.findMany({
       where: {
         pokemonOwner: userId,
@@ -709,7 +709,7 @@ export class Database {
     });
   }
 
-  getTrainerPokemons(userId: string): Promise<Pokemons[]> {
+  GetTrainerPokemons(userId: string): Promise<Pokemons[]> {
     return this.prisma.pokemons.findMany({
       where: {
         pokemonOwner: userId,
@@ -725,7 +725,7 @@ export class Database {
     });
   }
 
-  getTrainerTopCoins(): Promise<userData[]> {
+  GetTrainerTopCoins(): Promise<userData[]> {
     return this.prisma.userData.findMany({
       orderBy: [
         {
@@ -736,7 +736,7 @@ export class Database {
     });
   }
 
-  getTrainerTopTokens(): Promise<userData[]> {
+  GetTrainerTopTokens(): Promise<userData[]> {
     return this.prisma.userData.findMany({
       orderBy: [
         {
@@ -747,7 +747,7 @@ export class Database {
     });
   }
 
-  getTrainerTopBattles(): Promise<userData[]> {
+  GetTrainerTopBattles(): Promise<userData[]> {
     return this.prisma.userData.findMany({
       orderBy: [
         {
@@ -758,7 +758,7 @@ export class Database {
     });
   }
 
-  increaseBattlesWon(userId: string): Promise<userData | null> {
+  IncreaseBattlesWon(userId: string): Promise<userData | null> {
     return this.prisma.userData.update({
       where: {
         userId,
@@ -769,7 +769,7 @@ export class Database {
     });
   }
 
-  increaseUserRedeems(
+  IncreaseUserRedeems(
     userId: string,
     amount: number
   ): Promise<userData | null> {
@@ -787,7 +787,7 @@ export class Database {
     });
   }
 
-  increaseUserIncenses(
+  IncreaseUserIncenses(
     userId: string,
     amount: number
   ): Promise<userData | null> {
@@ -805,7 +805,7 @@ export class Database {
     });
   }
 
-  increaseUserBCandy(userId: string, amount: number): Promise<userData | null> {
+  IncreaseUserBCandy(userId: string, amount: number): Promise<userData | null> {
     return this.prisma.userData.update({
       where: {
         userId,
@@ -820,14 +820,14 @@ export class Database {
     });
   }
 
-  setPokemonTrainerDex(userId: string, pokemonId: string) {
+  SetPokemonTrainerDex(userId: string, pokemonId: string) {
     return this.prisma.pokedexEntry.update({
       where: { pokemonId_userId: { pokemonId, userId } },
       data: { caught: true },
     });
   }
 
-  setUserRedeems(userId: string, amount: number): Promise<userData | null> {
+  SetUserRedeems(userId: string, amount: number): Promise<userData | null> {
     return this.prisma.userData.update({
       where: {
         userId,
@@ -842,7 +842,7 @@ export class Database {
     });
   }
 
-  setUserBCandy(userId: string, amount: number): Promise<userData | null> {
+  SetUserBCandy(userId: string, amount: number): Promise<userData | null> {
     return this.prisma.userData.update({
       where: {
         userId,
@@ -857,7 +857,7 @@ export class Database {
     });
   }
 
-  setTrainerOrder(
+  SetTrainerOrder(
     userId: string,
     orderBy: PokemonOrder
   ): Promise<userData | null> {
@@ -871,7 +871,7 @@ export class Database {
     });
   }
 
-  setTrainerIncenses(
+  SetTrainerIncenses(
     userId: string,
     incenses: number
   ): Promise<userData | null> {
@@ -889,7 +889,7 @@ export class Database {
     });
   }
 
-  sortTrainerPokemonsLevel(userId: string): Promise<Pokemons[]> {
+  SortTrainerPokemonsLevel(userId: string): Promise<Pokemons[]> {
     return this.prisma.pokemons.findMany({
       where: {
         pokemonOwner: userId,
@@ -905,7 +905,7 @@ export class Database {
     });
   }
 
-  sortTrainerPokemonsFavorite(userId: string): Promise<Pokemons[]> {
+  SortTrainerPokemonsFavorite(userId: string): Promise<Pokemons[]> {
     return this.prisma.pokemons.findMany({
       where: {
         pokemonOwner: userId,
@@ -921,7 +921,7 @@ export class Database {
     });
   }
 
-  sortTrainerPokemonsIV(userId: string): Promise<Pokemons[]> {
+  SortTrainerPokemonsIV(userId: string): Promise<Pokemons[]> {
     return this.prisma.pokemons.findMany({
       where: {
         pokemonOwner: userId,
@@ -932,7 +932,7 @@ export class Database {
     });
   }
 
-  displayTrainerPokemons(
+  DisplayTrainerPokemons(
     userId: string,
     Rarity: PokemonRarity
   ): Promise<Pokemons[]> {
@@ -947,7 +947,7 @@ export class Database {
     });
   }
 
-  removeTrainerData(userId: string) {
+  RemoveTrainerData(userId: string) {
     return this.prisma.userData.delete({
       where: {
         userId,
@@ -955,7 +955,7 @@ export class Database {
     });
   }
 
-  setTimeoutStatus(userId: string, status: boolean, date: number) {
+  SetTimeoutStatus(userId: string, status: boolean, date: number) {
     return this.prisma.userData.update({
       where: {
         userId,
@@ -967,7 +967,7 @@ export class Database {
     });
   }
 
-  incrementTotalTimeouts(userId: string) {
+  IncrementTotalTimeouts(userId: string) {
     return this.prisma.userData.update({
       where: {
         userId,
@@ -978,7 +978,7 @@ export class Database {
     });
   }
 
-  setUserBlacklistedStatus(userId: string, status: boolean) {
+  SetUserBlacklistedStatus(userId: string, status: boolean) {
     return this.prisma.userData.update({
       where: {
         userId,
@@ -993,7 +993,7 @@ export class Database {
    * SERVER GETTERS & SETTERS
    * */
 
-  getServer(serverId: string): Promise<PokemonServer | null> {
+  GetServer(serverId: string): Promise<PokemonServer | null> {
     return this.prisma.pokemonServer.findFirst({
       where: {
         serverId,
@@ -1001,7 +1001,7 @@ export class Database {
     });
   }
 
-  addServer(serverId: string): Promise<PokemonServer> {
+  AddServer(serverId: string): Promise<PokemonServer> {
     return this.prisma.pokemonServer.create({
       data: {
         serverId,
@@ -1012,7 +1012,7 @@ export class Database {
     });
   }
 
-  incrementServerSpawnChance(
+  IncrementServerSpawnChance(
     serverId: string,
     increment: number
   ): Promise<PokemonServer | null> {
@@ -1026,7 +1026,7 @@ export class Database {
     });
   }
 
-  setServerSpawnChance(
+  SetServerSpawnChance(
     serverId: string,
     number: number
   ): Promise<PokemonServer | null> {
@@ -1040,7 +1040,7 @@ export class Database {
     });
   }
 
-  setRedirectChannel(
+  SetRedirectChannel(
     serverId: string,
     channelId: string | null
   ): Promise<PokemonServer | null> {
@@ -1054,7 +1054,7 @@ export class Database {
     });
   }
 
-  setAnnouncer(
+  SetAnnouncer(
     serverId: string,
     enabled: boolean
   ): Promise<PokemonServer | null> {
@@ -1072,7 +1072,7 @@ export class Database {
    * PAYMENT GETTERS & SETTERS
    * */
 
-  createPayment(
+  CreatePayment(
     invoiceOwner: string,
     invoiceId: string,
     invoiceType: string
@@ -1086,7 +1086,7 @@ export class Database {
     });
   }
 
-  hasPayment(invoiceId: string): Promise<userPayment | null> {
+  HasPayment(invoiceId: string): Promise<userPayment | null> {
     return this.prisma.userPayment.findFirst({
       where: {
         invoiceId,
@@ -1094,7 +1094,7 @@ export class Database {
     });
   }
 
-  increaseCoins(
+  IncreaseCoins(
     userId: string,
     amount: number | TrainerRanks
   ): Promise<userData | null> {
@@ -1110,7 +1110,7 @@ export class Database {
     });
   }
 
-  increaseTokens(
+  IncreaseTokens(
     userId: string,
     amount: number | TrainerRanks
   ): Promise<userData | null> {
@@ -1126,7 +1126,7 @@ export class Database {
     });
   }
 
-  setTrainerRank(
+  SetTrainerRank(
     userId: string,
     newRank: number | TrainerRanks
   ): Promise<userData | null> {
@@ -1140,7 +1140,7 @@ export class Database {
     });
   }
 
-  setTokens(userId: string, newTokens: number): Promise<userData | null> {
+  SetTokens(userId: string, newTokens: number): Promise<userData | null> {
     return this.prisma.userData.update({
       where: {
         userId,
@@ -1151,7 +1151,7 @@ export class Database {
     });
   }
 
-  addTokens(userId: string, tokens: number): Promise<userData | null> {
+  AddTokens(userId: string, tokens: number): Promise<userData | null> {
     return this.prisma.userData.update({
       where: {
         userId,
@@ -1162,7 +1162,7 @@ export class Database {
     });
   }
 
-  decreaseTokens(userId: string, tokens: number): Promise<userData | null> {
+  DecreaseTokens(userId: string, tokens: number): Promise<userData | null> {
     return this.prisma.userData.update({
       where: {
         userId,
@@ -1173,7 +1173,7 @@ export class Database {
     });
   }
 
-  setCoins(userId: string, newCoins: number): Promise<userData | null> {
+  SetCoins(userId: string, newCoins: number): Promise<userData | null> {
     return this.prisma.userData.update({
       where: {
         userId,
@@ -1184,7 +1184,7 @@ export class Database {
     });
   }
 
-  addCoins(userId: string, coins: number): Promise<userData | null> {
+  AddCoins(userId: string, coins: number): Promise<userData | null> {
     return this.prisma.userData.update({
       where: {
         userId,
@@ -1195,7 +1195,7 @@ export class Database {
     });
   }
 
-  decreaseCoins(userId: string, coins: number): Promise<userData | null> {
+  DecreaseCoins(userId: string, coins: number): Promise<userData | null> {
     return this.prisma.userData.update({
       where: {
         userId,
@@ -1206,7 +1206,7 @@ export class Database {
     });
   }
 
-  findChallenge(
+  FindChallenge(
     userId: string,
     challengeId: number
   ): Promise<userChallenges | null> {
@@ -1218,7 +1218,7 @@ export class Database {
     });
   }
 
-  incrementChallengeCaught(
+  IncrementChallengeCaught(
     challengesId: number
   ): Promise<userChallenges | null> {
     return this.prisma.userChallenges.update({
@@ -1231,7 +1231,7 @@ export class Database {
     });
   }
 
-  setChallengeCompleted(challengesId: number): Promise<userChallenges | null> {
+  SetChallengeCompleted(challengesId: number): Promise<userChallenges | null> {
     return this.prisma.userChallenges.update({
       where: {
         challengesId,
@@ -1246,7 +1246,7 @@ export class Database {
    * CODES GETTERS & SETTERS
    * */
 
-  createCode(
+  CreateCode(
     code: string,
     rewardType: RewardType,
     rewardAmount: number,
@@ -1263,7 +1263,7 @@ export class Database {
     });
   }
 
-  findCode(code: string): Promise<globalCodes | null> {
+  FindCode(code: string): Promise<globalCodes | null> {
     return this.prisma.globalCodes.findFirst({
       where: {
         code,
@@ -1271,7 +1271,7 @@ export class Database {
     });
   }
 
-  findUserCode(userId: string, code: string): Promise<userCodes | null> {
+  FindUserCode(userId: string, code: string): Promise<userCodes | null> {
     return this.prisma.userCodes.findFirst({
       where: {
         userId,
@@ -1280,7 +1280,7 @@ export class Database {
     });
   }
 
-  increaseCodeRedeemed(code: string): Promise<globalCodes | null> {
+  IncreaseCodeRedeemed(code: string): Promise<globalCodes | null> {
     return this.prisma.globalCodes.update({
       where: {
         code,
@@ -1291,7 +1291,7 @@ export class Database {
     });
   }
 
-  redeemAttempt(userId: string, code: string): Promise<userCodes | null> {
+  RedeemAttempt(userId: string, code: string): Promise<userCodes | null> {
     return this.prisma.userCodes.create({
       data: {
         userId,
@@ -1304,7 +1304,7 @@ export class Database {
    * AUCTIONS GETTERS & SETTERS
    * */
 
-  addPokemonAuction(
+  AddPokemonAuction(
     pokemonId: string,
     userId: string,
     endTime: number,
@@ -1326,7 +1326,7 @@ export class Database {
     });
   }
 
-  setAuctionBid(
+  SetAuctionBid(
     auctionId: number,
     newBid: number,
     bidAmounts: number,
@@ -1346,7 +1346,7 @@ export class Database {
     });
   }
 
-  findNextAuctionId(): Promise<PokemonsAuction | null> {
+  FindNextAuctionId(): Promise<PokemonsAuction | null> {
     return this.prisma.pokemonsAuction.findFirst({
       orderBy: [
         {
@@ -1357,7 +1357,7 @@ export class Database {
     });
   }
 
-  findAllAuctions(): Promise<PokemonsAuction[]> {
+  FindAllAuctions(): Promise<PokemonsAuction[]> {
     return this.prisma.pokemonsAuction.findMany({
       include: {
         pokemon: {
@@ -1375,7 +1375,7 @@ export class Database {
     });
   }
 
-  findSpecificAuction(auctionId: number): Promise<PokemonsAuction | null> {
+  FindSpecificAuction(auctionId: number): Promise<PokemonsAuction | null> {
     return this.prisma.pokemonsAuction.findFirst({
       where: {
         auctionId,
@@ -1386,7 +1386,7 @@ export class Database {
     });
   }
 
-  removePokemonAuction(pokemonId: string) {
+  RemovePokemonAuction(pokemonId: string) {
     return this.prisma.pokemonsAuction.delete({
       where: {
         pokemonId,
@@ -1398,11 +1398,11 @@ export class Database {
    * CATCHBUDDY GETTERS & SETTERS
    * */
 
-  getAllBuddies(): Promise<userCatchBuddy[]> {
+  GetAllBuddies(): Promise<userCatchBuddy[]> {
     return this.prisma.userCatchBuddy.findMany();
   }
 
-  getOneBuddy(userId: string): Promise<userCatchBuddy | null> {
+  GetOneBuddy(userId: string): Promise<userCatchBuddy | null> {
     return this.prisma.userCatchBuddy.findFirst({
       where: {
         userId,
@@ -1410,7 +1410,7 @@ export class Database {
     });
   }
 
-  setCatchAvailableStatus(
+  SetCatchAvailableStatus(
     userId: string,
     status: boolean
   ): Promise<userCatchBuddy> {
@@ -1424,7 +1424,7 @@ export class Database {
     });
   }
 
-  setCatcherEnabledStatus(userId: string, status: boolean) {
+  SetCatcherEnabledStatus(userId: string, status: boolean) {
     return this.prisma.userCatchBuddy.update({
       where: {
         userId,
@@ -1435,7 +1435,7 @@ export class Database {
     });
   }
 
-  setCatcherNextTime(
+  SetCatcherNextTime(
     userId: string,
     nextTime: number
   ): Promise<userCatchBuddy> {
@@ -1449,7 +1449,7 @@ export class Database {
     });
   }
 
-  setCatcherRefillTime(userId: string, refillTime: number) {
+  SetCatcherRefillTime(userId: string, refillTime: number) {
     return this.prisma.userCatchBuddy.update({
       where: {
         userId,
@@ -1460,7 +1460,7 @@ export class Database {
     });
   }
 
-  setCatcherLeftTime(userId: string, leftTime: number) {
+  SetCatcherLeftTime(userId: string, leftTime: number) {
     return this.prisma.userCatchBuddy.update({
       where: {
         userId,
@@ -1471,7 +1471,7 @@ export class Database {
     });
   }
 
-  incremenetCatcherCaught(userId: string): Promise<userCatchBuddy> {
+  IncremenetCatcherCaught(userId: string): Promise<userCatchBuddy> {
     return this.prisma.userCatchBuddy.update({
       where: {
         userId,
@@ -1482,7 +1482,7 @@ export class Database {
     });
   }
 
-  incrementPokemonUpgrade(userId: string): Promise<userCatchBuddy> {
+  IncrementPokemonUpgrade(userId: string): Promise<userCatchBuddy> {
     return this.prisma.userCatchBuddy.update({
       where: {
         userId,
@@ -1493,7 +1493,7 @@ export class Database {
     });
   }
 
-  incrementDurationUpgrade(userId: string): Promise<userCatchBuddy> {
+  IncrementDurationUpgrade(userId: string): Promise<userCatchBuddy> {
     return this.prisma.userCatchBuddy.update({
       where: {
         userId,
@@ -1504,7 +1504,7 @@ export class Database {
     });
   }
 
-  incrementLuckUpgrade(userId: string): Promise<userCatchBuddy> {
+  IncrementLuckUpgrade(userId: string): Promise<userCatchBuddy> {
     return this.prisma.userCatchBuddy.update({
       where: {
         userId,
@@ -1519,7 +1519,7 @@ export class Database {
    * VOTES GETTERS & SETTERS
    * */
 
-  setNewVote(userId: string, voteTimestamp: number): Promise<VoteStreak> {
+  SetNewVote(userId: string, voteTimestamp: number): Promise<VoteStreak> {
     return this.prisma.voteStreak.update({
       where: {
         userId,
@@ -1530,7 +1530,7 @@ export class Database {
     });
   }
 
-  setNewExpireVote(
+  SetNewExpireVote(
     userId: string,
     voteExpireTimestamp: number
   ): Promise<VoteStreak> {
@@ -1544,7 +1544,7 @@ export class Database {
     });
   }
 
-  incrementVoteStreak(userId: string): Promise<VoteStreak> {
+  IncrementVoteStreak(userId: string): Promise<VoteStreak> {
     return this.prisma.voteStreak.update({
       where: {
         userId,
@@ -1559,7 +1559,7 @@ export class Database {
    * LOTTERY GETTERS & SETTERS
    * */
 
-  getLotteryGlobals(): Promise<lotteryGlobal | null> {
+  GetLotteryGlobals(): Promise<lotteryGlobal | null> {
     return this.prisma.lotteryGlobal.findFirst({
       where: {
         lotteryId: 1,
@@ -1567,7 +1567,7 @@ export class Database {
     });
   }
 
-  countUserTickets(userId: string): Promise<number> {
+  CountUserTickets(userId: string): Promise<number> {
     return this.prisma.userTickets.count({
       where: {
         ticketsOwner: userId,
@@ -1575,22 +1575,22 @@ export class Database {
     });
   }
 
-  countAllTickets(): Promise<number> {
+  CountAllTickets(): Promise<number> {
     return this.prisma.userTickets.count();
   }
 
-  findAllTickets(): Promise<userTickets[]> {
+  FindAllTickets(): Promise<userTickets[]> {
     return this.prisma.userTickets.findMany({});
   }
 
-  getSpecificTicket(randomSkip: number) {
+  GetSpecificTicket(randomSkip: number) {
     return this.prisma.userTickets.findFirst({
       skip: randomSkip,
       take: 1,
     });
   }
 
-  findUserTickets(userId: string) {
+  FindUserTickets(userId: string) {
     return this.prisma.userTickets.findFirst({
       where: {
         ticketsOwner: userId,
@@ -1598,11 +1598,11 @@ export class Database {
     });
   }
 
-  addNewTickets(data: any) {
+  AddNewTickets(data: any) {
     return this.prisma.userTickets.createMany({ data });
   }
 
-  incrementLotteryPars() {
+  IncrementLotteryPars() {
     return this.prisma.lotteryGlobal.update({
       where: {
         lotteryId: 1,
@@ -1613,7 +1613,7 @@ export class Database {
     });
   }
 
-  incrementTotalEntries(entries: number) {
+  IncrementTotalEntries(entries: number) {
     return this.prisma.lotteryGlobal.update({
       where: {
         lotteryId: 1,
@@ -1624,7 +1624,7 @@ export class Database {
     });
   }
 
-  incrementTotalJackpot(increment: number) {
+  IncrementTotalJackpot(increment: number) {
     return this.prisma.lotteryGlobal.update({
       where: {
         lotteryId: 1,
@@ -1635,7 +1635,7 @@ export class Database {
     });
   }
 
-  setNewGlobalLotteryData(
+  SetNewGlobalLotteryData(
     currentJackpot: number,
     currentlyEnding: number,
     totalBought: number,
@@ -1654,7 +1654,7 @@ export class Database {
     });
   }
 
-  deleteLotteryTickets() {
+  DeleteLotteryTickets() {
     return this.prisma.userTickets.deleteMany({});
   }
 }

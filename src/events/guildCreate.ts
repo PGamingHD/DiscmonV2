@@ -13,8 +13,8 @@ import { PokemonServer } from "@prisma/client";
 import { Colours } from "../@types/Colours";
 
 export default new Event(Events.GuildCreate, async (guild) => {
-  const guildData: PokemonServer | null = await db.getServer(guild.id);
-  if (!guildData) await db.addServer(guild.id);
+  const guildData: PokemonServer | null = await db.GetServer(guild.id);
+  if (!guildData) await db.AddServer(guild.id);
 
   try {
     const ch: TextChannel = guild.channels.cache.find(

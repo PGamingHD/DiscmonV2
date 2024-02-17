@@ -49,10 +49,10 @@ export default new Command({
       if (!value) return;
       if (!trainer) return;
 
-      const usersData: userData | null = await db.findPokemonTrainer(
+      const usersData: userData | null = await db.FindPokemonTrainer(
         interaction.user.id
       );
-      const targetsData: userData | null = await db.findPokemonTrainer(
+      const targetsData: userData | null = await db.FindPokemonTrainer(
         trainer.id
       );
       if (!targetsData)
@@ -92,11 +92,11 @@ export default new Command({
           ],
         });
 
-      await db.setCoins(
+      await db.SetCoins(
         usersData.userId,
         parseInt(usersData.userCoins.toString()) - valueToGive
       );
-      await db.setCoins(
+      await db.SetCoins(
         targetsData.userId,
         parseInt(targetsData.userCoins.toString()) + valueToGive
       );
@@ -119,10 +119,10 @@ export default new Command({
       if (!value) return;
       if (!trainer) return;
 
-      const usersData: userData | null = await db.findPokemonTrainer(
+      const usersData: userData | null = await db.FindPokemonTrainer(
         interaction.user.id
       );
-      const targetsData: userData | null = await db.findPokemonTrainer(
+      const targetsData: userData | null = await db.FindPokemonTrainer(
         trainer.id
       );
       if (!targetsData)
@@ -162,11 +162,11 @@ export default new Command({
           ],
         });
 
-      await db.setTokens(
+      await db.SetTokens(
         usersData.userId,
         parseInt(usersData.userTokens.toString()) - valueToGive
       );
-      await db.setTokens(
+      await db.SetTokens(
         targetsData.userId,
         parseInt(targetsData.userTokens.toString()) + valueToGive
       );

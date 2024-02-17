@@ -28,7 +28,7 @@ export default async function (
   if (!interaction.channel) return;
   if (interaction.channel.type !== ChannelType.GuildText) return;
 
-  const pokemonToSpawn: any = await db.getPokemon(pokeName);
+  const pokemonToSpawn: any = await db.GetPokemon(pokeName);
 
   let channelToSend: TextChannel;
 
@@ -90,7 +90,7 @@ export default async function (
   const guildId: string = interaction.guild.id;
   const channelId: string = channelToSend.id;
 
-  const hasSpawnedAlready: Pokemons | null = await db.findSpawnedPokemon(
+  const hasSpawnedAlready: Pokemons | null = await db.FindSpawnedPokemon(
     channelId,
     pokemonToSpawn.pokemonName
   );
@@ -111,7 +111,7 @@ export default async function (
       });
     } catch {}
 
-    await db.deleteSpawnedPokemon(hasSpawnedAlready.pokemonId);
+    await db.DeleteSpawnedPokemon(hasSpawnedAlready.pokemonId);
   }
 
   let HPiv: number = await randomizeNumber(1, 31);
@@ -133,7 +133,7 @@ export default async function (
   const IVpercentage = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
   const IVtotal: string = ((IVpercentage / 186) * 100).toFixed(2);
 
-  await db.spawnNewPokemon(
+  await db.SpawnNewPokemon(
     guildId,
     channelId,
     spawnMessage.reactions.message.id,
@@ -163,16 +163,16 @@ export default async function (
     }
   );
 
-  await db.setServerSpawnChance(guildId, 0);
+  await db.SetServerSpawnChance(guildId, 0);
 
   setTimeout(async () => {
-    const timeToDel: Pokemons | null = await db.findSpawnedExactPokemon(
+    const timeToDel: Pokemons | null = await db.FindSpawnedExactPokemon(
       generatedId,
       channelId
     );
 
     if (timeToDel) {
-      await db.deleteSpawnedPokemon(generatedId);
+      await db.DeleteSpawnedPokemon(generatedId);
 
       /*if (spawnMessage) {
                 await spawnMessage.delete();

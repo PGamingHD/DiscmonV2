@@ -21,7 +21,7 @@ export default new Command({
     const pokeId: number | null = interaction.options.getInteger("pokeid");
     if (!pokeId) return;
 
-    const findPokemon: Pokemons | null = await db.findPlacementPokemon(
+    const findPokemon: Pokemons | null = await db.FindPlacementPokemon(
       interaction.user.id,
       pokeId
     );
@@ -48,7 +48,7 @@ export default new Command({
         ],
       });
     if (findPokemon.pokemonFavorite) {
-      await db.setPokemonFavorite(findPokemon.pokemonId, false);
+      await db.SetPokemonFavorite(findPokemon.pokemonId, false);
 
       return interaction.reply({
         ephemeral: true,
@@ -61,7 +61,7 @@ export default new Command({
         ],
       });
     } else {
-      await db.setPokemonFavorite(findPokemon.pokemonId, true);
+      await db.SetPokemonFavorite(findPokemon.pokemonId, true);
 
       return interaction.reply({
         ephemeral: true,

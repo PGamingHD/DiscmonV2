@@ -26,7 +26,7 @@ export default new Command({
   run: async ({ interaction, client }) => {
     const search: string | null = interaction.options.getString("search");
     if (!search) {
-      const pokedexMons = await db.getAllDexPokemons(interaction.user.id);
+      const pokedexMons = await db.GetAllDexPokemons(interaction.user.id);
       const pokemonData: string[] = [];
 
       for (const pokemon of pokedexMons) {
@@ -65,7 +65,7 @@ export default new Command({
       return sendPagination(interaction, embeds, 120000, 120000, false, 0);
     } else {
       if (isNaN(parseInt(search))) {
-        const pokedexMons: any = await db.getSpecificPokemonName(
+        const pokedexMons: any = await db.GetSpecificPokemonName(
           capitalizeFirst(search)
         );
         if (!pokedexMons)
@@ -80,7 +80,7 @@ export default new Command({
             ],
           });
 
-        const getDexStatus = await db.getPokemonTrainerDex(
+        const getDexStatus = await db.GetPokemonTrainerDex(
           pokedexMons.pokemonId,
           interaction.user.id
         );
@@ -118,7 +118,7 @@ export default new Command({
           ],
         });
       } else {
-        const pokedexMons: any = await db.getSpecificPokemonId(
+        const pokedexMons: any = await db.GetSpecificPokemonId(
           parseInt(search)
         );
         if (!pokedexMons)
@@ -133,7 +133,7 @@ export default new Command({
             ],
           });
 
-        const getDexStatus = await db.getPokemonTrainerDex(
+        const getDexStatus = await db.GetPokemonTrainerDex(
           pokedexMons.pokemonId,
           interaction.user.id
         );

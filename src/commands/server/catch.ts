@@ -20,7 +20,7 @@ export default new Command({
   ],
   run: async ({ interaction, client }) => {
     let pokeName: string | null = interaction.options.getString("name");
-    const usersData: any = await db.findPokemonTrainer(interaction.user.id);
+    const usersData: any = await db.FindPokemonTrainer(interaction.user.id);
     if (!usersData) return;
     if (!pokeName) return;
     if (!interaction.channel) return;
@@ -28,24 +28,24 @@ export default new Command({
     pokeName = pokeName.toLowerCase();
     pokeName = capitalizeFirst(pokeName);
 
-    const pokemon = await db.getPokemon(pokeName);
+    const pokemon = await db.GetPokemon(pokeName);
 
     if (pokemon) {
-      const pokedexStatus = await db.getPokemonTrainerDex(
+      const pokedexStatus = await db.GetPokemonTrainerDex(
         pokemon.pokemonId,
         interaction.user.id
       );
 
       if (!pokedexStatus?.caught) {
-        await db.setPokemonTrainerDex(interaction.user.id, pokemon.pokemonId);
+        await db.SetPokemonTrainerDex(interaction.user.id, pokemon.pokemonId);
       }
     }
 
-    const findSpawnedPokemon: Pokemons | null = await db.findSpawnedPokemon(
+    const findSpawnedPokemon: Pokemons | null = await db.FindSpawnedPokemon(
       interaction.channel.id,
       pokeName
     );
-    const getHighestPoke: Pokemons[] = await db.getPokemonNextPokeId(
+    const getHighestPoke: Pokemons[] = await db.GetPokemonNextPokeId(
       interaction.user.id
     );
 
@@ -92,7 +92,7 @@ export default new Command({
     if (Object.keys(challengeObject).length === 0) {
       for (const challenge of usersData.userChallenges) {
         const challengeToCatch = challenge.challengesToCatch;
-        const getPokemon = await db.getPokemon(findSpawnedPokemon.pokemonName);
+        const getPokemon = await db.GetPokemon(findSpawnedPokemon.pokemonName);
         if (!getPokemon) return;
         if (
           challengeToCatch.toLowerCase() === "legendary" &&
@@ -132,14 +132,14 @@ export default new Command({
     }
 
     if (Object.keys(challengeObject).length !== 0) {
-      const challenge: any = await db.findChallenge(
+      const challenge: any = await db.FindChallenge(
         interaction.user.id,
         challengeObject.challengesId
       );
       let newChallenge: any = {};
 
       if (challenge && !challenge.challengesCompleted) {
-        newChallenge = await db.incrementChallengeCaught(
+        newChallenge = await db.IncrementChallengeCaught(
           challenge.challengesId
         );
       }
@@ -149,17 +149,17 @@ export default new Command({
         !newChallenge.challengesCompleted &&
         newChallenge.challengesCaughtAmount === newChallenge.challengesAmount
       ) {
-        await db.setChallengeCompleted(newChallenge.challengesId);
+        await db.SetChallengeCompleted(newChallenge.challengesId);
 
         if (newChallenge.challengesCoinReward !== null) {
-          await db.setCoins(
+          await db.SetCoins(
             usersData.userId,
             usersData.userCoins + newChallenge.challengesCoinReward
           );
         }
 
         if (newChallenge.challengesTokenReward !== null) {
-          await db.setTokens(
+          await db.SetTokens(
             usersData.userId,
             usersData.userTokens + newChallenge.challengesTokenReward
           );
@@ -184,7 +184,7 @@ export default new Command({
       });
     } catch {}
 
-    await db.setSpawnedOwner(
+    await db.SetSpawnedOwner(
       findSpawnedPokemon.pokemonId,
       interaction.user.id,
       incrementId

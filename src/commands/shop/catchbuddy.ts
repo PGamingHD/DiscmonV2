@@ -73,7 +73,7 @@ export default new Command({
   ],
   run: async ({ interaction, client }) => {
     if (interaction.options.getSubcommand() === "info") {
-      const usersData: any = await db.findPokemonTrainer(interaction.user.id);
+      const usersData: any = await db.FindPokemonTrainer(interaction.user.id);
       if (!usersData) return;
 
       return interaction.reply({
@@ -244,7 +244,7 @@ export default new Command({
       const code: string | null = interaction.options.getString("code");
 
       if (code === "enable") {
-        const usersData: any = await db.findPokemonTrainer(interaction.user.id);
+        const usersData: any = await db.FindPokemonTrainer(interaction.user.id);
         if (!usersData) return;
 
         if (usersData.userCatchBuddy.catcherEnabled)
@@ -275,12 +275,12 @@ export default new Command({
 
         const timeLeft: number = Number(usersData.userCatchBuddy.catcherLeft);
 
-        await db.setCatcherRefillTime(
+        await db.SetCatcherRefillTime(
           interaction.user.id,
           Date.now() + timeLeft
         );
-        await db.setCatcherLeftTime(interaction.user.id, 0);
-        await db.setCatcherEnabledStatus(interaction.user.id, true);
+        await db.SetCatcherLeftTime(interaction.user.id, 0);
+        await db.SetCatcherEnabledStatus(interaction.user.id, true);
 
         return interaction.reply({
           ephemeral: true,
@@ -293,7 +293,7 @@ export default new Command({
           ],
         });
       } else {
-        const usersData: any = await db.findPokemonTrainer(interaction.user.id);
+        const usersData: any = await db.FindPokemonTrainer(interaction.user.id);
         if (!usersData) return;
 
         if (!usersData.userCatchBuddy.catcherEnabled)
@@ -311,11 +311,11 @@ export default new Command({
         const leftTime: number =
           Number(usersData.userCatchBuddy.catcherRefill) - Date.now();
 
-        await db.setCatcherNextTime(interaction.user.id, 0);
-        await db.setCatcherRefillTime(interaction.user.id, 0);
-        await db.setCatcherLeftTime(interaction.user.id, leftTime);
-        await db.setCatcherEnabledStatus(interaction.user.id, false);
-        await db.setCatchAvailableStatus(interaction.user.id, false);
+        await db.SetCatcherNextTime(interaction.user.id, 0);
+        await db.SetCatcherRefillTime(interaction.user.id, 0);
+        await db.SetCatcherLeftTime(interaction.user.id, leftTime);
+        await db.SetCatcherEnabledStatus(interaction.user.id, false);
+        await db.SetCatchAvailableStatus(interaction.user.id, false);
 
         return interaction.reply({
           ephemeral: true,
@@ -329,7 +329,7 @@ export default new Command({
         });
       }
     } else if (interaction.options.getSubcommand() === "refill") {
-      const usersData: any = await db.findPokemonTrainer(interaction.user.id);
+      const usersData: any = await db.FindPokemonTrainer(interaction.user.id);
       if (!usersData) return;
 
       if (usersData.userBag.catchBuddyCandy < 1)
@@ -361,20 +361,20 @@ export default new Command({
           : 1);
 
       if (usersData.userCatchBuddy.catcherEnabled) {
-        await db.setCatcherRefillTime(
+        await db.SetCatcherRefillTime(
           interaction.user.id,
           Number(usersData.userCatchBuddy.catcherRefill) + extra
         );
-        await db.setUserBCandy(
+        await db.SetUserBCandy(
           interaction.user.id,
           usersData.userBag.catchBuddyCandy - 1
         );
       } else {
-        await db.setCatcherLeftTime(
+        await db.SetCatcherLeftTime(
           interaction.user.id,
           Number(usersData.userCatchBuddy.catcherLeft) + extra
         );
-        await db.setUserBCandy(
+        await db.SetUserBCandy(
           interaction.user.id,
           usersData.userBag.catchBuddyCandy - 1
         );
@@ -396,7 +396,7 @@ export default new Command({
       const type: string | null = interaction.options.getString("type");
       if (!type) return;
 
-      const usersData: any = await db.findPokemonTrainer(interaction.user.id);
+      const usersData: any = await db.FindPokemonTrainer(interaction.user.id);
       if (!usersData) return;
 
       if (type === "pokemon") {
@@ -426,11 +426,11 @@ export default new Command({
             ],
           });
 
-        await db.setCoins(
+        await db.SetCoins(
           interaction.user.id,
           usersData.userCoins - calculatedPrice
         );
-        const upgrade: userCatchBuddy = await db.incrementPokemonUpgrade(
+        const upgrade: userCatchBuddy = await db.IncrementPokemonUpgrade(
           interaction.user.id
         );
 
@@ -471,11 +471,11 @@ export default new Command({
             ],
           });
 
-        await db.setCoins(
+        await db.SetCoins(
           interaction.user.id,
           usersData.userCoins - calculatedPrice
         );
-        const upgrade: userCatchBuddy = await db.incrementDurationUpgrade(
+        const upgrade: userCatchBuddy = await db.IncrementDurationUpgrade(
           interaction.user.id
         );
 
@@ -516,11 +516,11 @@ export default new Command({
             ],
           });
 
-        await db.setCoins(
+        await db.SetCoins(
           interaction.user.id,
           usersData.userCoins - calculatedPrice
         );
-        const upgrade: userCatchBuddy = await db.incrementLuckUpgrade(
+        const upgrade: userCatchBuddy = await db.IncrementLuckUpgrade(
           interaction.user.id
         );
 

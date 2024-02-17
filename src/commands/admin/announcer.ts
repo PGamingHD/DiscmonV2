@@ -24,7 +24,7 @@ export default new Command({
   run: async ({ interaction, client }) => {
     if (interaction.options.getSubcommand() === "enable") {
       if (!interaction.guild) return;
-      const serverData: PokemonServer | null = await db.getServer(
+      const serverData: PokemonServer | null = await db.GetServer(
         interaction.guild.id
       );
 
@@ -40,7 +40,7 @@ export default new Command({
           ],
         });
 
-      await db.setAnnouncer(interaction.guild.id, true);
+      await db.SetAnnouncer(interaction.guild.id, true);
 
       return interaction.reply({
         ephemeral: true,
@@ -56,7 +56,7 @@ export default new Command({
 
     if (interaction.options.getSubcommand() === "disable") {
       if (!interaction.guild) return;
-      const serverData: PokemonServer | null = await db.getServer(
+      const serverData: PokemonServer | null = await db.GetServer(
         interaction.guild.id
       );
 
@@ -72,7 +72,7 @@ export default new Command({
           ],
         });
 
-      await db.setAnnouncer(interaction.guild.id, false);
+      await db.SetAnnouncer(interaction.guild.id, false);
 
       return interaction.reply({
         ephemeral: true,

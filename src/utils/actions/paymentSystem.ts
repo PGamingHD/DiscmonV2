@@ -92,9 +92,9 @@ export default async function (
         clearInterval(paymentChecker);
         const order = products.data.data.order;
 
-        const hasPayment = await db.hasPayment(order.uniqid);
+        const hasPayment = await db.HasPayment(order.uniqid);
 
-        const hasUserD = await db.findPokemonTrainer(interaction.user.id);
+        const hasUserD = await db.FindPokemonTrainer(interaction.user.id);
 
         if (hasPayment) {
           await interaction.message.edit({
@@ -106,7 +106,7 @@ export default async function (
             components: [],
           });
         } else {
-          await db.createPayment(
+          await db.CreatePayment(
             interaction.user.id,
             order.uniqid,
             paymentType
@@ -114,49 +114,49 @@ export default async function (
 
           if (hasUserD) {
             if (paymentType === "coin") {
-              await db.increaseCoins(interaction.user.id, paymentReward);
+              await db.IncreaseCoins(interaction.user.id, paymentReward);
             } else if (paymentType === "token") {
-              await db.increaseTokens(interaction.user.id, paymentReward);
+              await db.IncreaseTokens(interaction.user.id, paymentReward);
             } else if (paymentType === "rank") {
-              await db.setTrainerRank(interaction.user.id, paymentReward);
+              await db.SetTrainerRank(interaction.user.id, paymentReward);
             }
           } else {
             if (paymentType === "coin") {
               let nextTrainerId: userData | null | number =
-                await db.findNextTrainerId();
+                await db.FindNextTrainerId();
               if (!nextTrainerId) {
                 nextTrainerId = 0;
               } else {
                 nextTrainerId = nextTrainerId.trainerNumber + 1;
               }
 
-              await db.registerNewUser(interaction.user.id, nextTrainerId);
+              await db.RegisterNewUser(interaction.user.id, nextTrainerId);
 
-              await db.increaseCoins(interaction.user.id, paymentReward);
+              await db.IncreaseCoins(interaction.user.id, paymentReward);
             } else if (paymentType === "token") {
               let nextTrainerId: userData | null | number =
-                await db.findNextTrainerId();
+                await db.FindNextTrainerId();
               if (!nextTrainerId) {
                 nextTrainerId = 0;
               } else {
                 nextTrainerId = nextTrainerId.trainerNumber + 1;
               }
 
-              await db.registerNewUser(interaction.user.id, nextTrainerId);
+              await db.RegisterNewUser(interaction.user.id, nextTrainerId);
 
-              await db.increaseTokens(interaction.user.id, paymentReward);
+              await db.IncreaseTokens(interaction.user.id, paymentReward);
             } else if (paymentType === "rank") {
               let nextTrainerId: userData | null | number =
-                await db.findNextTrainerId();
+                await db.FindNextTrainerId();
               if (!nextTrainerId) {
                 nextTrainerId = 0;
               } else {
                 nextTrainerId = nextTrainerId.trainerNumber + 1;
               }
 
-              await db.registerNewUser(interaction.user.id, nextTrainerId);
+              await db.RegisterNewUser(interaction.user.id, nextTrainerId);
 
-              await db.setTrainerRank(interaction.user.id, paymentReward);
+              await db.SetTrainerRank(interaction.user.id, paymentReward);
             }
           }
         }

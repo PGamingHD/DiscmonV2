@@ -66,10 +66,10 @@ export default new Command({
         ],
       });
 
-    const targetTrainer: userData | null = await db.findPokemonTrainer(
+    const targetTrainer: userData | null = await db.FindPokemonTrainer(
       targetUser.id
     );
-    const userTrainer: userData | null = await db.findPokemonTrainer(
+    const userTrainer: userData | null = await db.FindPokemonTrainer(
       interaction.user.id
     );
     if (!targetTrainer)
@@ -85,18 +85,18 @@ export default new Command({
       });
     if (!userTrainer) return;
 
-    const targetPokemon: any = await db.findUserSelectedPokemon(
+    const targetPokemon: any = await db.FindUserSelectedPokemon(
       targetTrainer.userId
     );
-    const battlerPokemon: any = await db.findUserSelectedPokemon(
+    const battlerPokemon: any = await db.FindUserSelectedPokemon(
       interaction.user.id
     );
 
     if (!targetPokemon) return;
     if (!battlerPokemon) return;
 
-    const targetPoke: any = await db.getPokemon(targetPokemon.pokemonName);
-    const battlerPoke: any = await db.getPokemon(battlerPokemon.pokemonName);
+    const targetPoke: any = await db.GetPokemon(targetPokemon.pokemonName);
+    const battlerPoke: any = await db.GetPokemon(battlerPokemon.pokemonName);
 
     if (!targetPoke) return;
     if (!battlerPoke) return;
@@ -425,8 +425,8 @@ export default new Command({
                 currentBattlerHP = currentBattlerHP - damageDealt;
 
                 if (currentBattlerHP <= 0) {
-                  await db.increaseBattlesWon(targetUser.id);
-                  await db.setTokens(
+                  await db.IncreaseBattlesWon(targetUser.id);
+                  await db.SetTokens(
                     targetUser.id,
                     parseInt(targetTrainer.userTokens.toString()) + 1
                   );
@@ -520,8 +520,8 @@ export default new Command({
                 currentTargetHP = currentTargetHP - damageDealt;
 
                 if (currentTargetHP <= 0) {
-                  await db.increaseBattlesWon(interaction.user.id);
-                  await db.setTokens(
+                  await db.IncreaseBattlesWon(interaction.user.id);
+                  await db.SetTokens(
                     interaction.user.id,
                     parseInt(userTrainer.userTokens.toString()) + 1
                   );

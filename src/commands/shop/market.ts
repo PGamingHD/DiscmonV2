@@ -18,7 +18,7 @@ export default new Command({
   ],
   run: async ({ interaction, client }) => {
     const itemName: string | null = interaction.options.getString("item");
-    const usersData: any = await db.findPokemonTrainer(interaction.user.id);
+    const usersData: any = await db.FindPokemonTrainer(interaction.user.id);
     if (!usersData) return;
 
     if (!itemName) {
@@ -73,8 +73,8 @@ export default new Command({
             ],
           });
 
-        await db.setTokens(interaction.user.id, usersData.userTokens - 5);
-        await db.increaseUserRedeems(interaction.user.id, 1);
+        await db.SetTokens(interaction.user.id, usersData.userTokens - 5);
+        await db.IncreaseUserRedeems(interaction.user.id, 1);
 
         return interaction.reply({
           ephemeral: true,
@@ -101,8 +101,8 @@ export default new Command({
             ],
           });
 
-        await db.setCoins(interaction.user.id, usersData.userCoins - 10000);
-        await db.increaseUserIncenses(interaction.user.id, 1);
+        await db.SetCoins(interaction.user.id, usersData.userCoins - 10000);
+        await db.IncreaseUserIncenses(interaction.user.id, 1);
 
         return interaction.reply({
           ephemeral: true,
@@ -129,8 +129,8 @@ export default new Command({
             ],
           });
 
-        await db.setCoins(interaction.user.id, usersData.userCoins - 50000);
-        await db.increaseUserBCandy(interaction.user.id, 1);
+        await db.SetCoins(interaction.user.id, usersData.userCoins - 50000);
+        await db.IncreaseUserBCandy(interaction.user.id, 1);
 
         return interaction.reply({
           ephemeral: true,

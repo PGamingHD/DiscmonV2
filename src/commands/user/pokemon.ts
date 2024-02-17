@@ -12,10 +12,10 @@ export default new Command({
   requireAccount: true,
   noDefer: true,
   run: async ({ interaction, client }) => {
-    const ownedPokemons: any[] = await db.getTrainerPokemons(
+    const ownedPokemons: any[] = await db.GetTrainerPokemons(
       interaction.user.id
     );
-    const findSelected: Pokemons | null = await db.findUserSelectedPokemon(
+    const findSelected: Pokemons | null = await db.FindUserSelectedPokemon(
       interaction.user.id
     );
     if (!findSelected || !findSelected.pokemonPlacementId) return;

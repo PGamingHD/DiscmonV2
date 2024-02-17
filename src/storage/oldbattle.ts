@@ -38,16 +38,16 @@ export default new Command({
 
         if (targetUser.id === interaction.user.id) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('You may not battle yourself, please send a battle request to someone else.')]});
 
-        const pokemonTrainer: userData | null = await db.findPokemonTrainer(targetUser.id);
+        const pokemonTrainer: userData | null = await db.FindPokemonTrainer(targetUser.id);
         if (!pokemonTrainer) return interaction.reply({ephemeral: true, embeds: [new EmbedBuilder().setColor(Colours.RED).setDescription('The user have not yet registered their account, please have them register first.')]});
-        const targetPokemon: any = await db.findUserSelectedPokemon(pokemonTrainer.userId);
-        const battlerPokemon: any = await db.findUserSelectedPokemon(interaction.user.id);
+        const targetPokemon: any = await db.FindUserSelectedPokemon(pokemonTrainer.userId);
+        const battlerPokemon: any = await db.FindUserSelectedPokemon(interaction.user.id);
 
         if (!targetPokemon) return;
         if (!battlerPokemon) return;
 
-        const targetPoke: any = await db.getPokemon(targetPokemon.pokemonName);
-        const battlerPoke: any = await db.getPokemon(battlerPokemon.pokemonName);
+        const targetPoke: any = await db.GetPokemon(targetPokemon.pokemonName);
+        const battlerPoke: any = await db.GetPokemon(battlerPokemon.pokemonName);
 
         if (!targetPoke) return;
         if (!battlerPoke) return;
@@ -301,7 +301,7 @@ export default new Command({
                         currentBattlerHP = currentBattlerHP - damageDealt;
 
                         if (currentBattlerHP <= 0) {
-                            await db.increaseBattlesWon(targetUser.id);
+                            await db.IncreaseBattlesWon(targetUser.id);
 
                             await interaction.editReply({components: [], embeds: [new EmbedBuilder().setColor(Colours.GREEN).setTitle('Battle Over').setDescription(`The battle has been won by user ${targetUser}`)], attachments: []});
                             return collector.stop();
@@ -329,7 +329,7 @@ export default new Command({
                         currentTargetHP = currentTargetHP - damageDealt;
 
                         if (currentTargetHP <= 0) {
-                            await db.increaseBattlesWon(interaction.user.id);
+                            await db.IncreaseBattlesWon(interaction.user.id);
 
                             await interaction.editReply({components: [], embeds: [new EmbedBuilder().setColor(Colours.GREEN).setTitle('Battle Over').setDescription(`The battle has been won by user ${interaction.user}`)], attachments: []});
                             return collector.stop();

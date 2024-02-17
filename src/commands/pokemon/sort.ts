@@ -39,7 +39,7 @@ export default new Command({
     const sorting: string | null = interaction.options.getString("sorting");
     if (!sorting) return;
 
-    const pokeTrainer: userData | null = await db.findPokemonTrainer(
+    const pokeTrainer: userData | null = await db.FindPokemonTrainer(
       interaction.user.id
     );
     if (!pokeTrainer) return;
@@ -78,7 +78,7 @@ export default new Command({
         ],
       });
 
-    await db.setTrainerOrder(interaction.user.id, chosen);
+    await db.SetTrainerOrder(interaction.user.id, chosen);
 
     return interaction.reply({
       ephemeral: true,

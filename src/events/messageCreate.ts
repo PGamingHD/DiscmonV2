@@ -22,7 +22,7 @@ export default new Event(Events.MessageCreate, async (message) => {
   if (message.author.bot) return;
   if (!client || !client.user) return;
 
-  const findUser: userData | null = await db.findPokemonTrainer(
+  const findUser: userData | null = await db.FindPokemonTrainer(
     message.author.id
   );
 
@@ -30,7 +30,7 @@ export default new Event(Events.MessageCreate, async (message) => {
     if (findUser.userBlacklisted) return;
 
     if (findUser && findUser.userTimeoutDate < Date.now()) {
-      await db.setTimeoutStatus(findUser.userId, false, 0);
+      await db.SetTimeoutStatus(findUser.userId, false, 0);
     }
 
     if (findUser && findUser.userTimeout) return;
@@ -41,13 +41,13 @@ export default new Event(Events.MessageCreate, async (message) => {
     await pokemonFunction(message, client);
   }
 
-  const serverExists: PokemonServer | null = await db.getServer(
+  const serverExists: PokemonServer | null = await db.GetServer(
     message.guild.id
   );
 
   if (!serverExists) {
     if (message.channel.type !== ChannelType.GuildText) return;
-    const newServer: PokemonServer = await db.addServer(message.guild.id);
+    const newServer: PokemonServer = await db.AddServer(message.guild.id);
 
     await increaseSpawnChance(newServer, client, message);
 

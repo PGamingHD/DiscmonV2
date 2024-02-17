@@ -125,7 +125,7 @@ export default async function (
               ],
               files: [],
             });
-            await db.setUserBlacklistedStatus(trainerData.userId, true);
+            await db.SetUserBlacklistedStatus(trainerData.userId, true);
             return;
           }
 
@@ -143,12 +143,12 @@ export default async function (
             ],
             files: [],
           });
-          await db.setTimeoutStatus(
+          await db.SetTimeoutStatus(
             trainerData.userId,
             true,
             Date.now() + (trainerData.userTotalTimeouts + 1) * 43200000
           );
-          await db.incrementTotalTimeouts(trainerData.userId);
+          await db.IncrementTotalTimeouts(trainerData.userId);
 
           return collector.stop();
         }
@@ -199,7 +199,7 @@ export default async function (
                 ],
                 files: [],
               });
-              await db.setUserBlacklistedStatus(trainerData.userId, true);
+              await db.SetUserBlacklistedStatus(trainerData.userId, true);
               return;
             }
 
@@ -217,12 +217,12 @@ export default async function (
               ],
               files: [],
             });
-            await db.setTimeoutStatus(
+            await db.SetTimeoutStatus(
               trainerData.userId,
               true,
               Date.now() + (trainerData.userTotalTimeouts + 1) * 43200000
             );
-            await db.incrementTotalTimeouts(trainerData.userId);
+            await db.IncrementTotalTimeouts(trainerData.userId);
             return;
           } catch {
             if (trainerData.userTotalTimeouts === 6) {
@@ -236,7 +236,7 @@ export default async function (
                     ),
                 ],
               });
-              await db.setUserBlacklistedStatus(trainerData.userId, true);
+              await db.SetUserBlacklistedStatus(trainerData.userId, true);
               return;
             }
 
@@ -254,12 +254,12 @@ export default async function (
                   ),
               ],
             });
-            await db.setTimeoutStatus(
+            await db.SetTimeoutStatus(
               trainerData.userId,
               true,
               Date.now() + (trainerData.userTotalTimeouts + 1) * 43200000
             );
-            await db.incrementTotalTimeouts(trainerData.userId);
+            await db.IncrementTotalTimeouts(trainerData.userId);
             return;
           }
         }

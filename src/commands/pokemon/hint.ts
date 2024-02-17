@@ -13,10 +13,10 @@ export default new Command({
   run: async ({ interaction, client }) => {
     if (!interaction.channel) return;
 
-    const spawnedPoke: Pokemons | null = await db.findOneSpawnedPokemon(
+    const spawnedPoke: Pokemons | null = await db.FindOneSpawnedPokemon(
       interaction.channel.id
     );
-    const userData: userData | null = await db.findPokemonTrainer(
+    const userData: userData | null = await db.FindPokemonTrainer(
       interaction.user.id
     );
     if (!userData) return;
@@ -42,7 +42,7 @@ export default new Command({
         ],
       });
 
-    await db.decreaseCoins(interaction.user.id, 1000);
+    await db.DecreaseCoins(interaction.user.id, 1000);
 
     const hintReturn: string = await hintGame(spawnedPoke.pokemonName);
 

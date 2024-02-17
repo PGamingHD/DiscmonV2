@@ -48,28 +48,28 @@ export default new Event(Events.ClientReady, async (client) => {
 
   await lotterySystem(client);
 
-  const auctions: any = await db.findAllAuctions();
+  const auctions: any = await db.FindAllAuctions();
   for (const auction of auctions) {
     const timeLeft: number = parseInt(auction.endTime) - Date.now();
 
     setTimeout(async (): Promise<void> => {
-      const findAuction: any = await db.findSpecificAuction(auction.auctionId);
+      const findAuction: any = await db.FindSpecificAuction(auction.auctionId);
 
       if (findAuction) {
-        await db.setPokemonAuction(auction.pokemon.pokemonId, false);
-        await db.removePokemonAuction(auction.pokemon.pokemonId);
+        await db.SetPokemonAuction(auction.pokemon.pokemonId, false);
+        await db.RemovePokemonAuction(auction.pokemon.pokemonId);
 
         if (!findAuction.leaderData) return;
 
-        const findUser = await db.findPokemonTrainer(findAuction.leaderData);
-        const findSeller = await db.findPokemonTrainer(
+        const findUser = await db.FindPokemonTrainer(findAuction.leaderData);
+        const findSeller = await db.FindPokemonTrainer(
           findAuction.pokemon.pokemonOwner
         );
 
         if (!findUser) return;
         if (!findSeller) return;
 
-        const getHighestPoke: Pokemons[] = await db.getPokemonNextPokeId(
+        const getHighestPoke: Pokemons[] = await db.GetPokemonNextPokeId(
           findAuction.leaderData
         );
 
@@ -86,18 +86,18 @@ export default new Event(Events.ClientReady, async (client) => {
           incrementId = getHighestPoke[0].pokemonPlacementId + 1;
         if (!incrementId) incrementId = 1;
 
-        await db.setPokemonOwner(
+        await db.SetPokemonOwner(
           auction.pokemon.pokemonId,
           findAuction.leaderData,
           incrementId
         );
         if (findAuction.leaderData !== findAuction.pokemon.pokemonOwner) {
-          await db.setTokens(
+          await db.SetTokens(
             findAuction.leaderData,
             parseInt(findUser.userTokens.toString()) -
               findAuction.auctionCurrent
           );
-          await db.setTokens(
+          await db.SetTokens(
             findAuction.pokemon.pokemonOwner,
             findSeller.userTokens + findAuction.auctionCurrent
           );
@@ -106,7 +106,7 @@ export default new Event(Events.ClientReady, async (client) => {
     }, timeLeft);
   }
 
-  const allPokemons: Pokemons[] = await db.findDeleteCatchablePokemon();
+  const allPokemons: Pokemons[] = await db.FindDeleteCatchablePokemon();
   for (const spawnedPokemon of allPokemons) {
     try {
       const guild: Guild = await client.guilds.fetch(
@@ -131,6 +131,6 @@ export default new Event(Events.ClientReady, async (client) => {
   }
 
   await db
-    .deleteCatchablePokemon()
+    .DeleteCatchablePokemon()
     .then(() => logger.warning("Successfully removed all catchable Pokémons!"));
 });

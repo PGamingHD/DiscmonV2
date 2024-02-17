@@ -16,11 +16,11 @@ export default async function (
   if (client.xpCooldowns.has(message.author.id)) return;
   if (!message.guild) return;
 
-  const findSelected: Pokemons | null = await db.findUserSelectedPokemon(
+  const findSelected: Pokemons | null = await db.FindUserSelectedPokemon(
     message.author.id
   );
   if (!findSelected) return;
-  const pokemon: any = await db.getPokemon(findSelected.pokemonName);
+  const pokemon: any = await db.GetPokemon(findSelected.pokemonName);
   if (!pokemon) return;
 
   let newLevelXP;
@@ -31,20 +31,20 @@ export default async function (
   }
 
   if (findSelected.pokemonXP >= newLevelXP && findSelected.pokemonLevel < 100) {
-    const levelPoke: Pokemons | null = await db.setPokemonLevelUp(
+    const levelPoke: Pokemons | null = await db.SetPokemonLevelUp(
       findSelected.pokemonId
     );
     if (!levelPoke) return;
-    const toEvolveTo: Pokemon | null = await db.getPokemon(
+    const toEvolveTo: Pokemon | null = await db.GetPokemon(
       pokemon.pokemonEvolve.nextEvolveName
     );
-    const serverData: PokemonServer | null = await db.getServer(
+    const serverData: PokemonServer | null = await db.GetServer(
       message.guild.id
     );
 
     if (pokemon.pokemonEvolve.nextEvolveLevel <= levelPoke.pokemonLevel) {
       if (toEvolveTo) {
-        await db.setPokemonEvolve(
+        await db.SetPokemonEvolve(
           findSelected.pokemonId,
           toEvolveTo.pokemonName,
           toEvolveTo.pokemonPicture
@@ -92,7 +92,7 @@ export default async function (
   }
 
   if (findSelected.pokemonLevel < 100) {
-    await db.setPokemonXP(
+    await db.SetPokemonXP(
       findSelected.pokemonId,
       await randomizeNumber(20, 50)
     );

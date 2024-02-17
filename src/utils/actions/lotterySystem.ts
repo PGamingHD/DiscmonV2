@@ -16,11 +16,11 @@ import { Client } from "discord.js";
 
 export default async function (client: Client) {
   Cron("0 0 20 * * 2,4,5,0", async () => {
-    const boughtTickets: number = await db.countAllTickets();
+    const boughtTickets: number = await db.CountAllTickets();
     if (boughtTickets === 0) {
       const nextRun: any = Cron("0 0 20 * * 2,4,5,0").nextRun();
-      await db.setNewGlobalLotteryData(0, Math.floor(nextRun), 0, 0);
-      await db.deleteLotteryTickets();
+      await db.SetNewGlobalLotteryData(0, Math.floor(nextRun), 0, 0);
+      await db.DeleteLotteryTickets();
 
       return sendWebhook(
         "https://canary.discord.com/api/webhooks/1119763216487162026/VlWm-1ajfdzRZtzY4S1PvgkggiEhhZZdHi83D-Z-QidmGTDwQYKt0u2vdZrprdTgAWw-",
@@ -30,11 +30,11 @@ export default async function (client: Client) {
       );
     }
 
-    const globalData: lotteryGlobal | null = await db.getLotteryGlobals();
+    const globalData: lotteryGlobal | null = await db.GetLotteryGlobals();
     if (!globalData) return;
 
     if (globalData.currentParticipants < 5) {
-      const allTickets = await db.findAllTickets();
+      const allTickets = await db.FindAllTickets();
       const uniqueParticipants: string[] = [];
       for (const ticket of allTickets) {
         if (!uniqueParticipants.includes(ticket.ticketsOwner))
@@ -42,11 +42,11 @@ export default async function (client: Client) {
       }
 
       for (const userid of uniqueParticipants) {
-        const usersData = await db.findPokemonTrainer(userid);
+        const usersData = await db.FindPokemonTrainer(userid);
         if (!usersData) continue;
 
-        const usersTickets: number = await db.countUserTickets(userid);
-        await db.setCoins(
+        const usersTickets: number = await db.CountUserTickets(userid);
+        await db.SetCoins(
           userid,
           parseInt(usersData.userCoins.toString()) + usersTickets * 10000
         );
@@ -60,8 +60,8 @@ export default async function (client: Client) {
       }
 
       const nextRun: any = Cron("0 0 20 * * 2,4,5,0").nextRun();
-      await db.setNewGlobalLotteryData(0, Math.floor(nextRun), 0, 0);
-      await db.deleteLotteryTickets();
+      await db.SetNewGlobalLotteryData(0, Math.floor(nextRun), 0, 0);
+      await db.DeleteLotteryTickets();
 
       return sendWebhook(
         "https://canary.discord.com/api/webhooks/1119763216487162026/VlWm-1ajfdzRZtzY4S1PvgkggiEhhZZdHi83D-Z-QidmGTDwQYKt0u2vdZrprdTgAWw-",
@@ -74,29 +74,29 @@ export default async function (client: Client) {
     //WINNER 1
 
     const randomWinner1Ticket: number = await randomizeNumber(1, boughtTickets);
-    const winner1Ticket: userTickets | null = await db.getSpecificTicket(
+    const winner1Ticket: userTickets | null = await db.GetSpecificTicket(
       randomWinner1Ticket - 1
     );
     const winner1Award: number = (50 / 100) * Number(globalData.currentJackpot);
     if (!winner1Ticket) return;
 
-    const winner1Data: userData | null = await db.findPokemonTrainer(
+    const winner1Data: userData | null = await db.FindPokemonTrainer(
       winner1Ticket.ticketsOwner
     );
     if (!winner1Data) return;
 
-    await db.setCoins(
+    await db.SetCoins(
       winner1Data.userId,
       Math.floor(parseInt(winner1Data.userCoins.toString()) + winner1Award)
     );
 
     const spawnedRarity = await getSpawnRarity();
-    const getPokemons: number = await db.getPokemonRarityCount(
+    const getPokemons: number = await db.GetPokemonRarityCount(
       spawnedRarity.toUpperCase() as PokemonRarity
     );
     const randomPokemon: number = await randomizeNumber(1, getPokemons);
 
-    const pokemonToSpawn: any = await db.getRandomPokemon(
+    const pokemonToSpawn: any = await db.GetRandomPokemon(
       spawnedRarity.toUpperCase() as PokemonRarity,
       randomPokemon - 1
     );
@@ -131,7 +131,7 @@ export default async function (client: Client) {
 
     const Gender: PokemonGender[] = [PokemonGender.MALE, PokemonGender.FEMALE];
 
-    const getHighestPoke: Pokemons[] = await db.getPokemonNextPokeId(
+    const getHighestPoke: Pokemons[] = await db.GetPokemonNextPokeId(
       winner1Data.userId
     );
     let incrementId;
@@ -157,7 +157,7 @@ export default async function (client: Client) {
     const IVpercentage = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
     const IVtotal: string = ((IVpercentage / 186) * 100).toFixed(2);
 
-    await db.setNewPokemonOwner(
+    await db.SetNewPokemonOwner(
       generateFlake(),
       winner1Data.userId,
       `https://pgaminghd.github.io/discmon-images/pokemon-sprites/shiny/${pokemonToSpawn.pokemonPokedex}.png`,
@@ -196,18 +196,18 @@ export default async function (client: Client) {
     //WINNER 2
 
     const randomWinner2Ticket: number = await randomizeNumber(1, boughtTickets);
-    const winner2Ticket: userTickets | null = await db.getSpecificTicket(
+    const winner2Ticket: userTickets | null = await db.GetSpecificTicket(
       randomWinner2Ticket - 1
     );
     const winner2Award: number = (30 / 100) * Number(globalData.currentJackpot);
     if (!winner2Ticket) return;
 
-    const winner2Data: userData | null = await db.findPokemonTrainer(
+    const winner2Data: userData | null = await db.FindPokemonTrainer(
       winner2Ticket.ticketsOwner
     );
     if (!winner2Data) return;
 
-    await db.setCoins(
+    await db.SetCoins(
       winner2Data.userId,
       Math.floor(parseInt(winner2Data.userCoins.toString()) + winner2Award)
     );
@@ -222,18 +222,18 @@ export default async function (client: Client) {
     //WINNER 3
 
     const randomWinner3Ticket: number = await randomizeNumber(1, boughtTickets);
-    const winner3Ticket: userTickets | null = await db.getSpecificTicket(
+    const winner3Ticket: userTickets | null = await db.GetSpecificTicket(
       randomWinner3Ticket - 1
     );
     const winner3Award: number = (30 / 100) * Number(globalData.currentJackpot);
     if (!winner3Ticket) return;
 
-    const winner3Data: userData | null = await db.findPokemonTrainer(
+    const winner3Data: userData | null = await db.FindPokemonTrainer(
       winner3Ticket.ticketsOwner
     );
     if (!winner3Data) return;
 
-    await db.setCoins(
+    await db.SetCoins(
       winner3Data.userId,
       Math.floor(parseInt(winner3Data.userCoins.toString()) + winner3Award)
     );
@@ -246,8 +246,8 @@ export default async function (client: Client) {
     } catch {}
 
     const nextRun: any = Cron("0 0 20 * * 2,4,5,0").nextRun();
-    await db.setNewGlobalLotteryData(0, Math.floor(nextRun), 0, 0);
-    await db.deleteLotteryTickets();
+    await db.SetNewGlobalLotteryData(0, Math.floor(nextRun), 0, 0);
+    await db.DeleteLotteryTickets();
 
     return sendWebhook(
       "https://canary.discord.com/api/webhooks/1119763216487162026/VlWm-1ajfdzRZtzY4S1PvgkggiEhhZZdHi83D-Z-QidmGTDwQYKt0u2vdZrprdTgAWw-",

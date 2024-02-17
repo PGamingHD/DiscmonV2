@@ -26,7 +26,7 @@ export default new Command({
     const pokeId: number | null = interaction.options.getInteger("pokeid");
     if (!pokeId) return;
 
-    const findPokemon = await db.findPlacementPokemon(
+    const findPokemon = await db.FindPlacementPokemon(
       interaction.user.id,
       pokeId
     );
@@ -107,7 +107,7 @@ export default new Command({
 
       if (interactionCollector.user.id !== interaction.user.id) return;
       if (interactionCollector.customId === "confirm") {
-        await db.deleteCaughtPokemon(findPokemon.pokemonId);
+        await db.DeleteCaughtPokemon(findPokemon.pokemonId);
 
         await interactionCollector.editReply({
           embeds: [],

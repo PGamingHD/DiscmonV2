@@ -22,14 +22,14 @@ export default async function (
   let isShiny: boolean = false;
   if (modifierRarity === "SHINY") isShiny = true;
 
-  const getPokemons: number = await db.getPokemonRarityCount(
+  const getPokemons: number = await db.GetPokemonRarityCount(
     spawnedRarity.toUpperCase() === "SHINY"
       ? "MYTHICAL"
       : (spawnedRarity.toUpperCase() as PokemonRarity)
   );
   const randomPokemon: number = await randomizeNumber(1, getPokemons);
 
-  const pokemonToSpawn: any = await db.getRandomPokemon(
+  const pokemonToSpawn: any = await db.GetRandomPokemon(
     spawnedRarity.toUpperCase() as PokemonRarity,
     randomPokemon - 1
   );
@@ -94,7 +94,7 @@ export default async function (
   const guildId: string = message.guild.id;
   const channelId: string = channelToSend.id;
 
-  const hasSpawnedAlready: Pokemons | null = await db.findSpawnedPokemon(
+  const hasSpawnedAlready: Pokemons | null = await db.FindSpawnedPokemon(
     channelId,
     pokemonToSpawn.pokemonName
   );
@@ -115,7 +115,7 @@ export default async function (
       });
     } catch {}
 
-    await db.deleteSpawnedPokemon(hasSpawnedAlready.pokemonId);
+    await db.DeleteSpawnedPokemon(hasSpawnedAlready.pokemonId);
   }
 
   const HPiv: number = await randomizeNumber(1, 31);
@@ -128,7 +128,7 @@ export default async function (
   const IVpercentage = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
   const IVtotal: string = ((IVpercentage / 186) * 100).toFixed(2);
 
-  await db.spawnNewPokemon(
+  await db.SpawnNewPokemon(
     guildId,
     channelId,
     spawnMessage.reactions.message.id,
@@ -158,16 +158,16 @@ export default async function (
     }
   );
 
-  await db.setServerSpawnChance(guildId, 0);
+  await db.SetServerSpawnChance(guildId, 0);
 
   setTimeout(async () => {
-    const timeToDel: Pokemons | null = await db.findSpawnedExactPokemon(
+    const timeToDel: Pokemons | null = await db.FindSpawnedExactPokemon(
       generatedId,
       channelId
     );
 
     if (timeToDel) {
-      await db.deleteSpawnedPokemon(generatedId);
+      await db.DeleteSpawnedPokemon(generatedId);
 
       /*if (spawnMessage) {
                 await spawnMessage.delete();

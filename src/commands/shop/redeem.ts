@@ -48,8 +48,8 @@ export default new Command({
       const name: string | null = interaction.options.getString("name");
       if (!name) return;
 
-      const pokemon: any = await db.getPokemon(capitalizeFirst(name));
-      const usersData: any = await db.findPokemonTrainer(interaction.user.id);
+      const pokemon: any = await db.GetPokemon(capitalizeFirst(name));
+      const usersData: any = await db.FindPokemonTrainer(interaction.user.id);
       if (!usersData) return;
 
       if (!pokemon)
@@ -89,7 +89,7 @@ export default new Command({
         HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
       const IVtotal: string = ((IVpercentage / 186) * 100).toFixed(2);
 
-      const getHighestPoke: Pokemons[] = await db.getPokemonNextPokeId(
+      const getHighestPoke: Pokemons[] = await db.GetPokemonNextPokeId(
         interaction.user.id
       );
 
@@ -106,7 +106,7 @@ export default new Command({
         incrementId = getHighestPoke[0].pokemonPlacementId + 1;
       if (!incrementId) incrementId = 1;
 
-      await db.spawnNewRedeemPokemon(
+      await db.SpawnNewRedeemPokemon(
         generatedId,
         interaction.user.id,
         incrementId,
@@ -135,7 +135,7 @@ export default new Command({
         }
       );
 
-      await db.setUserRedeems(
+      await db.SetUserRedeems(
         interaction.user.id,
         usersData.userBag.userRedeems - 1
       );
@@ -151,7 +151,7 @@ export default new Command({
         ],
       });
     } else if (interaction.options.getSubcommand() === "pokecoins") {
-      const usersData: any = await db.findPokemonTrainer(interaction.user.id);
+      const usersData: any = await db.FindPokemonTrainer(interaction.user.id);
       if (!usersData) return;
 
       if (usersData.userBag.userRedeems < 1)
@@ -166,8 +166,8 @@ export default new Command({
           ],
         });
 
-      await db.setCoins(interaction.user.id, usersData.userCoins + 50000);
-      await db.setUserRedeems(
+      await db.SetCoins(interaction.user.id, usersData.userCoins + 50000);
+      await db.SetUserRedeems(
         interaction.user.id,
         usersData.userBag.userRedeems - 1
       );
@@ -183,7 +183,7 @@ export default new Command({
         ],
       });
     } else if (interaction.options.getSubcommand() === "shiny") {
-      const usersData: any = await db.findPokemonTrainer(interaction.user.id);
+      const usersData: any = await db.FindPokemonTrainer(interaction.user.id);
       if (!usersData) return;
 
       if (usersData.userBag.userRedeems < 25)
@@ -199,12 +199,12 @@ export default new Command({
         });
 
       const getRarity: string = await getSpawnRarity();
-      const getPokemons: number = await db.getPokemonRarityCount(
+      const getPokemons: number = await db.GetPokemonRarityCount(
         getRarity.toUpperCase() as PokemonRarity
       );
       const randomPokemon: number = await randomizeNumber(1, getPokemons);
 
-      const pokemonToSpawn: any = await db.getRandomPokemon(
+      const pokemonToSpawn: any = await db.GetRandomPokemon(
         getRarity.toUpperCase() as PokemonRarity,
         randomPokemon - 1
       );
@@ -225,7 +225,7 @@ export default new Command({
         HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
       const IVtotal: string = ((IVpercentage / 186) * 100).toFixed(2);
 
-      const getHighestPoke: Pokemons[] = await db.getPokemonNextPokeId(
+      const getHighestPoke: Pokemons[] = await db.GetPokemonNextPokeId(
         interaction.user.id
       );
 
@@ -242,7 +242,7 @@ export default new Command({
         incrementId = getHighestPoke[0].pokemonPlacementId + 1;
       if (!incrementId) incrementId = 1;
 
-      await db.spawnNewRedeemPokemon(
+      await db.SpawnNewRedeemPokemon(
         generatedId,
         interaction.user.id,
         incrementId,
@@ -271,7 +271,7 @@ export default new Command({
         }
       );
 
-      await db.setUserRedeems(
+      await db.SetUserRedeems(
         interaction.user.id,
         usersData.userBag.userRedeems - 25
       );

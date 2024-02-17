@@ -412,7 +412,7 @@ export default new Command({
           ],
         });
 
-      const alrExists: Pokemon | null = await db.getPokemon(pokeName);
+      const alrExists: Pokemon | null = await db.GetPokemon(pokeName);
 
       if (alrExists)
         return interaction.reply({
@@ -479,7 +479,7 @@ export default new Command({
         });
       }
 
-      await db.addNewPokemon({
+      await db.AddNewPokemon({
         pokemonId: generateFlake(),
         pokemonPokedex: pokeId,
         pokemonName: pokeName,
@@ -529,7 +529,7 @@ export default new Command({
 
       pokeName = capitalizeFirst(pokeName);
 
-      const spawnedPokemon: Pokemons | null = await db.findSpawnedPokemon(
+      const spawnedPokemon: Pokemons | null = await db.FindSpawnedPokemon(
         interaction.channel.id,
         pokeName
       );
@@ -561,7 +561,7 @@ export default new Command({
           });
         } catch {}
 
-        await db.deleteSpawnedPokemon(spawnedPokemon.pokemonId);
+        await db.DeleteSpawnedPokemon(spawnedPokemon.pokemonId);
       }
 
       return interaction.reply({
@@ -575,7 +575,7 @@ export default new Command({
         ],
       });
     } else if (interaction.options.getSubcommand() === "fetchpokemons") {
-      const allPokemons: any = await db.findAllPokemons();
+      const allPokemons: any = await db.FindAllPokemons();
       const pokemonData: string[] = [];
 
       for (const pokemon of allPokemons) {
@@ -619,7 +619,7 @@ export default new Command({
     } else if (interaction.options.getSubcommand() === "spawnmax") {
       if (!interaction.guild) return;
 
-      await db.incrementServerSpawnChance(interaction.guild.id, 50);
+      await db.IncrementServerSpawnChance(interaction.guild.id, 50);
 
       return interaction.reply({
         ephemeral: true,
@@ -646,8 +646,8 @@ export default new Command({
 
       pokeName = capitalizeFirst(pokeName);
 
-      const getPokemon: Pokemon | null = await db.getPokemon(pokeName);
-      const getPokemonServer: PokemonServer | null = await db.getServer(
+      const getPokemon: Pokemon | null = await db.GetPokemon(pokeName);
+      const getPokemonServer: PokemonServer | null = await db.GetServer(
         interaction.guild.id
       );
 
@@ -705,7 +705,7 @@ export default new Command({
       if (!maxuses) return;
       if (!rewardamount) return;
 
-      const findExisting: globalCodes | null = await db.findCode(code);
+      const findExisting: globalCodes | null = await db.FindCode(code);
       if (findExisting)
         return interaction.reply({
           ephemeral: true,
@@ -718,7 +718,7 @@ export default new Command({
           ],
         });
 
-      await db.createCode(code, type as RewardType, rewardamount, maxuses);
+      await db.CreateCode(code, type as RewardType, rewardamount, maxuses);
 
       return interaction.reply({
         ephemeral: true,
@@ -734,7 +734,7 @@ export default new Command({
       const userId: string | null = interaction.options.getString("userid");
       if (!userId) return;
 
-      const usersData: userData | null = await db.findPokemonTrainer(userId);
+      const usersData: userData | null = await db.FindPokemonTrainer(userId);
       if (!usersData)
         return interaction.reply({
           ephemeral: true,
@@ -745,8 +745,8 @@ export default new Command({
           ],
         });
 
-      await db.deleteAllTrainerPokemons(usersData.userId);
-      await db.removeTrainerData(usersData.userId);
+      await db.DeleteAllTrainerPokemons(usersData.userId);
+      await db.RemoveTrainerData(usersData.userId);
 
       return interaction.reply({
         ephemeral: true,
@@ -830,7 +830,7 @@ export default new Command({
       const amount = interaction.options.getInteger("amount") || 0;
       const status = interaction.options.getSubcommand() || "add";
 
-      const getTrainer = await db.findPokemonTrainer(userId);
+      const getTrainer = await db.FindPokemonTrainer(userId);
 
       if (!getTrainer)
         return interaction.reply({
@@ -844,9 +844,9 @@ export default new Command({
 
       if (status === "set") {
         if (type === "COINS") {
-          await db.setCoins(userId, amount);
+          await db.SetCoins(userId, amount);
         } else {
-          await db.setTokens(userId, amount);
+          await db.SetTokens(userId, amount);
         }
 
         return interaction.reply({
@@ -863,9 +863,9 @@ export default new Command({
         });
       } else if (status === "add") {
         if (type === "COINS") {
-          await db.addCoins(userId, amount);
+          await db.AddCoins(userId, amount);
         } else {
-          await db.addTokens(userId, amount);
+          await db.AddTokens(userId, amount);
         }
 
         return interaction.reply({

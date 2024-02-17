@@ -11,7 +11,7 @@ export default new Command({
   noDefer: true,
   main: true,
   run: async ({ interaction, client }) => {
-    const usersData = await db.findPokemonTrainer(interaction.user.id);
+    const usersData = await db.FindPokemonTrainer(interaction.user.id);
     if (!usersData) return;
     if (!interaction.guild) return;
     if (!interaction.member) return;

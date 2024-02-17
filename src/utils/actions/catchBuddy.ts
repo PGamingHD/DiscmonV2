@@ -12,12 +12,12 @@ import getModifiedSpawnRarity from "./getModifiedSpawnRarity";
 import getSpawnRarity from "./getSpawnRarity";
 
 export default async function (client: ExtendedClient): Promise<void> {
-  const allBuddies: userCatchBuddy[] = await db.getAllBuddies();
+  const allBuddies: userCatchBuddy[] = await db.GetAllBuddies();
 
   for (const buddy of allBuddies) {
     Cron("*/30 * * * * *", async () => {
-      let newBuddyData = await db.getOneBuddy(buddy.userId);
-      const usersData: any = await db.findPokemonTrainer(buddy.userId);
+      let newBuddyData = await db.GetOneBuddy(buddy.userId);
+      const usersData: any = await db.FindPokemonTrainer(buddy.userId);
       if (!newBuddyData) return;
       if (!usersData) return;
 
@@ -28,7 +28,7 @@ export default async function (client: ExtendedClient): Promise<void> {
         Number(newBuddyData.catcherRefill) + 60000 >= Date.now() &&
         Number(newBuddyData.catcherNext) !== 0
       )
-        newBuddyData = await db.setCatchAvailableStatus(buddy.userId, true);
+        newBuddyData = await db.SetCatchAvailableStatus(buddy.userId, true);
 
       if (newBuddyData.catchAvailable) {
         let getRarity: string = ``;
@@ -46,12 +46,12 @@ export default async function (client: ExtendedClient): Promise<void> {
           if (getModifier === "SHINY") isShiny = true;
         }
 
-        const getPokemons: number = await db.getPokemonRarityCount(
+        const getPokemons: number = await db.GetPokemonRarityCount(
           getRarity.toUpperCase() as PokemonRarity
         );
         const randomPokemon: number = await randomizeNumber(1, getPokemons);
 
-        const pokemonToSpawn: any = await db.getRandomPokemon(
+        const pokemonToSpawn: any = await db.GetRandomPokemon(
           getRarity.toUpperCase() as PokemonRarity,
           randomPokemon - 1
         );
@@ -70,7 +70,7 @@ export default async function (client: ExtendedClient): Promise<void> {
           HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
         const IVtotal: string = ((IVpercentage / 186) * 100).toFixed(2);
 
-        const getHighestPoke: Pokemons[] = await db.getPokemonNextPokeId(
+        const getHighestPoke: Pokemons[] = await db.GetPokemonNextPokeId(
           buddy.userId
         );
 
@@ -105,7 +105,7 @@ export default async function (client: ExtendedClient): Promise<void> {
         if (Object.keys(challengeObject).length === 0) {
           for (const challenge of usersData.userChallenges) {
             const challengeToCatch = challenge.challengesToCatch;
-            const getPokemon = await db.getPokemon(pokemonToSpawn.pokemonName);
+            const getPokemon = await db.GetPokemon(pokemonToSpawn.pokemonName);
             if (!getPokemon) return;
             if (
               challengeToCatch.toLowerCase() === "legendary" &&
@@ -145,14 +145,14 @@ export default async function (client: ExtendedClient): Promise<void> {
         }
 
         if (Object.keys(challengeObject).length !== 0) {
-          const challenge: any = await db.findChallenge(
+          const challenge: any = await db.FindChallenge(
             buddy.userId,
             challengeObject.challengesId
           );
           let newChallenge: any = {};
 
           if (challenge && !challenge.challengesCompleted) {
-            newChallenge = await db.incrementChallengeCaught(
+            newChallenge = await db.IncrementChallengeCaught(
               challenge.challengesId
             );
           }
@@ -163,17 +163,17 @@ export default async function (client: ExtendedClient): Promise<void> {
             newChallenge.challengesCaughtAmount ===
               newChallenge.challengesAmount
           ) {
-            await db.setChallengeCompleted(newChallenge.challengesId);
+            await db.SetChallengeCompleted(newChallenge.challengesId);
 
             if (newChallenge.challengesCoinReward !== null) {
-              await db.setCoins(
+              await db.SetCoins(
                 usersData.userId,
                 usersData.userCoins + newChallenge.challengesCoinReward
               );
             }
 
             if (newChallenge.challengesTokenReward !== null) {
-              await db.setTokens(
+              await db.SetTokens(
                 usersData.userId,
                 usersData.userTokens + newChallenge.challengesTokenReward
               );
@@ -183,7 +183,7 @@ export default async function (client: ExtendedClient): Promise<void> {
           }
         }
 
-        await db.spawnNewRedeemPokemon(
+        await db.SpawnNewRedeemPokemon(
           generatedId,
           buddy.userId,
           incrementId,
@@ -214,14 +214,14 @@ export default async function (client: ExtendedClient): Promise<void> {
           }
         );
 
-        newBuddyData = await db.setCatchAvailableStatus(buddy.userId, false);
-        newBuddyData = await db.setCatcherNextTime(
+        newBuddyData = await db.SetCatchAvailableStatus(buddy.userId, false);
+        newBuddyData = await db.SetCatcherNextTime(
           buddy.userId,
           Math.floor(
             Date.now() + 1000 * 60 * (60 / (newBuddyData.pokemonUpgrade + 1))
           )
         );
-        newBuddyData = await db.incremenetCatcherCaught(buddy.userId);
+        newBuddyData = await db.IncremenetCatcherCaught(buddy.userId);
       }
 
       if (
@@ -230,7 +230,7 @@ export default async function (client: ExtendedClient): Promise<void> {
           Date.now() + 1000 * 60 * (60 / (newBuddyData.pokemonUpgrade + 1)) &&
         newBuddyData.catcherNext <= Date.now()
       ) {
-        await db.setCatcherNextTime(
+        await db.SetCatcherNextTime(
           buddy.userId,
           Math.floor(
             Date.now() + 1000 * 60 * (60 / (newBuddyData.pokemonUpgrade + 1))
@@ -239,9 +239,9 @@ export default async function (client: ExtendedClient): Promise<void> {
       }
 
       if (newBuddyData.catcherRefill < Date.now()) {
-        await db.setCatcherEnabledStatus(buddy.userId, false);
-        await db.setCatcherNextTime(buddy.userId, 0);
-        await db.setCatcherRefillTime(buddy.userId, 0);
+        await db.SetCatcherEnabledStatus(buddy.userId, false);
+        await db.SetCatcherNextTime(buddy.userId, 0);
+        await db.SetCatcherRefillTime(buddy.userId, 0);
       }
     });
   }
