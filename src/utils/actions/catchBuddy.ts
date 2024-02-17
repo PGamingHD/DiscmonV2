@@ -2,10 +2,10 @@ import { ExtendedClient } from "../../structures/Client";
 import db from "../database";
 import { Cron } from "croner";
 import {
-  generateFlake,
-  randomizeGender,
-  randomizeNature,
-  randomizeNumber,
+  GenerateFlake,
+  RandomizeGender,
+  RandomizeNature,
+  RandomizeNumber,
 } from "../misc";
 import { PokemonRarity, Pokemons, userCatchBuddy } from "@prisma/client";
 import getModifiedSpawnRarity from "./getModifiedSpawnRarity";
@@ -49,22 +49,22 @@ export default async function (client: ExtendedClient): Promise<void> {
         const getPokemons: number = await db.GetPokemonRarityCount(
           getRarity.toUpperCase() as PokemonRarity
         );
-        const randomPokemon: number = await randomizeNumber(1, getPokemons);
+        const randomPokemon: number = await RandomizeNumber(1, getPokemons);
 
         const pokemonToSpawn: any = await db.GetRandomPokemon(
           getRarity.toUpperCase() as PokemonRarity,
           randomPokemon - 1
         );
 
-        const levelGeneration: number = await randomizeNumber(1, 20);
-        const generatedId: string = generateFlake();
+        const levelGeneration: number = await RandomizeNumber(1, 20);
+        const generatedId: string = GenerateFlake();
 
-        const HPiv: number = await randomizeNumber(1, 31);
-        const ATKiv: number = await randomizeNumber(1, 31);
-        const DEFiv: number = await randomizeNumber(1, 31);
-        const SPECATKiv: number = await randomizeNumber(1, 31);
-        const SPECDEFiv: number = await randomizeNumber(1, 31);
-        const SPEEDiv: number = await randomizeNumber(1, 31);
+        const HPiv: number = await RandomizeNumber(1, 31);
+        const ATKiv: number = await RandomizeNumber(1, 31);
+        const DEFiv: number = await RandomizeNumber(1, 31);
+        const SPECATKiv: number = await RandomizeNumber(1, 31);
+        const SPECDEFiv: number = await RandomizeNumber(1, 31);
+        const SPEEDiv: number = await RandomizeNumber(1, 31);
 
         const IVpercentage: number =
           HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
@@ -191,8 +191,8 @@ export default async function (client: ExtendedClient): Promise<void> {
           isShiny
             ? `https://pgaminghd.github.io/discmon-images/pokemon-sprites/shiny/${pokemonToSpawn.pokemonPokedex}.png`
             : pokemonToSpawn.pokemonPicture,
-          randomizeGender(),
-          randomizeNature(),
+          RandomizeGender(),
+          RandomizeNature(),
           pokemonToSpawn.pokemonRarity,
           levelGeneration,
           {

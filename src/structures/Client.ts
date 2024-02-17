@@ -14,7 +14,7 @@ import { CommandType, MenuType, RegisterCommandsOptions } from "../@types";
 import { ButtonType, ModalType, TextType } from "../@types/Command";
 import path from "path";
 import logger from "../utils/logger";
-import { hasUpperCase } from "../utils/misc";
+import { HasUpperCase } from "../utils/misc";
 import { readdirSync } from "fs";
 import autoPoster from "../utils/actions/autoPoster";
 import catchBuddy from "../utils/actions/catchBuddy";
@@ -92,14 +92,14 @@ export class ExtendedClient extends Client {
 
       if (command?.main) {
         guildSpecfic.push(command);
-        if (hasUpperCase(command.name)) {
+        if (HasUpperCase(command.name)) {
           logger.command(`Loaded guild contextmenu command "${command.name}"!`);
         } else {
           logger.command(`Loaded guild command "${command.name}"!`);
         }
       } else {
         globalCommands.push(command);
-        if (hasUpperCase(command.name)) {
+        if (HasUpperCase(command.name)) {
           logger.command(
             `Loaded global contextmenu command "${command.name}"!`
           );
@@ -116,7 +116,7 @@ export class ExtendedClient extends Client {
 
     for (const filePath of textFiles) {
       const command: TextType = await this.importFile(filePath);
-      if (hasUpperCase(command.name))
+      if (HasUpperCase(command.name))
         logger.error("Text commands may not be uppercased!");
       if (!command.name) continue;
 

@@ -1,6 +1,6 @@
 import { Webhook } from "@top-gg/sdk";
 import { AutoPoster } from "topgg-autoposter";
-import { sendWebhook } from "../misc";
+import { SendWebhook } from "../misc";
 import express from "express";
 import logger from "../logger";
 import db from "../database";
@@ -34,7 +34,7 @@ export default async function (client: ExtendedClient): Promise<void> {
       const findregistered: any = await db.FindPokemonTrainer(vote.user);
 
       if (findregistered) {
-        await sendWebhook(
+        await SendWebhook(
           "https://canary.discord.com/api/webhooks/1069643453631311932/SQ9yyjpRhGVPaocUZMAvJUmhuME2xPuezzt1VD11440QvRQzefFfokKyQFjg90jPe7yq",
           "🎉 New Registered Vote 🎉",
           `**A new vote was registered by <@!${vote.user}>!**\n\n*User has been successfully automatically given their voting rewards, make sure to vote below to get your own rewards!*\n\n*Click [here](https://top.gg/bot/1011002384064970944/vote) to vote for us and get free Pokétokens!*`,
@@ -66,7 +66,7 @@ export default async function (client: ExtendedClient): Promise<void> {
           await db.IncreaseTokens(vote.user, 5);
         }
       } else {
-        await sendWebhook(
+        await SendWebhook(
           "https://canary.discord.com/api/webhooks/1069643453631311932/SQ9yyjpRhGVPaocUZMAvJUmhuME2xPuezzt1VD11440QvRQzefFfokKyQFjg90jPe7yq",
           "🎉 New Registered Vote 🎉",
           `**A new vote was registered by <@!${vote.user}>!**\n\n*Sadly user does not have an account registered, and was not given their automatic rewards. Please contact Staff to have this fixed after registering!*\n\n*Click [here](https://top.gg/bot/1011002384064970944/vote) to vote for us and get free Pokétokens!*`,

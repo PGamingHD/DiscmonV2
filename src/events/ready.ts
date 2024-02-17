@@ -4,7 +4,7 @@ import db from "../utils/database";
 import logger from "../utils/logger";
 import { Pokemons } from "@prisma/client";
 import { Cron } from "croner";
-import { randomizeNumber } from "../utils/misc";
+import { RandomizeNumber } from "../utils/misc";
 import lotterySystem from "../utils/actions/lotterySystem";
 
 export default new Event(Events.ClientReady, async (client) => {
@@ -35,7 +35,7 @@ export default new Event(Events.ClientReady, async (client) => {
   ];
 
   Cron("00 */5 * * * *", async () => {
-    const random = await randomizeNumber(1, activities.length);
+    const random = await RandomizeNumber(1, activities.length);
     client.user?.setActivity({
       type: activities[random - 1].name.includes("Changes")
         ? ActivityType.Watching

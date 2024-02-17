@@ -6,7 +6,7 @@ import {
 import { Command } from "../../structures/Command";
 import db from "../../utils/database";
 import { Colours } from "../../@types/Colours";
-import { capitalizeFirst } from "../../utils/misc";
+import { CapitalizeFirst } from "../../utils/misc";
 import { chunk } from "lodash";
 import sendPagination from "../../utils/messages/sendPagination";
 
@@ -32,7 +32,7 @@ export default new Command({
       for (const pokemon of pokedexMons) {
         const types: string[] = [];
         for (const type of pokemon.pokemonType) {
-          types.push(capitalizeFirst(type.pokemonType));
+          types.push(CapitalizeFirst(type.pokemonType));
         }
 
         pokemonData.push(
@@ -40,7 +40,7 @@ export default new Command({
             pokemon.pokedexEntries[0].caught ? ":white_check_mark:" : ":x:"
           } \`${pokemon.pokemonPokedex}\` *${
             pokemon.pokemonName
-          }* • *${types.join(", ")}* • __*${capitalizeFirst(
+          }* • *${types.join(", ")}* • __*${CapitalizeFirst(
             pokemon.pokemonRarity
           )}*__`
         );
@@ -66,7 +66,7 @@ export default new Command({
     } else {
       if (isNaN(parseInt(search))) {
         const pokedexMons: any = await db.GetSpecificPokemonName(
-          capitalizeFirst(search)
+          CapitalizeFirst(search)
         );
         if (!pokedexMons)
           return interaction.reply({
@@ -87,7 +87,7 @@ export default new Command({
 
         const types: string[] = [];
         for (const type of pokedexMons.pokemonType) {
-          types.push(capitalizeFirst(type.pokemonType));
+          types.push(CapitalizeFirst(type.pokemonType));
         }
 
         return interaction.reply({
@@ -101,7 +101,7 @@ export default new Command({
                   ", "
                 )}\n**Pokédex ID:** ${
                   pokedexMons.pokemonPokedex
-                }\n**Pokémon Rarity:** ${capitalizeFirst(
+                }\n**Pokémon Rarity:** ${CapitalizeFirst(
                   pokedexMons.pokemonRarity
                 )}\n**Caught:** ${
                   getDexStatus?.caught ? ":white_check_mark:" : ":x:"
@@ -140,7 +140,7 @@ export default new Command({
 
         const types: string[] = [];
         for (const type of pokedexMons.pokemonType) {
-          types.push(capitalizeFirst(type.pokemonType));
+          types.push(CapitalizeFirst(type.pokemonType));
         }
 
         return interaction.reply({
@@ -154,7 +154,7 @@ export default new Command({
                   ", "
                 )}\n**Pokédex ID:** ${
                   pokedexMons.pokemonPokedex
-                }\n**Pokémon Rarity:** ${capitalizeFirst(
+                }\n**Pokémon Rarity:** ${CapitalizeFirst(
                   pokedexMons.pokemonRarity
                 )}\n**Caught:** ${
                   getDexStatus?.caught ? ":white_check_mark:" : ":x:"

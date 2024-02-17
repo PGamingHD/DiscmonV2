@@ -7,7 +7,7 @@ import typeChart from "./charts/effectiveChart";
 import randomNumber from "random-number-csprng";
 const SnowflakeGenerator: Generator = new Generator(1420070400000);
 
-export function generateGuid(): string {
+export function GenerateGuid(): string {
   var d: number = new Date().getTime();
   var d2: number =
     (typeof performance !== "undefined" &&
@@ -31,7 +31,7 @@ export function generateGuid(): string {
   );
 }
 
-export function generateFlake(): string {
+export function GenerateFlake(): string {
   const Snowflake: bigint | bigint[] = SnowflakeGenerator.generate(
     1,
     Date.now()
@@ -39,7 +39,7 @@ export function generateFlake(): string {
   return Snowflake.toString().replace("n", "");
 }
 
-export function capitalizeFirst(string: string): string {
+export function CapitalizeFirst(string: string): string {
   let toReturn: string = string;
   try {
     toReturn = string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -50,7 +50,7 @@ export function capitalizeFirst(string: string): string {
   return toReturn;
 }
 
-export async function randomizeNumber(
+export async function RandomizeNumber(
   min: number,
   max: number
 ): Promise<number> {
@@ -58,7 +58,7 @@ export async function randomizeNumber(
   return await randomNumber(min, max);
 }
 
-export function randomizeNature(): PokemonNature {
+export function RandomizeNature(): PokemonNature {
   const Nature: PokemonNature[] = [
     PokemonNature.TIMID,
     PokemonNature.BASHFUL,
@@ -90,13 +90,13 @@ export function randomizeNature(): PokemonNature {
   return Nature[(Math.random() * Nature.length) >> 0];
 }
 
-export function randomizeGender(): PokemonGender {
+export function RandomizeGender(): PokemonGender {
   const Gender: PokemonGender[] = [PokemonGender.MALE, PokemonGender.FEMALE];
 
   return Gender[(Math.random() * Gender.length) >> 0];
 }
 
-export function formatSeconds(seconds: number): string {
+export function FormatSeconds(seconds: number): string {
   const days: number = Math.floor(seconds / (24 * 60 * 60));
   const hours: number = Math.floor(seconds / (60 * 60));
   const minutes: number = Math.floor((seconds % (60 * 60)) / 60);
@@ -110,11 +110,11 @@ export function formatSeconds(seconds: number): string {
   return time.join(" ");
 }
 
-export function hasUpperCase(str: string): boolean {
+export function HasUpperCase(str: string): boolean {
   return str !== str.toLowerCase();
 }
 
-export function escapeRegex(str: string): string | void {
+export function EscapeRegex(str: string): string | void {
   try {
     return str.replace(/[.*+?^${}()|[\]\\]/g, `\\$&`);
   } catch (e) {
@@ -122,7 +122,7 @@ export function escapeRegex(str: string): string | void {
   }
 }
 
-export function calculatePokemonHP(
+export function CalculatePokemonHP(
   Level: number,
   BaseEV: number,
   HPiv: number,
@@ -138,7 +138,7 @@ export function calculatePokemonHP(
 }
 
 //Attack = move power, Level = poke level, Defense = DefenseEV, defenderType = stringed types, move = moveChart[moveIndex]
-export function calculateDamage(
+export function CalculateDamage(
   attackerAttack: number,
   attackerLevel: number,
   defenderDefense: number,
@@ -180,7 +180,7 @@ export function calculateDamage(
   return damageDone;
 }
 
-export async function hintGame(word: string): Promise<string> {
+export async function HintGame(word: string): Promise<string> {
   let returnString: string = "";
   for (let i: number = 0; i < word.length; i++) {
     returnString += "_";
@@ -190,7 +190,7 @@ export async function hintGame(word: string): Promise<string> {
 
   let counter: number = 0;
   for (let i: number = 0; counter < Math.ceil(word.length / 2); i++) {
-    const randomNum: number = await randomizeNumber(1, word.length);
+    const randomNum: number = await RandomizeNumber(1, word.length);
     const char: string = returnString.charAt(randomNum);
 
     if (char === word.charAt(randomNum)) continue;
@@ -203,11 +203,11 @@ export async function hintGame(word: string): Promise<string> {
   return returnString;
 }
 
-export async function sleep(time: number): Promise<void> {
+export async function Sleep(time: number): Promise<void> {
   await new Promise((r) => setTimeout(r, time));
 }
 
-export async function sendWebhook(
+export async function SendWebhook(
   webhookLink: string,
   webhookTitle: string,
   webhookDesc: string,
@@ -228,7 +228,7 @@ export async function sendWebhook(
   });
 }
 
-export async function sendWebhookWithImage(
+export async function SendWebhookWithImage(
   webhookLink: string,
   webhookTitle: string,
   webhookDesc: string,

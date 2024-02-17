@@ -8,7 +8,7 @@ import {
 import { Colours } from "../../@types/Colours";
 import db from "../database";
 import { TrainerRanks, userData } from "@prisma/client";
-import { sendWebhook } from "../misc";
+import { SendWebhook } from "../misc";
 
 export default async function (
   interaction: any,
@@ -161,7 +161,7 @@ export default async function (
           }
         }
 
-        await sendWebhook(
+        await SendWebhook(
           "https://canary.discord.com/api/webhooks/1118650376992870504/polp6TlzSDWweGX5rTnQodfMn8RwlbMyCMQkfxdPIm8mO32lU69kZ75L_3PZHVS8FzsH",
           "💰 Donation Recieved 💰",
           `*Payment recieved by* <@!${interaction.user.id}>\n\n**Type:** \`${paymentType}\`\n**Reward:** \`${paymentReward}\`\n**Amount:** \`${paymentAmount}\`USD`,

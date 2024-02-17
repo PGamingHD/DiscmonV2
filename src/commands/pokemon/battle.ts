@@ -19,9 +19,9 @@ import db from "../../utils/database";
 import { userData } from "@prisma/client";
 import { Colours } from "../../@types/Colours";
 import {
-  calculateDamage,
-  calculatePokemonHP,
-  capitalizeFirst,
+  CalculateDamage,
+  CalculatePokemonHP,
+  CapitalizeFirst,
 } from "../../utils/misc";
 import moveChart from "../../utils/charts/moveChart";
 
@@ -151,13 +151,13 @@ export default new Command({
           const canvas = createCanvas(1024, 450);
           const ctx = canvas.getContext("2d");
 
-          const totalTargetHP: number = calculatePokemonHP(
+          const totalTargetHP: number = CalculatePokemonHP(
             targetPokemon.pokemonLevel,
             targetPoke.pokemonEVs.HP,
             targetPokemon.PokemonIVs.HP,
             targetPokemon.PokemonsEVs.HP
           );
-          const totalBattlerHP: number = calculatePokemonHP(
+          const totalBattlerHP: number = CalculatePokemonHP(
             battlerPokemon.pokemonLevel,
             battlerPoke.pokemonEVs.HP,
             battlerPokemon.PokemonIVs.HP,
@@ -183,7 +183,7 @@ export default new Command({
             if (battlerMoves.length >= 5) break;
             const moveType = battlerPoke.pokemonType[0].pokemonType;
 
-            if (moveChart[i].type === capitalizeFirst(moveType)) {
+            if (moveChart[i].type === CapitalizeFirst(moveType)) {
               battlerMoves.push(moveChart[i].name);
             }
           }
@@ -242,7 +242,7 @@ export default new Command({
             if (targetMoves.length >= 5) break;
             const moveType = targetPoke.pokemonType[0].pokemonType;
 
-            if (moveChart[i].type === capitalizeFirst(moveType)) {
+            if (moveChart[i].type === CapitalizeFirst(moveType)) {
               targetMoves.push(moveChart[i].name);
             }
           }
@@ -412,10 +412,10 @@ export default new Command({
                 }
 
                 for (const type of targetPoke.pokemonType) {
-                  moveTypes.push(capitalizeFirst(type.pokemonType));
+                  moveTypes.push(CapitalizeFirst(type.pokemonType));
                 }
 
-                const damageDealt: number = calculateDamage(
+                const damageDealt: number = CalculateDamage(
                   moveData.power,
                   targetPokemon.pokemonLevel,
                   battlerPokemon.PokemonsEVs.Defense,
@@ -507,10 +507,10 @@ export default new Command({
                 }
 
                 for (const type of battlerPoke.pokemonType) {
-                  moveTypes.push(capitalizeFirst(type.pokemonType));
+                  moveTypes.push(CapitalizeFirst(type.pokemonType));
                 }
 
-                const damageDealt: number = calculateDamage(
+                const damageDealt: number = CalculateDamage(
                   moveData.power,
                   battlerPokemon.pokemonLevel,
                   targetPokemon.PokemonsEVs.Defense,

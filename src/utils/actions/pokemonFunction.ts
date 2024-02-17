@@ -7,7 +7,7 @@ import {
 import { ExtendedClient } from "../../structures/Client";
 import db from "../database";
 import { Pokemon, Pokemons, PokemonServer } from "@prisma/client";
-import { randomizeNumber } from "../misc";
+import { RandomizeNumber } from "../misc";
 
 export default async function (
   message: Message<boolean>,
@@ -94,7 +94,7 @@ export default async function (
   if (findSelected.pokemonLevel < 100) {
     await db.SetPokemonXP(
       findSelected.pokemonId,
-      await randomizeNumber(20, 50)
+      await RandomizeNumber(20, 50)
     );
 
     client.xpCooldowns.set(

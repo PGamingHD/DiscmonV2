@@ -3,7 +3,7 @@ import { Command } from "../../structures/Command";
 import db from "../../utils/database";
 import { globalCodes, RewardType, userCodes } from "@prisma/client";
 import { Colours } from "../../@types/Colours";
-import { capitalizeFirst } from "../../utils/misc";
+import { CapitalizeFirst } from "../../utils/misc";
 
 export default new Command({
   name: "code",
@@ -103,7 +103,7 @@ export default new Command({
             .setDescription(
               `You have successfully redeemed the code \`${redeem}\` and been awarded with **${toRedeem.rewardAmount.toLocaleString(
                 "en-US"
-              )}** *${capitalizeFirst(toRedeem.rewardType)}*`
+              )}** *${CapitalizeFirst(toRedeem.rewardType)}*`
             ),
         ],
       });

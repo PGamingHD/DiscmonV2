@@ -1,11 +1,11 @@
 import { ChannelType, EmbedBuilder, Message, TextChannel } from "discord.js";
 import db from "../database";
 import {
-  generateFlake,
-  randomizeGender,
-  randomizeNature,
-  randomizeNumber,
-  sendWebhookWithImage,
+  GenerateFlake,
+  RandomizeGender,
+  RandomizeNature,
+  RandomizeNumber,
+  SendWebhookWithImage,
 } from "../misc";
 import { PokemonRarity, Pokemons, PokemonServer } from "@prisma/client";
 import { Colours } from "../../@types/Colours";
@@ -27,7 +27,7 @@ export default async function (
       ? "MYTHICAL"
       : (spawnedRarity.toUpperCase() as PokemonRarity)
   );
-  const randomPokemon: number = await randomizeNumber(1, getPokemons);
+  const randomPokemon: number = await RandomizeNumber(1, getPokemons);
 
   const pokemonToSpawn: any = await db.GetRandomPokemon(
     spawnedRarity.toUpperCase() as PokemonRarity,
@@ -59,8 +59,8 @@ export default async function (
   if (!channelToSend) return;
   if (!pokemonToSpawn) return;
 
-  const levelGeneration: number = await randomizeNumber(1, 20);
-  const generatedId: string = generateFlake();
+  const levelGeneration: number = await RandomizeNumber(1, 20);
+  const generatedId: string = GenerateFlake();
 
   const spawnMessage: Message<true> = await channelToSend.send({
     embeds: [
@@ -82,7 +82,7 @@ export default async function (
     pokemonToSpawn.pokemonRarity === PokemonRarity.ULTRABEAST ||
     pokemonToSpawn.pokemonRarity === PokemonRarity.MYTHICAL
   ) {
-    await sendWebhookWithImage(
+    await SendWebhookWithImage(
       "https://canary.discord.com/api/webhooks/1120752699860860968/CF7WjmkTsFmCXtMFQGMtASRgnxKfRGVUvBvY9mvlz45p6BHunjmzan83fRRMeld797fw",
       "👑 Rare Spawn Detected 👑",
       "**A rare spawn has been detected in a guild**",
@@ -118,12 +118,12 @@ export default async function (
     await db.DeleteSpawnedPokemon(hasSpawnedAlready.pokemonId);
   }
 
-  const HPiv: number = await randomizeNumber(1, 31);
-  const ATKiv: number = await randomizeNumber(1, 31);
-  const DEFiv: number = await randomizeNumber(1, 31);
-  const SPECATKiv: number = await randomizeNumber(1, 31);
-  const SPECDEFiv: number = await randomizeNumber(1, 31);
-  const SPEEDiv: number = await randomizeNumber(1, 31);
+  const HPiv: number = await RandomizeNumber(1, 31);
+  const ATKiv: number = await RandomizeNumber(1, 31);
+  const DEFiv: number = await RandomizeNumber(1, 31);
+  const SPECATKiv: number = await RandomizeNumber(1, 31);
+  const SPECDEFiv: number = await RandomizeNumber(1, 31);
+  const SPEEDiv: number = await RandomizeNumber(1, 31);
 
   const IVpercentage = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
   const IVtotal: string = ((IVpercentage / 186) * 100).toFixed(2);
@@ -135,8 +135,8 @@ export default async function (
     generatedId,
     pokemonToSpawn.pokemonName,
     pic,
-    randomizeGender(),
-    randomizeNature(),
+    RandomizeGender(),
+    RandomizeNature(),
     pokemonToSpawn.pokemonRarity,
     levelGeneration,
     {

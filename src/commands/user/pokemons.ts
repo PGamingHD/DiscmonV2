@@ -9,7 +9,7 @@ import { PokemonOrder, userData } from "@prisma/client";
 import { Colours } from "../../@types/Colours";
 import sendPagination from "../../utils/messages/sendPagination";
 import { chunk } from "lodash";
-import { capitalizeFirst } from "../../utils/misc";
+import { CapitalizeFirst } from "../../utils/misc";
 
 export default new Command({
   name: "pokemons",
@@ -134,7 +134,7 @@ export default new Command({
           footer: {
             text: `Page ${currentPage} of ${pages.length} - Sorted by: ${
               pokemonTrainer.pokemonOrder
-            } | Rarity: ${capitalizeFirst(rarity)}`,
+            } | Rarity: ${CapitalizeFirst(rarity)}`,
           },
           color: Colours.MAIN,
         });

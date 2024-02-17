@@ -7,11 +7,11 @@ import {
 } from "discord.js";
 import db from "../database";
 import {
-  generateFlake,
-  randomizeGender,
-  randomizeNature,
-  randomizeNumber,
-  sendWebhookWithImage,
+  GenerateFlake,
+  RandomizeGender,
+  RandomizeNature,
+  RandomizeNumber,
+  SendWebhookWithImage,
 } from "../misc";
 import { PokemonRarity, Pokemons, PokemonServer } from "@prisma/client";
 import { Colours } from "../../@types/Colours";
@@ -56,7 +56,7 @@ export default async function (
   if (!pokemonToSpawn) return;
 
   const levelGeneration: number = pokeLevel;
-  const generatedId: string = generateFlake();
+  const generatedId: string = GenerateFlake();
 
   const spawnMessage: Message<true> = await channelToSend.send({
     embeds: [
@@ -78,7 +78,7 @@ export default async function (
     pokemonToSpawn.pokemonRarity === PokemonRarity.ULTRABEAST ||
     pokemonToSpawn.pokemonRarity === PokemonRarity.MYTHICAL
   ) {
-    await sendWebhookWithImage(
+    await SendWebhookWithImage(
       "https://canary.discord.com/api/webhooks/1120752699860860968/CF7WjmkTsFmCXtMFQGMtASRgnxKfRGVUvBvY9mvlz45p6BHunjmzan83fRRMeld797fw",
       "👑 Rare Spawn Detected 👑",
       "**A rare spawn has been detected in a guild**",
@@ -114,12 +114,12 @@ export default async function (
     await db.DeleteSpawnedPokemon(hasSpawnedAlready.pokemonId);
   }
 
-  let HPiv: number = await randomizeNumber(1, 31);
-  let ATKiv: number = await randomizeNumber(1, 31);
-  let DEFiv: number = await randomizeNumber(1, 31);
-  let SPECATKiv: number = await randomizeNumber(1, 31);
-  let SPECDEFiv: number = await randomizeNumber(1, 31);
-  let SPEEDiv: number = await randomizeNumber(1, 31);
+  let HPiv: number = await RandomizeNumber(1, 31);
+  let ATKiv: number = await RandomizeNumber(1, 31);
+  let DEFiv: number = await RandomizeNumber(1, 31);
+  let SPECATKiv: number = await RandomizeNumber(1, 31);
+  let SPECDEFiv: number = await RandomizeNumber(1, 31);
+  let SPEEDiv: number = await RandomizeNumber(1, 31);
 
   if (maxIV) {
     HPiv = 31;
@@ -140,8 +140,8 @@ export default async function (
     generatedId,
     pokemonToSpawn.pokemonName,
     pic,
-    randomizeGender(),
-    randomizeNature(),
+    RandomizeGender(),
+    RandomizeNature(),
     pokemonToSpawn.pokemonRarity,
     levelGeneration,
     {

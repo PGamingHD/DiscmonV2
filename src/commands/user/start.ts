@@ -13,7 +13,7 @@ import { Command } from "../../structures/Command";
 import db from "../../utils/database";
 import { PokemonGender, PokemonNature, userData } from "@prisma/client";
 import { Colours } from "../../@types/Colours";
-import { generateFlake, randomizeNumber } from "../../utils/misc";
+import { GenerateFlake, RandomizeNumber } from "../../utils/misc";
 import catchBuddyOne from "../../utils/actions/catchBuddyOne";
 
 export default new Command({
@@ -141,19 +141,19 @@ export default new Command({
 
           await db.RegisterUserPokedex(interaction.user.id, pokemon.pokemonId);
 
-          const HPiv: number = await randomizeNumber(1, 31);
-          const ATKiv: number = await randomizeNumber(1, 31);
-          const DEFiv: number = await randomizeNumber(1, 31);
-          const SPECATKiv: number = await randomizeNumber(1, 31);
-          const SPECDEFiv: number = await randomizeNumber(1, 31);
-          const SPEEDiv: number = await randomizeNumber(1, 31);
+          const HPiv: number = await RandomizeNumber(1, 31);
+          const ATKiv: number = await RandomizeNumber(1, 31);
+          const DEFiv: number = await RandomizeNumber(1, 31);
+          const SPECATKiv: number = await RandomizeNumber(1, 31);
+          const SPECDEFiv: number = await RandomizeNumber(1, 31);
+          const SPEEDiv: number = await RandomizeNumber(1, 31);
 
           const IVpercentage =
             HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
           const IVtotal: string = ((IVpercentage / 186) * 100).toFixed(2);
 
           await db.SetNewPokemonOwner(
-            generateFlake(),
+            GenerateFlake(),
             interaction.user.id,
             pokemon.pokemonPicture,
             pokemon.pokemonName,
@@ -241,19 +241,19 @@ export default new Command({
 
           await db.RegisterUserPokedex(interaction.user.id, pokemon.pokemonId);
 
-          const HPiv: number = await randomizeNumber(1, 31);
-          const ATKiv: number = await randomizeNumber(1, 31);
-          const DEFiv: number = await randomizeNumber(1, 31);
-          const SPECATKiv: number = await randomizeNumber(1, 31);
-          const SPECDEFiv: number = await randomizeNumber(1, 31);
-          const SPEEDiv: number = await randomizeNumber(1, 31);
+          const HPiv: number = await RandomizeNumber(1, 31);
+          const ATKiv: number = await RandomizeNumber(1, 31);
+          const DEFiv: number = await RandomizeNumber(1, 31);
+          const SPECATKiv: number = await RandomizeNumber(1, 31);
+          const SPECDEFiv: number = await RandomizeNumber(1, 31);
+          const SPEEDiv: number = await RandomizeNumber(1, 31);
 
           const IVpercentage =
             HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
           const IVtotal: string = ((IVpercentage / 186) * 100).toFixed(2);
 
           await db.SetNewPokemonOwner(
-            generateFlake(),
+            GenerateFlake(),
             interaction.user.id,
             pokemon.pokemonPicture,
             pokemon.pokemonName,
@@ -341,19 +341,19 @@ export default new Command({
 
           await db.RegisterUserPokedex(interaction.user.id, pokemon.pokemonId);
 
-          const HPiv: number = await randomizeNumber(1, 31);
-          const ATKiv: number = await randomizeNumber(1, 31);
-          const DEFiv: number = await randomizeNumber(1, 31);
-          const SPECATKiv: number = await randomizeNumber(1, 31);
-          const SPECDEFiv: number = await randomizeNumber(1, 31);
-          const SPEEDiv: number = await randomizeNumber(1, 31);
+          const HPiv: number = await RandomizeNumber(1, 31);
+          const ATKiv: number = await RandomizeNumber(1, 31);
+          const DEFiv: number = await RandomizeNumber(1, 31);
+          const SPECATKiv: number = await RandomizeNumber(1, 31);
+          const SPECDEFiv: number = await RandomizeNumber(1, 31);
+          const SPEEDiv: number = await RandomizeNumber(1, 31);
 
           const IVpercentage =
             HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
           const IVtotal: string = ((IVpercentage / 186) * 100).toFixed(2);
 
           await db.SetNewPokemonOwner(
-            generateFlake(),
+            GenerateFlake(),
             interaction.user.id,
             pokemon.pokemonPicture,
             pokemon.pokemonName,

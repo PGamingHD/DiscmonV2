@@ -3,7 +3,7 @@ import { Command } from "../../structures/Command";
 import db from "../../utils/database";
 import { Pokemons } from "@prisma/client";
 import { Colours } from "../../@types/Colours";
-import { capitalizeFirst } from "../../utils/misc";
+import { CapitalizeFirst } from "../../utils/misc";
 
 export default new Command({
   name: "catch",
@@ -26,7 +26,7 @@ export default new Command({
     if (!interaction.channel) return;
 
     pokeName = pokeName.toLowerCase();
-    pokeName = capitalizeFirst(pokeName);
+    pokeName = CapitalizeFirst(pokeName);
 
     const pokemon = await db.GetPokemon(pokeName);
 

@@ -4,11 +4,11 @@ import db from "../../utils/database";
 import { Colours } from "../../@types/Colours";
 import { PokemonRarity, Pokemons } from "@prisma/client";
 import {
-  capitalizeFirst,
-  generateFlake,
-  randomizeGender,
-  randomizeNature,
-  randomizeNumber,
+  CapitalizeFirst,
+  GenerateFlake,
+  RandomizeGender,
+  RandomizeNature,
+  RandomizeNumber,
 } from "../../utils/misc";
 import getSpawnRarity from "../../utils/actions/getSpawnRarity";
 
@@ -48,7 +48,7 @@ export default new Command({
       const name: string | null = interaction.options.getString("name");
       if (!name) return;
 
-      const pokemon: any = await db.GetPokemon(capitalizeFirst(name));
+      const pokemon: any = await db.GetPokemon(CapitalizeFirst(name));
       const usersData: any = await db.FindPokemonTrainer(interaction.user.id);
       if (!usersData) return;
 
@@ -75,15 +75,15 @@ export default new Command({
           ],
         });
 
-      const levelGeneration: number = await randomizeNumber(10, 30);
-      const generatedId: string = generateFlake();
+      const levelGeneration: number = await RandomizeNumber(10, 30);
+      const generatedId: string = GenerateFlake();
 
-      const HPiv: number = await randomizeNumber(1, 31);
-      const ATKiv: number = await randomizeNumber(1, 31);
-      const DEFiv: number = await randomizeNumber(1, 31);
-      const SPECATKiv: number = await randomizeNumber(1, 31);
-      const SPECDEFiv: number = await randomizeNumber(1, 31);
-      const SPEEDiv: number = await randomizeNumber(1, 31);
+      const HPiv: number = await RandomizeNumber(1, 31);
+      const ATKiv: number = await RandomizeNumber(1, 31);
+      const DEFiv: number = await RandomizeNumber(1, 31);
+      const SPECATKiv: number = await RandomizeNumber(1, 31);
+      const SPECDEFiv: number = await RandomizeNumber(1, 31);
+      const SPEEDiv: number = await RandomizeNumber(1, 31);
 
       const IVpercentage =
         HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
@@ -112,8 +112,8 @@ export default new Command({
         incrementId,
         pokemon.pokemonName,
         pokemon.pokemonPicture,
-        randomizeGender(),
-        randomizeNature(),
+        RandomizeGender(),
+        RandomizeNature(),
         pokemon.pokemonRarity,
         levelGeneration,
         {
@@ -202,7 +202,7 @@ export default new Command({
       const getPokemons: number = await db.GetPokemonRarityCount(
         getRarity.toUpperCase() as PokemonRarity
       );
-      const randomPokemon: number = await randomizeNumber(1, getPokemons);
+      const randomPokemon: number = await RandomizeNumber(1, getPokemons);
 
       const pokemonToSpawn: any = await db.GetRandomPokemon(
         getRarity.toUpperCase() as PokemonRarity,
@@ -211,15 +211,15 @@ export default new Command({
 
       const shinyPic: string = `https://pgaminghd.github.io/discmon-images/pokemon-sprites/shiny/${pokemonToSpawn.pokemonPokedex}.png`;
 
-      const levelGeneration: number = await randomizeNumber(10, 30);
-      const generatedId: string = generateFlake();
+      const levelGeneration: number = await RandomizeNumber(10, 30);
+      const generatedId: string = GenerateFlake();
 
-      const HPiv: number = await randomizeNumber(1, 31);
-      const ATKiv: number = await randomizeNumber(1, 31);
-      const DEFiv: number = await randomizeNumber(1, 31);
-      const SPECATKiv: number = await randomizeNumber(1, 31);
-      const SPECDEFiv: number = await randomizeNumber(1, 31);
-      const SPEEDiv: number = await randomizeNumber(1, 31);
+      const HPiv: number = await RandomizeNumber(1, 31);
+      const ATKiv: number = await RandomizeNumber(1, 31);
+      const DEFiv: number = await RandomizeNumber(1, 31);
+      const SPECATKiv: number = await RandomizeNumber(1, 31);
+      const SPECDEFiv: number = await RandomizeNumber(1, 31);
+      const SPEEDiv: number = await RandomizeNumber(1, 31);
 
       const IVpercentage: number =
         HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
@@ -248,8 +248,8 @@ export default new Command({
         incrementId,
         pokemonToSpawn.pokemonName,
         shinyPic,
-        randomizeGender(),
-        randomizeNature(),
+        RandomizeGender(),
+        RandomizeNature(),
         pokemonToSpawn.pokemonRarity,
         levelGeneration,
         {

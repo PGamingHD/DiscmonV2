@@ -2,7 +2,7 @@ import { EmbedBuilder } from "discord.js";
 import { Command } from "../../structures/Command";
 import { Colours } from "../../@types/Colours";
 import os from "os";
-import { formatSeconds } from "../../utils/misc";
+import { FormatSeconds } from "../../utils/misc";
 
 export default new Command({
   name: "status",
@@ -101,7 +101,7 @@ export default new Command({
             },
             {
               name: "Project Uptime",
-              value: `\`[ ${formatSeconds(client.uptime / 1000)} ]\``,
+              value: `\`[ ${FormatSeconds(client.uptime / 1000)} ]\``,
               inline: true,
             },
             {

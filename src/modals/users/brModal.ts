@@ -1,5 +1,5 @@
 import { Modal } from "../../structures/Modal";
-import { sendWebhook } from "../../utils/misc";
+import { SendWebhook } from "../../utils/misc";
 import { Colours } from "../../@types/Colours";
 
 export default new Modal({
@@ -14,7 +14,7 @@ export default new Modal({
       ephemeral: true,
     });
 
-    return sendWebhook(
+    return SendWebhook(
       "https://discord.com/api/webhooks/1057285201513951262/HC0n71S2dRDBCPuUDPYErlySpBrOm3k7_Xw3SCD8MXFQ8UwvBHbSu7sRABdYtiwU2bpb",
       "✉️ Bug Report Recieved ✉️",
       `**Reporter:** *${interaction.user.tag} [${interaction.user.id}]*\n**Report Server:** *${interaction.guild.name} [${interaction.guild.id}]*\n\n**Explanation:**\n\`\`\`${reportedBug}\`\`\``,

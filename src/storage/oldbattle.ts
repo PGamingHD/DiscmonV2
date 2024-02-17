@@ -15,7 +15,7 @@ const {createCanvas, loadImage} = require("@napi-rs/canvas");
 import db from "../../utils/database";
 import {userData} from "@prisma/client";
 import {Colours} from "../../@types/Colours";
-import {calculateDamage, calculatePokemonHP, capitalizeFirst, hintGame} from "../../utils/misc";
+import {CalculateDamage, CalculatePokemonHP, capitalizeFirst, HintGame} from "../../utils/misc";
 import moveChart from "../../utils/charts/moveChart";
 
 
@@ -94,8 +94,8 @@ export default new Command({
                 const canvas = createCanvas(1024, 450);
                 const ctx = canvas.getContext('2d');
 
-                const totalTargetHP: number = calculatePokemonHP(targetPokemon.pokemonLevel, targetPoke.pokemonEVs.HP, targetPokemon.PokemonIVs.HP, targetPokemon.PokemonsEVs.HP);
-                const totalBattlerHP: number = calculatePokemonHP(battlerPokemon.pokemonLevel, battlerPoke.pokemonEVs.HP, battlerPokemon.PokemonIVs.HP, targetPokemon.PokemonsEVs.HP);
+                const totalTargetHP: number = CalculatePokemonHP(targetPokemon.pokemonLevel, targetPoke.pokemonEVs.HP, targetPokemon.PokemonIVs.HP, targetPokemon.PokemonsEVs.HP);
+                const totalBattlerHP: number = CalculatePokemonHP(battlerPokemon.pokemonLevel, battlerPoke.pokemonEVs.HP, battlerPokemon.PokemonIVs.HP, targetPokemon.PokemonsEVs.HP);
 
                 let currentTargetHP: number = totalTargetHP;
                 let currentBattlerHP: number = totalBattlerHP;
@@ -297,7 +297,7 @@ export default new Command({
                             moveTypes.push(capitalizeFirst(type.pokemonType));
                         }
 
-                        const damageDealt: number = calculateDamage(moveData.power, targetPokemon.pokemonLevel, battlerPokemon.PokemonsEVs.Defense, moveTypes, moveData);
+                        const damageDealt: number = CalculateDamage(moveData.power, targetPokemon.pokemonLevel, battlerPokemon.PokemonsEVs.Defense, moveTypes, moveData);
                         currentBattlerHP = currentBattlerHP - damageDealt;
 
                         if (currentBattlerHP <= 0) {
@@ -325,7 +325,7 @@ export default new Command({
                             moveTypes.push(capitalizeFirst(type.pokemonType));
                         }
 
-                        const damageDealt: number = calculateDamage(moveData.power, battlerPokemon.pokemonLevel, targetPokemon.PokemonsEVs.Defense, moveTypes, moveData);
+                        const damageDealt: number = CalculateDamage(moveData.power, battlerPokemon.pokemonLevel, targetPokemon.PokemonsEVs.Defense, moveTypes, moveData);
                         currentTargetHP = currentTargetHP - damageDealt;
 
                         if (currentTargetHP <= 0) {

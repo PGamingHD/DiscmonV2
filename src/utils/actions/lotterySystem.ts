@@ -1,6 +1,6 @@
 import { Cron } from "croner";
 import db from "../database";
-import { generateFlake, randomizeNumber, sendWebhook } from "../misc";
+import { GenerateFlake, RandomizeNumber, SendWebhook } from "../misc";
 import { Colours } from "../../@types/Colours";
 import {
   lotteryGlobal,
@@ -22,7 +22,7 @@ export default async function (client: Client) {
       await db.SetNewGlobalLotteryData(0, Math.floor(nextRun), 0, 0);
       await db.DeleteLotteryTickets();
 
-      return sendWebhook(
+      return SendWebhook(
         "https://canary.discord.com/api/webhooks/1119763216487162026/VlWm-1ajfdzRZtzY4S1PvgkggiEhhZZdHi83D-Z-QidmGTDwQYKt0u2vdZrprdTgAWw-",
         "🎟️ Lottery Results 🎟️",
         "*Due to less than 5 people participating, the lottery was concluded for this time, better luck next time!*",
@@ -63,7 +63,7 @@ export default async function (client: Client) {
       await db.SetNewGlobalLotteryData(0, Math.floor(nextRun), 0, 0);
       await db.DeleteLotteryTickets();
 
-      return sendWebhook(
+      return SendWebhook(
         "https://canary.discord.com/api/webhooks/1119763216487162026/VlWm-1ajfdzRZtzY4S1PvgkggiEhhZZdHi83D-Z-QidmGTDwQYKt0u2vdZrprdTgAWw-",
         "🎟️ Lottery Results 🎟️",
         "*Due to less than 5 people participating, the lottery was concluded for this time, better luck next time!*",
@@ -73,7 +73,7 @@ export default async function (client: Client) {
 
     //WINNER 1
 
-    const randomWinner1Ticket: number = await randomizeNumber(1, boughtTickets);
+    const randomWinner1Ticket: number = await RandomizeNumber(1, boughtTickets);
     const winner1Ticket: userTickets | null = await db.GetSpecificTicket(
       randomWinner1Ticket - 1
     );
@@ -94,7 +94,7 @@ export default async function (client: Client) {
     const getPokemons: number = await db.GetPokemonRarityCount(
       spawnedRarity.toUpperCase() as PokemonRarity
     );
-    const randomPokemon: number = await randomizeNumber(1, getPokemons);
+    const randomPokemon: number = await RandomizeNumber(1, getPokemons);
 
     const pokemonToSpawn: any = await db.GetRandomPokemon(
       spawnedRarity.toUpperCase() as PokemonRarity,
@@ -147,18 +147,18 @@ export default async function (client: Client) {
       incrementId = getHighestPoke[0].pokemonPlacementId + 1;
     if (!incrementId) incrementId = 1;
 
-    const HPiv: number = await randomizeNumber(1, 31);
-    const ATKiv: number = await randomizeNumber(1, 31);
-    const DEFiv: number = await randomizeNumber(1, 31);
-    const SPECATKiv: number = await randomizeNumber(1, 31);
-    const SPECDEFiv: number = await randomizeNumber(1, 31);
-    const SPEEDiv: number = await randomizeNumber(1, 31);
+    const HPiv: number = await RandomizeNumber(1, 31);
+    const ATKiv: number = await RandomizeNumber(1, 31);
+    const DEFiv: number = await RandomizeNumber(1, 31);
+    const SPECATKiv: number = await RandomizeNumber(1, 31);
+    const SPECDEFiv: number = await RandomizeNumber(1, 31);
+    const SPEEDiv: number = await RandomizeNumber(1, 31);
 
     const IVpercentage = HPiv + ATKiv + DEFiv + SPECATKiv + SPECDEFiv + SPEEDiv;
     const IVtotal: string = ((IVpercentage / 186) * 100).toFixed(2);
 
     await db.SetNewPokemonOwner(
-      generateFlake(),
+      GenerateFlake(),
       winner1Data.userId,
       `https://pgaminghd.github.io/discmon-images/pokemon-sprites/shiny/${pokemonToSpawn.pokemonPokedex}.png`,
       pokemonToSpawn.pokemonName,
@@ -195,7 +195,7 @@ export default async function (client: Client) {
 
     //WINNER 2
 
-    const randomWinner2Ticket: number = await randomizeNumber(1, boughtTickets);
+    const randomWinner2Ticket: number = await RandomizeNumber(1, boughtTickets);
     const winner2Ticket: userTickets | null = await db.GetSpecificTicket(
       randomWinner2Ticket - 1
     );
@@ -221,7 +221,7 @@ export default async function (client: Client) {
 
     //WINNER 3
 
-    const randomWinner3Ticket: number = await randomizeNumber(1, boughtTickets);
+    const randomWinner3Ticket: number = await RandomizeNumber(1, boughtTickets);
     const winner3Ticket: userTickets | null = await db.GetSpecificTicket(
       randomWinner3Ticket - 1
     );
@@ -249,7 +249,7 @@ export default async function (client: Client) {
     await db.SetNewGlobalLotteryData(0, Math.floor(nextRun), 0, 0);
     await db.DeleteLotteryTickets();
 
-    return sendWebhook(
+    return SendWebhook(
       "https://canary.discord.com/api/webhooks/1119763216487162026/VlWm-1ajfdzRZtzY4S1PvgkggiEhhZZdHi83D-Z-QidmGTDwQYKt0u2vdZrprdTgAWw-",
       "🎟️ Lottery Results 🎟️",
       `*Lottery winners has been drawn!*\n*Congratulations to all our winners, better luck next time to those who did not win.*\n\n**Winner #1:** <@!${winner1Data.userId}>\n**Winner #2:** <@!${winner2Data.userId}>\n**Winner #3:** <@!${winner3Data.userId}>`,

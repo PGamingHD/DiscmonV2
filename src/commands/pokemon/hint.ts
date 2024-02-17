@@ -2,7 +2,7 @@ import { EmbedBuilder } from "discord.js";
 import { Command } from "../../structures/Command";
 import { Colours } from "../../@types/Colours";
 import db from "../../utils/database";
-import { hintGame } from "../../utils/misc";
+import { HintGame } from "../../utils/misc";
 import { Pokemons, userData } from "@prisma/client";
 
 export default new Command({
@@ -44,7 +44,7 @@ export default new Command({
 
     await db.DecreaseCoins(interaction.user.id, 1000);
 
-    const hintReturn: string = await hintGame(spawnedPoke.pokemonName);
+    const hintReturn: string = await HintGame(spawnedPoke.pokemonName);
 
     return interaction.reply({
       ephemeral: true,

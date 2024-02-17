@@ -16,7 +16,7 @@ import {
   RewardType,
   userData,
 } from "@prisma/client";
-import { capitalizeFirst, generateFlake } from "../../utils/misc";
+import { CapitalizeFirst, GenerateFlake } from "../../utils/misc";
 import { Colours } from "../../@types/Colours";
 import db from "../../utils/database";
 import { chunk } from "lodash";
@@ -376,10 +376,10 @@ export default new Command({
       if (!evSpeed) return;
 
       pokeName = pokeName.toLowerCase();
-      pokeName = capitalizeFirst(pokeName);
+      pokeName = CapitalizeFirst(pokeName);
 
       evolveName = evolveName.toLowerCase();
-      evolveName = capitalizeFirst(evolveName);
+      evolveName = CapitalizeFirst(evolveName);
 
       const pokePicture: string = `https://pgaminghd.github.io/discmon-images/pokemon-sprites/normal/${pokeId}.png`;
       const pokeShinyPicture: string = `https://pgaminghd.github.io/discmon-images/pokemon-sprites/shiny/${pokeId}.png`;
@@ -475,12 +475,12 @@ export default new Command({
 
         pokemonTypes.push({
           pokemonType: type.toUpperCase(),
-          typeUniqueId: generateFlake(),
+          typeUniqueId: GenerateFlake(),
         });
       }
 
       await db.AddNewPokemon({
-        pokemonId: generateFlake(),
+        pokemonId: GenerateFlake(),
         pokemonPokedex: pokeId,
         pokemonName: pokeName,
         pokemonPicture: pokePicture,
@@ -489,7 +489,7 @@ export default new Command({
         pokemonAlolanPicture: pokeAlolanPicture,
         pokemonEvolve: {
           create: {
-            evolveUniqueId: generateFlake(),
+            evolveUniqueId: GenerateFlake(),
             nextEvolveName: evolveName,
             nextEvolveLevel: evolveLevel,
             currentEvolveStage: evolveStage,
@@ -527,7 +527,7 @@ export default new Command({
       if (!interaction.guild) return;
       if (!interaction.channel) return;
 
-      pokeName = capitalizeFirst(pokeName);
+      pokeName = CapitalizeFirst(pokeName);
 
       const spawnedPokemon: Pokemons | null = await db.FindSpawnedPokemon(
         interaction.channel.id,
@@ -644,7 +644,7 @@ export default new Command({
       if (isShiny === null) return;
       if (!interaction.guild) return;
 
-      pokeName = capitalizeFirst(pokeName);
+      pokeName = CapitalizeFirst(pokeName);
 
       const getPokemon: Pokemon | null = await db.GetPokemon(pokeName);
       const getPokemonServer: PokemonServer | null = await db.GetServer(
@@ -855,7 +855,7 @@ export default new Command({
             new EmbedBuilder()
               .setColor(Colours.GREEN)
               .setDescription(
-                `The trainers economy has been successfully set to \`${amount}\` **${capitalizeFirst(
+                `The trainers economy has been successfully set to \`${amount}\` **${CapitalizeFirst(
                   type.toLowerCase()
                 )}**!`
               ),
@@ -874,7 +874,7 @@ export default new Command({
             new EmbedBuilder()
               .setColor(Colours.GREEN)
               .setDescription(
-                `The trainers economy has been successfully added \`${amount}\` **${capitalizeFirst(
+                `The trainers economy has been successfully added \`${amount}\` **${CapitalizeFirst(
                   type.toLowerCase()
                 )}**`
               ),

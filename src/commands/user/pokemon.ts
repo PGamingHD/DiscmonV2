@@ -4,7 +4,7 @@ import db from "../../utils/database";
 import { Pokemons } from "@prisma/client";
 import { Colours } from "../../@types/Colours";
 import sendPagination from "../../utils/messages/sendPagination";
-import { capitalizeFirst } from "../../utils/misc";
+import { CapitalizeFirst } from "../../utils/misc";
 
 export default new Command({
   name: "pokemon",
@@ -64,9 +64,9 @@ export default new Command({
         } ${pokemon.pokemonName}`,
         description: `__**Details**__\n**XP:** ${
           pokemon.pokemonLevel === 100 ? totalLevelXP : pokemon.pokemonXP
-        }/${totalLevelXP}\n**Gender:** ${capitalizeFirst(
+        }/${totalLevelXP}\n**Gender:** ${CapitalizeFirst(
           pokemon.pokemonGender
-        )}\n**Nature:** ${capitalizeFirst(
+        )}\n**Nature:** ${CapitalizeFirst(
           pokemon.pokemonNature
         )}\n\n__**Stats**__\n**HP:** ${pokemon.PokemonIVs.HP}/31\n**Attack:** ${
           pokemon.PokemonIVs.Attack
