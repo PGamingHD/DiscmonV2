@@ -42,10 +42,7 @@ export default new Command({
         ],
       });
 
-    await db.setCoins(
-      interaction.user.id,
-      parseInt(userData.userCoins.toString()) - 1000
-    );
+    await db.decreaseCoins(interaction.user.id, 1000);
 
     const hintReturn: string = await hintGame(spawnedPoke.pokemonName);
 

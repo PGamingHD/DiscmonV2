@@ -146,7 +146,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
               new EmbedBuilder()
                 .setTitle(":warning: Missing Permissions :warning:")
                 .setDescription(
-                  "*I am missing the required permissions to execute this command.*\n\n**Contact the Server Staff for more information.**"
+                  "*I am missing the required server permissions to execute this command.*\n\n**Contact the Server Staff for more information.**"
                 )
                 .setColor(Colours.RED),
             ],
@@ -159,7 +159,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
             new EmbedBuilder()
               .setTitle(":warning: Missing Permissions :warning:")
               .setDescription(
-                "*I am missing the required permissions to execute this command.*\n\n**Contact the Server Staff for more information.**"
+                "*I am missing the required server permissions to execute this command.*\n\n**Contact the Server Staff for more information.**"
               )
               .setColor(Colours.RED),
           ],
