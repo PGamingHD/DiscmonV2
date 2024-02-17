@@ -27,7 +27,6 @@ import { inspect } from "util";
 export default new Command({
   name: "dev",
   description: "Developer commands, restricted to developers only",
-  defaultMemberPermissions: "Administrator",
   developerRestricted: true,
   requireAccount: true,
   noDefer: true,
@@ -253,6 +252,85 @@ export default new Command({
           description: "The code to evaluate",
           type: ApplicationCommandOptionType.String,
           required: true,
+        },
+      ],
+    },
+    {
+      name: "economy",
+      description: "Alter the economy of a trainer",
+      type: ApplicationCommandOptionType.SubcommandGroup,
+      options: [
+        {
+          name: "set",
+          description: "Set a trainers economy",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "userid",
+              description: "The users ID you wish to alter",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+            },
+            {
+              name: "type",
+              description:
+                "The type of economy you wish to alter for the trainer",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+              choices: [
+                {
+                  name: "Coins",
+                  value: "COINS",
+                },
+                {
+                  name: "Tokens",
+                  value: "TOKENS",
+                },
+              ],
+            },
+            {
+              name: "amount",
+              description: "The amount you wish to alter the users economy",
+              type: ApplicationCommandOptionType.Integer,
+              required: true,
+            },
+          ],
+        },
+        {
+          name: "add",
+          description: "Add economy to a trainer",
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: "userid",
+              description: "The users ID you wish to alter",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+            },
+            {
+              name: "type",
+              description:
+                "The type of economy you wish to alter for the trainer",
+              type: ApplicationCommandOptionType.String,
+              required: true,
+              choices: [
+                {
+                  name: "Coins",
+                  value: "COINS",
+                },
+                {
+                  name: "Tokens",
+                  value: "TOKENS",
+                },
+              ],
+            },
+            {
+              name: "amount",
+              description: "The amount you wish to alter the users economy",
+              type: ApplicationCommandOptionType.Integer,
+              required: true,
+            },
+          ],
         },
       ],
     },
@@ -744,6 +822,74 @@ export default new Command({
         evalEmbed2.setDescription(`\`\`\`${e.message}\`\`\``);
         return interaction.reply({
           embeds: [evalEmbed2.setColor(Colours.RED).setTimestamp()],
+        });
+      }
+    } else if (interaction.options.getSubcommandGroup() === "economy") {
+      const userId = interaction.options.getString("userid") || "123";
+      const type = interaction.options.getString("type") || "COINS";
+      const amount = interaction.options.getInteger("amount") || 0;
+      const status = interaction.options.getSubcommand() || "add";
+
+      const getTrainer = await db.findPokemonTrainer(userId);
+
+      if (!getTrainer)
+        return interaction.reply({
+          ephemeral: true,
+          embeds: [
+            new EmbedBuilder()
+              .setColor(Colours.RED)
+              .setDescription(`The trainer you tried to alter does not exist.`),
+          ],
+        });
+
+      if (status === "set") {
+        if (type === "COINS") {
+          await db.setCoins(userId, amount);
+        } else {
+          await db.setTokens(userId, amount);
+        }
+
+        return interaction.reply({
+          ephemeral: true,
+          embeds: [
+            new EmbedBuilder()
+              .setColor(Colours.GREEN)
+              .setDescription(
+                `The trainers economy has been successfully set to \`${amount}\` **${capitalizeFirst(
+                  type.toLowerCase()
+                )}**!`
+              ),
+          ],
+        });
+      } else if (status === "add") {
+        if (type === "COINS") {
+          await db.addCoins(userId, amount);
+        } else {
+          await db.addTokens(userId, amount);
+        }
+
+        return interaction.reply({
+          ephemeral: true,
+          embeds: [
+            new EmbedBuilder()
+              .setColor(Colours.GREEN)
+              .setDescription(
+                `The trainers economy has been successfully added \`${amount}\` **${capitalizeFirst(
+                  type.toLowerCase()
+                )}**`
+              ),
+          ],
+        });
+      } else {
+        return interaction.reply({
+          ephemeral: true,
+          embeds: [
+            new EmbedBuilder()
+              .setColor(Colours.RED)
+              .setDescription(
+                `The subcommand you tried to use is not valid or does not exist anymore.`
+              ),
+          ],
         });
       }
     } else {

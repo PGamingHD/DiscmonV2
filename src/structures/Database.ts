@@ -1151,6 +1151,17 @@ export class Database {
     });
   }
 
+  addTokens(userId: string, tokens: number): Promise<userData | null> {
+    return this.prisma.userData.update({
+      where: {
+        userId,
+      },
+      data: {
+        userTokens: { increment: tokens },
+      },
+    });
+  }
+
   setCoins(userId: string, newCoins: number): Promise<userData | null> {
     return this.prisma.userData.update({
       where: {
@@ -1158,6 +1169,17 @@ export class Database {
       },
       data: {
         userCoins: newCoins,
+      },
+    });
+  }
+
+  addCoins(userId: string, coins: number): Promise<userData | null> {
+    return this.prisma.userData.update({
+      where: {
+        userId,
+      },
+      data: {
+        userCoins: { increment: coins },
       },
     });
   }
