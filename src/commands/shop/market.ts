@@ -73,7 +73,7 @@ export default new Command({
             ],
           });
 
-        await db.SetTokens(interaction.user.id, usersData.userTokens - 5);
+        await db.DecreaseTokens(interaction.user.id, 5);
         await db.IncreaseUserRedeems(interaction.user.id, 1);
 
         return interaction.reply({
@@ -101,7 +101,7 @@ export default new Command({
             ],
           });
 
-        await db.SetCoins(interaction.user.id, usersData.userCoins - 10000);
+        await db.DecreaseCoins(interaction.user.id, 10000);
         await db.IncreaseUserIncenses(interaction.user.id, 1);
 
         return interaction.reply({
@@ -129,7 +129,7 @@ export default new Command({
             ],
           });
 
-        await db.SetCoins(interaction.user.id, usersData.userCoins - 50000);
+        await db.DecreaseCoins(interaction.user.id, 50000);
         await db.IncreaseUserBCandy(interaction.user.id, 1);
 
         return interaction.reply({
