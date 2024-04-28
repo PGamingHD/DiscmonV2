@@ -46,7 +46,7 @@ export default async function (
 
     const collector: InteractionCollector<
       RoleSelectMenuInteraction<CacheType>
-    > = await int.createMessageComponentCollector({
+    > = int.createMessageComponentCollector({
       componentType: ComponentType.RoleSelect,
       time,
       idle,

@@ -54,7 +54,7 @@ export default async function (
 
     const collector: InteractionCollector<
       ChannelSelectMenuInteraction<CacheType>
-    > = await int.createMessageComponentCollector({
+    > = int.createMessageComponentCollector({
       componentType: ComponentType.ChannelSelect,
       time,
       idle,

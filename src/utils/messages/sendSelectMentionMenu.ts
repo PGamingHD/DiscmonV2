@@ -49,7 +49,7 @@ export default async function (
 
     const collector: InteractionCollector<
       MentionableSelectMenuInteraction<CacheType>
-    > = await int.createMessageComponentCollector({
+    > = int.createMessageComponentCollector({
       componentType: ComponentType.MentionableSelect,
       time,
       idle,

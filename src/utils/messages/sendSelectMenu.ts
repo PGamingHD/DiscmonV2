@@ -7,6 +7,7 @@ import {
   CacheType,
   CommandInteraction,
   ComponentType,
+  EmbedBuilder,
   InteractionCollector,
   InteractionResponse,
   Message,
@@ -136,7 +137,7 @@ export default async function (
 
     const collector: InteractionCollector<
       StringSelectMenuInteraction<CacheType>
-    > = await int.createMessageComponentCollector({
+    > = int.createMessageComponentCollector({
       componentType: ComponentType.SelectMenu,
       time,
       idle,
@@ -145,7 +146,7 @@ export default async function (
     });
 
     const buttonCollector: InteractionCollector<ButtonInteraction<CacheType>> =
-      await int.createMessageComponentCollector({
+      int.createMessageComponentCollector({
         componentType: ComponentType.Button,
         time,
         idle,
@@ -156,7 +157,16 @@ export default async function (
       async (i: ButtonInteraction<CacheType>): Promise<void> => {
         if (!i.deferred) await i.deferUpdate();
 
-        if (i.user.id !== interaction.user.id) return;
+        if (i.user.id !== interaction.user.id) {
+          await i.followUp({
+            embeds: [
+              new EmbedBuilder().setDescription("You do not own this builder."),
+            ],
+            ephemeral: true,
+          });
+
+          return;
+        }
 
         if (i.customId === "prev") {
           if (index > 0) {
