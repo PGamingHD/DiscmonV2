@@ -8,6 +8,7 @@ import {
   Collection,
   CommandInteraction,
   ComponentType,
+  EmbedBuilder,
   InteractionCollector,
   Message,
 } from "discord.js";
@@ -103,7 +104,7 @@ export default async function (
     });
 
     const collector: InteractionCollector<ButtonInteraction<CacheType>> =
-      await currentPage.createMessageComponentCollector({
+      currentPage.createMessageComponentCollector({
         componentType: ComponentType.Button,
         time,
         idle,
@@ -115,7 +116,18 @@ export default async function (
         try {
           if (!i.deferred) await i.deferUpdate();
 
-          if (i.user.id !== interaction.user.id) return;
+          if (i.user.id !== interaction.user.id) {
+            await i.followUp({
+              embeds: [
+                new EmbedBuilder().setDescription(
+                  "You do not own this builder."
+                ),
+              ],
+              ephemeral: true,
+            });
+
+            return;
+          }
 
           if (i.customId === "prev") {
             if (index > 0) {
