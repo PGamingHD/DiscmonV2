@@ -811,7 +811,9 @@ export default new Command({
           `${client.user.username} | EVALUTION`
         );
         evalEmbed.setDescription(
-          `***Input:***\n\`\`\`js\n${evalMsg}\n\`\`\`\n***Output:***\n\`\`\`js\n${string}\n\`\`\``
+          `***Input:***\n\`\`\`js\n${evalMsg}\n\`\`\`\n***Output:***\n\`\`\`js\n${
+            !!string ? "?" : string
+          }\n\`\`\``
         );
         return interaction.reply({
           embeds: [evalEmbed.setColor(Colours.MAIN).setTimestamp()],
