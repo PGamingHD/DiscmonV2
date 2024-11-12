@@ -85,7 +85,5 @@ export default new Command({
         ],
       });
     }
-
-    return;
   },
 });
