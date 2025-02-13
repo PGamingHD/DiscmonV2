@@ -12,7 +12,7 @@ import logger from "../logger";
 
 export default async function (
   interaction: CommandInteraction,
-  flags: [MessageFlags],
+  ephemeral: boolean,
   time = 60000,
   idle = 60000,
   collectFunc: any,
@@ -41,6 +41,7 @@ export default async function (
     await interaction.reply({
       content,
       components: [row],
+      flags: ephemeral ? [MessageFlags.Ephemeral] : [],
     });
 
     const collector = interaction.channel?.createMessageComponentCollector({

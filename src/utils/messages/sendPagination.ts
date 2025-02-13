@@ -32,12 +32,10 @@ export default async function (
     if (indexStart > pages.length)
       throw new Error("Start must be lower than amount of pages");
 
-    if (ephemeral) {
-      if (!interaction.deferred)
-        await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
-    } else {
-      if (!interaction.deferred) await interaction.deferReply();
-    }
+    if (!interaction.deferred)
+      await interaction.deferReply({
+        flags: ephemeral ? [MessageFlags.Ephemeral] : [],
+      });
 
     if (pages.length === 1) {
       const page: Message<boolean> = await interaction.editReply({

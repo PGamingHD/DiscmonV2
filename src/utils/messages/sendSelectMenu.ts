@@ -8,8 +8,7 @@ import {
   CommandInteraction,
   ComponentType,
   EmbedBuilder,
-  InteractionCollector,
-  Message,
+  StringSelectMenuOptionBuilder,
   MessageFlags,
   StringSelectMenuBuilder,
   StringSelectMenuInteraction,
@@ -19,7 +18,8 @@ import { chunk } from "lodash";
 
 export default async function (
   interaction: CommandInteraction,
-  options: any[],
+  options: StringSelectMenuOptionBuilder[],
+  perPage: number,
   ephemeral: boolean,
   time = 60000,
   idle = 60000,
@@ -39,7 +39,7 @@ export default async function (
     if (time < 30000) throw new Error("Time must be more than 30 seconds");
     if (idle < 30000) throw new Error("Idle time must be more than 30 seconds");
 
-    const pages: any[] = chunk(options, 1);
+    const pages: any[] = chunk(options, perPage);
     let index: number = 0;
 
     const opts: any[] = [];
@@ -123,6 +123,7 @@ export default async function (
       await interaction.reply({
         content,
         components: [opts[index], buttonRow],
+        flags: ephemeral ? [MessageFlags.Ephemeral] : [],
       });
     } else {
       await interaction.reply({
@@ -193,9 +194,9 @@ export default async function (
           }
         }
 
-        /*await int.edit({
+        await i.editReply({
           components: [opts[index], buttonRow],
-        });*/
+        });
 
         collector?.resetTimer();
       }
@@ -212,7 +213,7 @@ export default async function (
       next.setDisabled(true);
       home.setDisabled(true);
 
-      //int.edit({ components: [opts[index], buttonRow] });
+      //interaction.editReply({ components: [opts[index], buttonRow] });
     });
   } catch (e) {
     logger.error(e);

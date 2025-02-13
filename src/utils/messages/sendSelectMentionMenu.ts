@@ -43,7 +43,7 @@ export default async function (
     await interaction.reply({
       content,
       components: [row],
-      flags: [MessageFlags.Ephemeral],
+      flags: ephemeral ? [MessageFlags.Ephemeral] : [],
     });
 
     const collector = interaction.channel?.createMessageComponentCollector({

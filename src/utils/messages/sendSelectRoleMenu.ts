@@ -4,6 +4,7 @@ import {
   CommandInteraction,
   ComponentType,
   InteractionCollector,
+  MessageFlags,
   RoleSelectMenuBuilder,
   RoleSelectMenuInteraction,
 } from "discord.js";
@@ -40,6 +41,7 @@ export default async function (
     await interaction.reply({
       content,
       components: [row],
+      flags: ephemeral ? [MessageFlags.Ephemeral] : [],
     });
 
     const collector = interaction.channel?.createMessageComponentCollector({

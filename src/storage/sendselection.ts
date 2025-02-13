@@ -7,7 +7,7 @@ export default new Command({
   description: "This is just a users command to send string select menus!",
   noDefer: true,
   run: async ({ interaction, client }) => {
-    let options: any[] = [];
+    let options: StringSelectMenuOptionBuilder[] = [];
     options.push(
       new StringSelectMenuOptionBuilder()
         .setLabel(`hey1`)
@@ -16,14 +16,15 @@ export default new Command({
     );
     options.push(
       new StringSelectMenuOptionBuilder()
-        .setLabel(`hey1`)
-        .setDescription(`hey1`)
+        .setLabel(`hey2`)
+        .setDescription(`hey2`)
         .setValue(`2`)
     );
 
     return sendSelectMenu(
       interaction,
       options,
+      1,
       true,
       30000,
       30000,

@@ -19,7 +19,6 @@ export default async function ({
     if (content) sendOpts.content = content;
 
     if (channel) {
-      //channel = channel as TextChannel;
       return await (channel as TextChannel).send(sendOpts);
     } else if (interaction) {
       if (interaction.deferred || interaction.replied) {

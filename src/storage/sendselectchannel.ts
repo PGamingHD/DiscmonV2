@@ -1,4 +1,4 @@
-import { ChannelType } from "discord.js";
+import { CacheType, ChannelType, SelectMenuInteraction } from "discord.js";
 import { Command } from "../structures/Command";
 import sendSelectChannelMenu from "../utils/messages/sendSelectChannelMenu";
 
@@ -18,7 +18,7 @@ export default new Command({
         console.log("LOGGED SELECTION");
         console.log(i);
       },
-      async (i: any, reason: string) => {
+      async (i: SelectMenuInteraction<CacheType>, reason: string) => {
         console.log("LOGGED ENDING");
         console.log(i, reason);
       },

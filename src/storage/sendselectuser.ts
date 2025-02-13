@@ -9,7 +9,7 @@ export default new Command({
   run: async ({ interaction, client }) => {
     return sendSelectUserMenu(
       interaction,
-      [MessageFlags.Ephemeral],
+      true,
       60000,
       60000,
       async (i: any) => {
