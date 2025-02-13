@@ -9,8 +9,8 @@ import {
   ComponentType,
   EmbedBuilder,
   InteractionCollector,
-  InteractionResponse,
   Message,
+  MessageFlags,
   StringSelectMenuBuilder,
   StringSelectMenuInteraction,
 } from "discord.js";
@@ -118,16 +118,14 @@ export default async function (
         maxNext
       );
 
-    let int: Message<boolean> & InteractionResponse<boolean>;
     if (opts.length > 1) {
       //@ts-ignore
-      int = await interaction.reply({
+      await interaction.reply({
         content,
         components: [opts[index], buttonRow],
-        ephemeral: ephemeral,
       });
     } else {
-      int = await interaction.reply({
+      await interaction.reply({
         content,
         //@ts-ignore
         components: [row],
@@ -135,9 +133,7 @@ export default async function (
       });
     }
 
-    const collector: InteractionCollector<
-      StringSelectMenuInteraction<CacheType>
-    > = int.createMessageComponentCollector({
+    const collector = interaction.channel?.createMessageComponentCollector({
       componentType: ComponentType.SelectMenu,
       time,
       idle,
@@ -145,14 +141,14 @@ export default async function (
         i.user.id === interaction.user.id,
     });
 
-    const buttonCollector: InteractionCollector<ButtonInteraction<CacheType>> =
-      int.createMessageComponentCollector({
+    const buttonCollector =
+      interaction.channel?.createMessageComponentCollector({
         componentType: ComponentType.Button,
         time,
         idle,
       });
 
-    buttonCollector.on(
+    buttonCollector?.on(
       "collect",
       async (i: ButtonInteraction<CacheType>): Promise<void> => {
         if (!i.deferred) await i.deferUpdate();
@@ -162,7 +158,7 @@ export default async function (
             embeds: [
               new EmbedBuilder().setDescription("You do not own this builder."),
             ],
-            ephemeral: true,
+            flags: [MessageFlags.Ephemeral],
           });
 
           return;
@@ -175,7 +171,7 @@ export default async function (
             index = opts.length - 1;
           }
         } else if (i.customId === "stop") {
-          collector.stop("Forced stop");
+          collector?.stop("Forced stop");
           buttonCollector.stop("Forced stop");
         } else if (i.customId === "next") {
           if (index < opts.length - 1) {
@@ -197,17 +193,17 @@ export default async function (
           }
         }
 
-        await int.edit({
+        /*await int.edit({
           components: [opts[index], buttonRow],
-        });
+        });*/
 
-        collector.resetTimer();
+        collector?.resetTimer();
       }
     );
 
-    collector.on("collect", collectFunc);
+    collector?.on("collect", collectFunc);
 
-    collector.on("end", async (i, reason) => {
+    collector?.on("end", async (i, reason) => {
       if (reason === "messageDelete") return;
 
       maxBack.setDisabled(true);
@@ -216,7 +212,7 @@ export default async function (
       next.setDisabled(true);
       home.setDisabled(true);
 
-      int.edit({ components: [opts[index], buttonRow] });
+      //int.edit({ components: [opts[index], buttonRow] });
     });
   } catch (e) {
     logger.error(e);

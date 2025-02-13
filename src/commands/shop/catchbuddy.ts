@@ -1,4 +1,8 @@
-import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  EmbedBuilder,
+  MessageFlags,
+} from "discord.js";
 import { Command } from "../../structures/Command";
 import db from "../../utils/database";
 import { Colours } from "../../@types/Colours";
@@ -77,7 +81,7 @@ export default new Command({
       if (!usersData) return;
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.MAIN)
@@ -249,7 +253,7 @@ export default new Command({
 
         if (usersData.userCatchBuddy.catcherEnabled)
           return interaction.reply({
-            ephemeral: true,
+            flags: [MessageFlags.Ephemeral],
             embeds: [
               new EmbedBuilder()
                 .setColor(Colours.RED)
@@ -263,7 +267,7 @@ export default new Command({
           Number(usersData.userCatchBuddy.catcherLeft) <= 0
         )
           return interaction.reply({
-            ephemeral: true,
+            flags: [MessageFlags.Ephemeral],
             embeds: [
               new EmbedBuilder()
                 .setColor(Colours.RED)
@@ -283,7 +287,7 @@ export default new Command({
         await db.SetCatcherEnabledStatus(interaction.user.id, true);
 
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.GREEN)
@@ -298,7 +302,7 @@ export default new Command({
 
         if (!usersData.userCatchBuddy.catcherEnabled)
           return interaction.reply({
-            ephemeral: true,
+            flags: [MessageFlags.Ephemeral],
             embeds: [
               new EmbedBuilder()
                 .setColor(Colours.RED)
@@ -318,7 +322,7 @@ export default new Command({
         await db.SetCatchAvailableStatus(interaction.user.id, false);
 
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.GREEN)
@@ -334,7 +338,7 @@ export default new Command({
 
       if (usersData.userBag.catchBuddyCandy < 1)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -381,7 +385,7 @@ export default new Command({
       }
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -402,7 +406,7 @@ export default new Command({
       if (type === "pokemon") {
         if (usersData.userCatchBuddy.pokemonUpgrade >= 10)
           return interaction.reply({
-            ephemeral: true,
+            flags: [MessageFlags.Ephemeral],
             embeds: [
               new EmbedBuilder()
                 .setColor(Colours.RED)
@@ -416,7 +420,7 @@ export default new Command({
 
         if (usersData.userCoins < calculatedPrice)
           return interaction.reply({
-            ephemeral: true,
+            flags: [MessageFlags.Ephemeral],
             embeds: [
               new EmbedBuilder()
                 .setColor(Colours.RED)
@@ -435,7 +439,7 @@ export default new Command({
         );
 
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.GREEN)
@@ -447,7 +451,7 @@ export default new Command({
       } else if (type === "duration") {
         if (usersData.userCatchBuddy.pokemonDuration >= 10)
           return interaction.reply({
-            ephemeral: true,
+            flags: [MessageFlags.Ephemeral],
             embeds: [
               new EmbedBuilder()
                 .setColor(Colours.RED)
@@ -461,7 +465,7 @@ export default new Command({
 
         if (usersData.userCoins < calculatedPrice)
           return interaction.reply({
-            ephemeral: true,
+            flags: [MessageFlags.Ephemeral],
             embeds: [
               new EmbedBuilder()
                 .setColor(Colours.RED)
@@ -480,7 +484,7 @@ export default new Command({
         );
 
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.GREEN)
@@ -492,7 +496,7 @@ export default new Command({
       } else if (type === "luck") {
         if (usersData.userCatchBuddy.pokemonLuckUpgrade >= 1)
           return interaction.reply({
-            ephemeral: true,
+            flags: [MessageFlags.Ephemeral],
             embeds: [
               new EmbedBuilder()
                 .setColor(Colours.RED)
@@ -506,7 +510,7 @@ export default new Command({
 
         if (usersData.userCoins < calculatedPrice)
           return interaction.reply({
-            ephemeral: true,
+            flags: [MessageFlags.Ephemeral],
             embeds: [
               new EmbedBuilder()
                 .setColor(Colours.RED)
@@ -525,7 +529,7 @@ export default new Command({
         );
 
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.GREEN)

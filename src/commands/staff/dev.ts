@@ -402,7 +402,6 @@ export default new Command({
         pokeRarity.toUpperCase() !== PokemonRarity.DEVELOPER
       )
         return interaction.reply({
-          ephemeral: true,
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -416,7 +415,6 @@ export default new Command({
 
       if (alrExists)
         return interaction.reply({
-          ephemeral: true,
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -449,7 +447,6 @@ export default new Command({
 
       if (allTypes.length === 0)
         return interaction.reply({
-          ephemeral: true,
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -463,7 +460,6 @@ export default new Command({
       for (const type of allTypes) {
         if (!pokemonType.includes(type.toUpperCase() as PokeType))
           return interaction.reply({
-            ephemeral: true,
             embeds: [
               new EmbedBuilder()
                 .setColor(Colours.RED)
@@ -511,7 +507,6 @@ export default new Command({
       });
 
       return interaction.reply({
-        ephemeral: true,
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -535,7 +530,6 @@ export default new Command({
       );
       if (!spawnedPokemon)
         return interaction.reply({
-          ephemeral: true,
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -565,7 +559,6 @@ export default new Command({
       }
 
       return interaction.reply({
-        ephemeral: true,
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -622,7 +615,6 @@ export default new Command({
       await db.IncrementServerSpawnChance(interaction.guild.id, 50);
 
       return interaction.reply({
-        ephemeral: true,
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -653,7 +645,6 @@ export default new Command({
 
       if (!getPokemon)
         return interaction.reply({
-          ephemeral: true,
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -664,7 +655,6 @@ export default new Command({
         });
       if (!getPokemonServer)
         return interaction.reply({
-          ephemeral: true,
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -684,7 +674,6 @@ export default new Command({
       );
 
       return interaction.reply({
-        ephemeral: true,
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -708,7 +697,6 @@ export default new Command({
       const findExisting: globalCodes | null = await db.FindCode(code);
       if (findExisting)
         return interaction.reply({
-          ephemeral: true,
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -721,7 +709,6 @@ export default new Command({
       await db.CreateCode(code, type as RewardType, rewardamount, maxuses);
 
       return interaction.reply({
-        ephemeral: true,
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -737,7 +724,6 @@ export default new Command({
       const usersData: userData | null = await db.FindPokemonTrainer(userId);
       if (!usersData)
         return interaction.reply({
-          ephemeral: true,
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -749,7 +735,6 @@ export default new Command({
       await db.RemoveTrainerData(usersData.userId);
 
       return interaction.reply({
-        ephemeral: true,
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -836,7 +821,6 @@ export default new Command({
 
       if (!getTrainer)
         return interaction.reply({
-          ephemeral: true,
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -852,7 +836,6 @@ export default new Command({
         }
 
         return interaction.reply({
-          ephemeral: true,
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.GREEN)
@@ -871,7 +854,6 @@ export default new Command({
         }
 
         return interaction.reply({
-          ephemeral: true,
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.GREEN)
@@ -884,7 +866,6 @@ export default new Command({
         });
       } else {
         return interaction.reply({
-          ephemeral: true,
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -896,7 +877,6 @@ export default new Command({
       }
     } else {
       return interaction.reply({
-        ephemeral: true,
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)

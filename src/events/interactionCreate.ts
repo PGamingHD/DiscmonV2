@@ -3,6 +3,7 @@ import {
   ModalSubmitFields,
   Events,
   EmbedBuilder,
+  MessageFlags,
 } from "discord.js";
 import { client } from "../bot";
 import { Event } from "../structures/Event";
@@ -33,7 +34,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
       findUser.trainerRank !== TrainerRanks.DEVELOPER
     )
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -49,7 +50,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
       findUser.trainerRank !== TrainerRanks.DEVELOPER
     )
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -66,7 +67,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
       findUser.trainerRank !== TrainerRanks.DEVELOPER
     )
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -77,7 +78,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
       });
     if (command.requireAccount && !findUser)
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -88,7 +89,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
       });
     if (findUser && findUser.userBlacklisted)
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -118,7 +119,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
 
     if (findUser && findUser.userTimeout)
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -141,7 +142,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
       if (e.message === "Missing Permissions") {
         if (interaction.deferred) {
           return interaction.followUp({
-            ephemeral: true,
+            flags: [MessageFlags.Ephemeral],
             embeds: [
               new EmbedBuilder()
                 .setTitle(":warning: Missing Permissions :warning:")
@@ -154,7 +155,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
         }
 
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setTitle(":warning: Missing Permissions :warning:")

@@ -4,6 +4,8 @@ import {
   AttachmentBuilder,
   EmbedBuilder,
   MessageCollector,
+  TextBasedChannel,
+  GuildChannel,
 } from "discord.js";
 import { ExtendedClient } from "../../structures/Client";
 import db from "../database";
@@ -18,7 +20,7 @@ import {
 } from "@napi-rs/canvas";
 import path from "path";
 
-export default async function (
+/*export default async function (
   trainerData: userData,
   message: Message,
   client: ExtendedClient
@@ -274,7 +276,7 @@ export default async function (
   }
 
   //WRITE FUNCTION HERE, NOT SURE WHAT YET, USE LOCAL VALUES TO DECIDE AND NOT DATABASE VALUES; WILL PUT TOO MUCH PREASURE ON SYSTEM!
-}
+}*/
 
 function makeid(length: number): string {
   var result = "";

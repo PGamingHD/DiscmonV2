@@ -2,6 +2,7 @@ import {
   APIEmbed,
   ApplicationCommandOptionType,
   EmbedBuilder,
+  MessageFlags,
 } from "discord.js";
 import { Command } from "../../structures/Command";
 
@@ -69,7 +70,7 @@ export default new Command({
 
       if (foundCmd) {
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -81,7 +82,7 @@ export default new Command({
         });
       } else {
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)

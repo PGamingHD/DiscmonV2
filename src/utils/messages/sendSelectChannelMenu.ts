@@ -5,8 +5,7 @@ import {
   ChannelSelectMenuInteraction,
   CommandInteraction,
   ComponentType,
-  InteractionCollector,
-  InteractionResponse,
+  MessageFlags,
 } from "discord.js";
 import logger from "../logger";
 
@@ -46,15 +45,13 @@ export default async function (
         selectMenu
       );
 
-    const int: InteractionResponse<boolean> = await interaction.reply({
+    await interaction.reply({
       content,
       components: [row],
-      ephemeral,
+      flags: [MessageFlags.Ephemeral],
     });
 
-    const collector: InteractionCollector<
-      ChannelSelectMenuInteraction<CacheType>
-    > = int.createMessageComponentCollector({
+    const collector = interaction.channel?.createMessageComponentCollector({
       componentType: ComponentType.ChannelSelect,
       time,
       idle,
@@ -62,9 +59,9 @@ export default async function (
         i.user.id === interaction.user.id,
     });
 
-    collector.on("collect", collectFunc);
+    collector?.on("collect", collectFunc);
 
-    collector.on("end", endFunc);
+    collector?.on("end", endFunc);
   } catch (e) {
     logger.error(e);
   }

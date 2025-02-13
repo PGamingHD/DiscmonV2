@@ -1,4 +1,8 @@
-import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  EmbedBuilder,
+  MessageFlags,
+} from "discord.js";
 import { Command } from "../../structures/Command";
 import db from "../../utils/database";
 import { Colours } from "../../@types/Colours";
@@ -23,7 +27,7 @@ export default new Command({
 
     if (!itemName) {
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.MAIN)
@@ -52,7 +56,7 @@ export default new Command({
 
       if (!items.includes(itemName))
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -63,7 +67,7 @@ export default new Command({
       if (itemName === "discmon_redeem") {
         if (usersData.userTokens < 5)
           return interaction.reply({
-            ephemeral: true,
+            flags: [MessageFlags.Ephemeral],
             embeds: [
               new EmbedBuilder()
                 .setColor(Colours.RED)
@@ -77,7 +81,7 @@ export default new Command({
         await db.IncreaseUserRedeems(interaction.user.id, 1);
 
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.GREEN)
@@ -91,7 +95,7 @@ export default new Command({
       if (itemName === "discmon_incense") {
         if (usersData.userCoins < 10000)
           return interaction.reply({
-            ephemeral: true,
+            flags: [MessageFlags.Ephemeral],
             embeds: [
               new EmbedBuilder()
                 .setColor(Colours.RED)
@@ -105,7 +109,7 @@ export default new Command({
         await db.IncreaseUserIncenses(interaction.user.id, 1);
 
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.GREEN)
@@ -119,7 +123,7 @@ export default new Command({
       if (itemName === "discmon_buddycandy") {
         if (usersData.userCoins < 50000)
           return interaction.reply({
-            ephemeral: true,
+            flags: [MessageFlags.Ephemeral],
             embeds: [
               new EmbedBuilder()
                 .setColor(Colours.RED)
@@ -133,7 +137,7 @@ export default new Command({
         await db.IncreaseUserBCandy(interaction.user.id, 1);
 
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.GREEN)

@@ -1,5 +1,12 @@
 import { Event } from "../structures/Event";
-import { ActivityType, Events, Guild, Message, TextChannel } from "discord.js";
+import {
+  ActivityType,
+  Client,
+  Events,
+  Guild,
+  Message,
+  TextChannel,
+} from "discord.js";
 import db from "../utils/database";
 import logger from "../utils/logger";
 import { Pokemons } from "@prisma/client";
@@ -7,7 +14,7 @@ import { Cron } from "croner";
 import { RandomizeNumber } from "../utils/misc";
 import lotterySystem from "../utils/actions/lotterySystem";
 
-export default new Event(Events.ClientReady, async (client) => {
+export default new Event(Events.ClientReady, async (client: Client) => {
   const activities: { activity: ActivityType; name: string }[] = [
     {
       activity: ActivityType.Watching,

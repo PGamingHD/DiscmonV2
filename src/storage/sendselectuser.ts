@@ -1,3 +1,4 @@
+import { MessageFlags } from "discord.js";
 import { Command } from "../structures/Command";
 import sendSelectUserMenu from "../utils/messages/sendSelectUserMenu";
 
@@ -8,7 +9,7 @@ export default new Command({
   run: async ({ interaction, client }) => {
     return sendSelectUserMenu(
       interaction,
-      true,
+      [MessageFlags.Ephemeral],
       60000,
       60000,
       async (i: any) => {

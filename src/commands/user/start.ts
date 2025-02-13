@@ -7,7 +7,7 @@ import {
   ComponentType,
   EmbedBuilder,
   InteractionCollector,
-  InteractionResponse,
+  MessageFlags,
 } from "discord.js";
 import { Command } from "../../structures/Command";
 import db from "../../utils/database";
@@ -27,7 +27,7 @@ export default new Command({
 
     if (trainerData)
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -67,8 +67,8 @@ export default new Command({
         squirtle
       );
 
-    const choiceMsg: InteractionResponse<boolean> = await interaction.reply({
-      ephemeral: true,
+    const choiceMsg = await interaction.reply({
+      flags: [MessageFlags.Ephemeral],
       embeds: [
         new EmbedBuilder()
           .setTitle("Please choose a starter Pokémon")
@@ -83,14 +83,13 @@ export default new Command({
       components: [choiceRow],
     });
 
-    const collector: InteractionCollector<ButtonInteraction<CacheType>> =
-      await choiceMsg.createMessageComponentCollector({
-        componentType: ComponentType.Button,
-        time: 120000,
-        idle: 120000,
-      });
+    const collector = interaction.channel?.createMessageComponentCollector({
+      componentType: ComponentType.Button,
+      time: 120000,
+      idle: 120000,
+    });
 
-    collector.on(
+    collector?.on(
       "collect",
       async (i: ButtonInteraction<CacheType>): Promise<void> => {
         if (!i.deferred) await i.deferUpdate();
@@ -181,7 +180,7 @@ export default new Command({
             }
           );
 
-          await choiceMsg.edit({
+          /*await choiceMsg.edit({
             embeds: [
               new EmbedBuilder()
                 .setColor(Colours.GREEN)
@@ -190,7 +189,7 @@ export default new Command({
                 ),
             ],
             components: [],
-          });
+          });*/
 
           return catchBuddyOne(interaction.user.id);
         }
@@ -281,7 +280,7 @@ export default new Command({
             }
           );
 
-          await choiceMsg.edit({
+          /*await choiceMsg?.edit({
             embeds: [
               new EmbedBuilder()
                 .setColor(Colours.GREEN)
@@ -290,7 +289,7 @@ export default new Command({
                 ),
             ],
             components: [],
-          });
+          });*/
 
           return catchBuddyOne(interaction.user.id);
         }
@@ -381,7 +380,7 @@ export default new Command({
             }
           );
 
-          await choiceMsg.edit({
+          /*await choiceMsg.edit({
             embeds: [
               new EmbedBuilder()
                 .setColor(Colours.GREEN)
@@ -390,19 +389,19 @@ export default new Command({
                 ),
             ],
             components: [],
-          });
+          });*/
 
           return catchBuddyOne(interaction.user.id);
         }
       }
     );
 
-    collector.on("end", async (i, reason): Promise<void> => {
+    collector?.on("end", async (i, reason): Promise<void> => {
       bulbasaur.setDisabled(true);
       charmander.setDisabled(true);
       squirtle.setDisabled(true);
 
-      await choiceMsg.edit({ components: [choiceRow] });
+      //await choiceMsg.edit({ components: [choiceRow] });
     });
     return;
   },

@@ -2,6 +2,7 @@ import {
   APIEmbed,
   ApplicationCommandOptionType,
   EmbedBuilder,
+  MessageFlags,
 } from "discord.js";
 import { Command } from "../../structures/Command";
 import { Colours } from "../../@types/Colours";
@@ -67,7 +68,7 @@ export default new Command({
 
       if (auctions.length === 0)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -143,7 +144,7 @@ export default new Command({
 
       if (!auction)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -154,7 +155,7 @@ export default new Command({
         });
       if (auction.pokemon.pokemonOwner === interaction.user.id)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -165,7 +166,7 @@ export default new Command({
         });
       if (auction.leaderData === interaction.user.id)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -180,7 +181,7 @@ export default new Command({
           : auction.auctionCurrent >= amount
       )
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -189,7 +190,7 @@ export default new Command({
         });
       if (amount > usersData.userTokens)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -208,7 +209,7 @@ export default new Command({
       );
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -230,7 +231,7 @@ export default new Command({
       );
       if (!pokemonData)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -241,7 +242,7 @@ export default new Command({
         });
       if (pokemonData.pokemonSelected)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -252,7 +253,7 @@ export default new Command({
         });
       if (pokemonData.pokemonAuction)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -263,7 +264,7 @@ export default new Command({
         });
       if (pokemonData.pokemonFavorite)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -341,7 +342,7 @@ export default new Command({
       }, 1000 * 60 * 60 * 24);
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)

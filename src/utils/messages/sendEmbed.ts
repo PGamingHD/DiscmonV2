@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message, TextChannel } from "discord.js";
 import { sendEmbedOptions } from "../../@types";
 import logger from "../logger";
 
@@ -19,12 +19,13 @@ export default async function ({
     if (content) sendOpts.content = content;
 
     if (channel) {
-      return await channel.send(sendOpts);
+      //channel = channel as TextChannel;
+      return await (channel as TextChannel).send(sendOpts);
     } else if (interaction) {
       if (interaction.deferred || interaction.replied) {
         return await interaction.editReply(sendOpts);
       } else {
-        return await interaction.reply(sendOpts);
+        await interaction.reply(sendOpts);
       }
     }
   } catch (e) {

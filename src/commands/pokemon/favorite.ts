@@ -1,4 +1,8 @@
-import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  EmbedBuilder,
+  MessageFlags,
+} from "discord.js";
 import { Command } from "../../structures/Command";
 import { Colours } from "../../@types/Colours";
 import db from "../../utils/database";
@@ -27,7 +31,7 @@ export default new Command({
     );
     if (!findPokemon)
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -38,7 +42,7 @@ export default new Command({
       });
     if (findPokemon.pokemonAuction)
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -51,7 +55,7 @@ export default new Command({
       await db.SetPokemonFavorite(findPokemon.pokemonId, false);
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -64,7 +68,7 @@ export default new Command({
       await db.SetPokemonFavorite(findPokemon.pokemonId, true);
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)

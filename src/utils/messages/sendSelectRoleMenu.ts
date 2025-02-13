@@ -4,7 +4,6 @@ import {
   CommandInteraction,
   ComponentType,
   InteractionCollector,
-  InteractionResponse,
   RoleSelectMenuBuilder,
   RoleSelectMenuInteraction,
 } from "discord.js";
@@ -38,15 +37,12 @@ export default async function (
     const row: ActionRowBuilder<RoleSelectMenuBuilder> =
       new ActionRowBuilder<RoleSelectMenuBuilder>().addComponents(selectMenu);
 
-    const int: InteractionResponse<boolean> = await interaction.reply({
+    await interaction.reply({
       content,
       components: [row],
-      ephemeral,
     });
 
-    const collector: InteractionCollector<
-      RoleSelectMenuInteraction<CacheType>
-    > = int.createMessageComponentCollector({
+    const collector = interaction.channel?.createMessageComponentCollector({
       componentType: ComponentType.RoleSelect,
       time,
       idle,
@@ -54,9 +50,9 @@ export default async function (
         i.user.id === interaction.user.id,
     });
 
-    collector.on("collect", collectFunc);
+    collector?.on("collect", collectFunc);
 
-    collector.on("end", endFunc);
+    collector?.on("end", endFunc);
   } catch (e) {
     logger.error(e);
   }

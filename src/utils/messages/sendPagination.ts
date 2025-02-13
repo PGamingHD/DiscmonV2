@@ -5,12 +5,11 @@ import {
   ButtonInteraction,
   ButtonStyle,
   CacheType,
-  Collection,
   CommandInteraction,
   ComponentType,
   EmbedBuilder,
-  InteractionCollector,
   Message,
+  MessageFlags,
 } from "discord.js";
 import logger from "../logger";
 
@@ -33,7 +32,12 @@ export default async function (
     if (indexStart > pages.length)
       throw new Error("Start must be lower than amount of pages");
 
-    if (!interaction.deferred) await interaction.deferReply({ ephemeral });
+    if (ephemeral) {
+      if (!interaction.deferred)
+        await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
+    } else {
+      if (!interaction.deferred) await interaction.deferReply();
+    }
 
     if (pages.length === 1) {
       const page: Message<boolean> = await interaction.editReply({
@@ -103,14 +107,13 @@ export default async function (
       components: [buttonRow],
     });
 
-    const collector: InteractionCollector<ButtonInteraction<CacheType>> =
-      currentPage.createMessageComponentCollector({
-        componentType: ComponentType.Button,
-        time,
-        idle,
-      });
+    const collector = interaction.channel?.createMessageComponentCollector({
+      componentType: ComponentType.Button,
+      time,
+      idle,
+    });
 
-    collector.on(
+    collector?.on(
       "collect",
       async (i: ButtonInteraction<CacheType>): Promise<void> => {
         try {
@@ -123,7 +126,7 @@ export default async function (
                   "You do not own this builder."
                 ),
               ],
-              ephemeral: true,
+              flags: [MessageFlags.Ephemeral],
             });
 
             return;
@@ -157,10 +160,17 @@ export default async function (
             }
           }
 
-          await currentPage.edit({
-            embeds: [pages[index]],
-            components: [buttonRow],
-          });
+          if (interaction.ephemeral) {
+            i.editReply({
+              embeds: [pages[index]],
+              components: [buttonRow],
+            });
+          } else {
+            await currentPage.edit({
+              embeds: [pages[index]],
+              components: [buttonRow],
+            });
+          }
 
           collector.resetTimer();
         } catch (e) {
@@ -169,26 +179,20 @@ export default async function (
       }
     );
 
-    collector.on(
-      "end",
-      async (
-        i: Collection<string, ButtonInteraction<CacheType>>,
-        reason: string
-      ): Promise<void> => {
-        if (reason === "messageDelete") return;
+    collector?.on("end", async (i, reason: string): Promise<void> => {
+      if (reason === "messageDelete") return;
 
-        maxBack.setDisabled(true);
-        maxNext.setDisabled(true);
-        prev.setDisabled(true);
-        home.setDisabled(true);
-        next.setDisabled(true);
+      maxBack.setDisabled(true);
+      maxNext.setDisabled(true);
+      prev.setDisabled(true);
+      home.setDisabled(true);
+      next.setDisabled(true);
 
-        await currentPage.edit({
-          embeds: [pages[index]],
-          components: [buttonRow],
-        });
-      }
-    );
+      await currentPage.edit({
+        embeds: [pages[index]],
+        components: [buttonRow],
+      });
+    });
 
     return currentPage;
   } catch (e) {

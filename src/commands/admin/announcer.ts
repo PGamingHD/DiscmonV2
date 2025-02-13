@@ -1,4 +1,8 @@
-import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  EmbedBuilder,
+  MessageFlags,
+} from "discord.js";
 import { Command } from "../../structures/Command";
 import db from "../../utils/database";
 import { Colours } from "../../@types/Colours";
@@ -30,7 +34,7 @@ export default new Command({
 
       if (serverData?.serverAnnouncer)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -43,7 +47,7 @@ export default new Command({
       await db.SetAnnouncer(interaction.guild.id, true);
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -62,7 +66,7 @@ export default new Command({
 
       if (!serverData?.serverAnnouncer)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -75,7 +79,7 @@ export default new Command({
       await db.SetAnnouncer(interaction.guild.id, false);
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -85,5 +89,7 @@ export default new Command({
         ],
       });
     }
+
+    return;
   },
 });

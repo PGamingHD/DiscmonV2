@@ -14,7 +14,7 @@ import increaseSpawnChance from "../utils/actions/increaseSpawnChance";
 import getSpawnRarity from "../utils/actions/getSpawnRarity";
 import encounterSpawn from "../utils/actions/encounterSpawn";
 import pokemonFunction from "../utils/actions/pokemonFunction";
-import antiCheatSystem from "../utils/actions/antiCheatSystem";
+//import antiCheatSystem from "../utils/actions/antiCheatSystem";
 
 export default new Event(Events.MessageCreate, async (message) => {
   if (message.channel.type === ChannelType.DM) return; //logger.log(`I WAS DMED, CONTENT: ${message.content}`);
@@ -37,7 +37,7 @@ export default new Event(Events.MessageCreate, async (message) => {
 
     if (client.captchaSent.has(findUser.userId)) return;
 
-    await antiCheatSystem(findUser, message, client);
+    //await antiCheatSystem(findUser, message, client);
     await pokemonFunction(message, client);
   }
 

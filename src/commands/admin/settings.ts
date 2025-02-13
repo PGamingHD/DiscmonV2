@@ -1,4 +1,4 @@
-import { EmbedBuilder, GuildBasedChannel } from "discord.js";
+import { EmbedBuilder, GuildBasedChannel, MessageFlags } from "discord.js";
 import { Command } from "../../structures/Command";
 import db from "../../utils/database";
 import { Colours } from "../../@types/Colours";
@@ -17,7 +17,7 @@ export default new Command({
 
     if (!serverData)
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -34,7 +34,7 @@ export default new Command({
       );
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.MAIN)
@@ -56,7 +56,7 @@ export default new Command({
       });
     } catch (e: any) {
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)

@@ -38,7 +38,7 @@ export default new Command({
             },
             {
               name: "API Latency",
-              value: `\`\`\`re\n[ ${Math.floor(client.ws.ping)}ms ]\`\`\``,
+              value: `\`\`\`re\n[ PLACEHOLDERms ]\`\`\``,
               inline: true,
             },
             {

@@ -1,6 +1,7 @@
 import { Modal } from "../../structures/Modal";
 import { SendWebhook } from "../../utils/misc";
 import { Colours } from "../../@types/Colours";
+import { MessageFlags } from "discord.js";
 
 export default new Modal({
   customId: "suggestionModal",
@@ -11,7 +12,7 @@ export default new Modal({
     await interaction.reply({
       content:
         "**Suggestion recieved, thank you for your help in making our services the best possible!** ❤️",
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
 
     return SendWebhook(

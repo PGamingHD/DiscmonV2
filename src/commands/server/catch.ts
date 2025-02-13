@@ -1,4 +1,8 @@
-import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  EmbedBuilder,
+  MessageFlags,
+} from "discord.js";
 import { Command } from "../../structures/Command";
 import db from "../../utils/database";
 import { Pokemons } from "@prisma/client";
@@ -64,7 +68,7 @@ export default new Command({
 
     if (!findSpawnedPokemon)
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -191,7 +195,7 @@ export default new Command({
     );
 
     return interaction.reply({
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
       embeds: [
         new EmbedBuilder()
           .setColor(Colours.GREEN)

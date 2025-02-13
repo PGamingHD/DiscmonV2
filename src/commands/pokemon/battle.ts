@@ -10,6 +10,7 @@ import {
   EmbedBuilder,
   InteractionCollector,
   Message,
+  MessageFlags,
   User,
 } from "discord.js";
 import { Command } from "../../structures/Command";
@@ -44,7 +45,7 @@ export default new Command({
 
     if (client.battleCooldowns.has(interaction.user.id))
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -56,7 +57,7 @@ export default new Command({
 
     if (targetUser.id === interaction.user.id)
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -74,7 +75,7 @@ export default new Command({
     );
     if (!targetTrainer)
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -134,13 +135,13 @@ export default new Command({
 
     const fetchedMsg: Message<boolean> = await interaction.fetchReply();
 
-    const cofirmCollector: InteractionCollector<any> =
-      mainMsg.createMessageComponentCollector({
+    const cofirmCollector =
+      interaction.channel?.createMessageComponentCollector({
         idle: 1000 * 120,
         time: 1000 * 120,
       });
 
-    cofirmCollector.on(
+    cofirmCollector?.on(
       "collect",
       async (interactionCollector): Promise<void> => {
         if (!interaction.deferred) await interactionCollector.deferUpdate();

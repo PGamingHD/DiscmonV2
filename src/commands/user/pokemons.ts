@@ -2,6 +2,7 @@ import {
   APIEmbed,
   ApplicationCommandOptionType,
   EmbedBuilder,
+  MessageFlags,
 } from "discord.js";
 import { Command } from "../../structures/Command";
 import db from "../../utils/database";
@@ -75,7 +76,6 @@ export default new Command({
         ownedPokemons = await db.GetTrainerPokemons(interaction.user.id);
       }
 
-      //const ownedPokemons: any = await db.getTrainerPokemons(interaction.user.id);
       const pokemonData: string[] = [];
 
       for (const pokemon of ownedPokemons) {
@@ -112,7 +112,7 @@ export default new Command({
 
       if (pokemonData.length === 0)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -159,7 +159,6 @@ export default new Command({
       ownedPokemons = await db.GetTrainerPokemons(interaction.user.id);
     }
 
-    //const ownedPokemons: any = await db.getTrainerPokemons(interaction.user.id);
     const pokemonData: string[] = [];
 
     for (const pokemon of ownedPokemons) {

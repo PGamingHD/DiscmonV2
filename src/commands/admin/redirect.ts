@@ -2,6 +2,7 @@ import {
   ApplicationCommandOptionType,
   ChannelType,
   EmbedBuilder,
+  MessageFlags,
 } from "discord.js";
 import { Command } from "../../structures/Command";
 import db from "../../utils/database";
@@ -42,7 +43,7 @@ export default new Command({
 
       if (channel.type !== ChannelType.GuildText)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -55,7 +56,7 @@ export default new Command({
       await db.SetRedirectChannel(interaction.guild.id, channel.id);
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -71,7 +72,7 @@ export default new Command({
       await db.SetRedirectChannel(interaction.guild.id, null);
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -81,5 +82,7 @@ export default new Command({
         ],
       });
     }
+
+    return;
   },
 });

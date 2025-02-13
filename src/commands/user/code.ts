@@ -1,4 +1,8 @@
-import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  EmbedBuilder,
+  MessageFlags,
+} from "discord.js";
 import { Command } from "../../structures/Command";
 import db from "../../utils/database";
 import { globalCodes, RewardType, userCodes } from "@prisma/client";
@@ -24,7 +28,7 @@ export default new Command({
 
     if (interaction.guild.id !== process.env.guildId)
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -36,7 +40,7 @@ export default new Command({
 
     if (!redeem) {
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.MAIN)
@@ -54,7 +58,7 @@ export default new Command({
       );
       if (!toRedeem)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -65,7 +69,7 @@ export default new Command({
         });
       if (redeemUser)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -76,7 +80,7 @@ export default new Command({
         });
       if (toRedeem.codeLimitation <= toRedeem.codeRedeemed)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -96,7 +100,7 @@ export default new Command({
       }
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)

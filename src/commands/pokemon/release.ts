@@ -4,6 +4,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
   EmbedBuilder,
+  MessageFlags,
 } from "discord.js";
 import { Command } from "../../structures/Command";
 import { Colours } from "../../@types/Colours";
@@ -32,7 +33,7 @@ export default new Command({
     );
     if (!findPokemon)
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -43,7 +44,7 @@ export default new Command({
       });
     if (findPokemon.pokemonSelected)
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -54,7 +55,7 @@ export default new Command({
       });
     if (findPokemon.pokemonAuction)
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -93,16 +94,18 @@ export default new Command({
           ),
       ],
       components: [confirmRow],
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
 
-    const collector = mainMsg.createMessageComponentCollector({
+    console.log("Channel?", interaction.channel);
+
+    const collector = interaction.channel?.createMessageComponentCollector({
       idle: 1000 * 120,
       time: 1000 * 120,
       max: 1,
     });
 
-    collector.on("collect", async (interactionCollector) => {
+    collector?.on("collect", async (interactionCollector) => {
       await interactionCollector.deferUpdate();
 
       if (interactionCollector.user.id !== interaction.user.id) return;
@@ -121,7 +124,7 @@ export default new Command({
       }
     });
 
-    collector.on("end", async (collected) => {
+    collector?.on("end", async (collected) => {
       try {
         for (let i = 0; i < confirmRow.components.length; i++) {
           confirmRow.components[i].setDisabled(true);

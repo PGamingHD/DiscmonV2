@@ -1,4 +1,8 @@
-import { ApplicationCommandOptionType, EmbedBuilder } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  EmbedBuilder,
+  MessageFlags,
+} from "discord.js";
 import { Command } from "../../structures/Command";
 import { Colours } from "../../@types/Colours";
 import db from "../../utils/database";
@@ -55,7 +59,7 @@ export default new Command({
       chosen = PokemonOrder.FAVORITE;
     } else {
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -68,7 +72,7 @@ export default new Command({
 
     if (pokeTrainer.pokemonOrder === chosen)
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -81,7 +85,7 @@ export default new Command({
     await db.SetTrainerOrder(interaction.user.id, chosen);
 
     return interaction.reply({
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
       embeds: [
         new EmbedBuilder()
           .setColor(Colours.GREEN)

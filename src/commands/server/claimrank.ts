@@ -1,4 +1,4 @@
-import { EmbedBuilder, Role } from "discord.js";
+import { EmbedBuilder, MessageFlags, Role } from "discord.js";
 import { Command } from "../../structures/Command";
 import db from "../../utils/database";
 import { TrainerRanks } from "@prisma/client";
@@ -22,7 +22,7 @@ export default new Command({
       );
       if (!bronzeRole)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -35,7 +35,7 @@ export default new Command({
       // @ts-ignore
       if (interaction.member.roles.cache.has(bronzeRole.id))
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -47,7 +47,7 @@ export default new Command({
       await interaction.member.roles.add(bronzeRole);
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -62,7 +62,7 @@ export default new Command({
       );
       if (!silverRole)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -75,7 +75,7 @@ export default new Command({
       // @ts-ignore
       if (interaction.member.roles.cache.has(silverRole.id))
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -87,7 +87,7 @@ export default new Command({
       await interaction.member.roles.add(silverRole);
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -102,7 +102,7 @@ export default new Command({
       );
       if (!goldRole)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -115,7 +115,7 @@ export default new Command({
       // @ts-ignore
       if (interaction.member.roles.cache.has(goldRole.id))
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -127,7 +127,7 @@ export default new Command({
       await interaction.member.roles.add(goldRole);
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -142,7 +142,7 @@ export default new Command({
       );
       if (!platinumRole)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -155,7 +155,7 @@ export default new Command({
       // @ts-ignore
       if (interaction.member.roles.cache.has(platinumRole.id))
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -169,7 +169,7 @@ export default new Command({
       await interaction.member.roles.add(platinumRole);
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -184,7 +184,7 @@ export default new Command({
       );
       if (!modRole)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -197,7 +197,7 @@ export default new Command({
       // @ts-ignore
       if (interaction.member.roles.cache.has(modRole.id))
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -209,7 +209,7 @@ export default new Command({
       await interaction.member.roles.add(modRole);
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -224,7 +224,7 @@ export default new Command({
       );
       if (!adminRole)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -237,7 +237,7 @@ export default new Command({
       // @ts-ignore
       if (interaction.member.roles.cache.has(adminRole.id))
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -249,7 +249,7 @@ export default new Command({
       await interaction.member.roles.add(adminRole);
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -264,7 +264,7 @@ export default new Command({
       );
       if (!devRole)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -277,7 +277,7 @@ export default new Command({
       // @ts-ignore
       if (interaction.member.roles.cache.has(devRole.id))
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -289,7 +289,7 @@ export default new Command({
       await interaction.member.roles.add(devRole);
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -300,7 +300,7 @@ export default new Command({
       });
     } else {
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)

@@ -1,4 +1,9 @@
-import { ApplicationCommandOptionType, EmbedBuilder, User } from "discord.js";
+import {
+  ApplicationCommandOptionType,
+  EmbedBuilder,
+  MessageFlags,
+  User,
+} from "discord.js";
 import { Command } from "../../structures/Command";
 import db from "../../utils/database";
 import { userData } from "@prisma/client";
@@ -57,7 +62,7 @@ export default new Command({
       );
       if (!targetsData)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -71,7 +76,7 @@ export default new Command({
       const valueToGive: number | undefined = parseNumber(value);
       if (!valueToGive)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -82,7 +87,7 @@ export default new Command({
         });
       if (valueToGive > usersData.userCoins)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -102,7 +107,7 @@ export default new Command({
       );
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -127,7 +132,7 @@ export default new Command({
       );
       if (!targetsData)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -141,7 +146,7 @@ export default new Command({
       const valueToGive: number | undefined = parseNumber(value);
       if (!valueToGive)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -152,7 +157,7 @@ export default new Command({
         });
       if (valueToGive > usersData.userTokens)
         return interaction.reply({
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor(Colours.RED)
@@ -172,7 +177,7 @@ export default new Command({
       );
 
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.GREEN)
@@ -185,7 +190,7 @@ export default new Command({
       });
     } else {
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)

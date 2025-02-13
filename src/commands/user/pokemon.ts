@@ -1,4 +1,4 @@
-import { APIEmbed, EmbedBuilder } from "discord.js";
+import { APIEmbed, EmbedBuilder, MessageFlags } from "discord.js";
 import { Command } from "../../structures/Command";
 import db from "../../utils/database";
 import { Pokemons } from "@prisma/client";
@@ -22,7 +22,7 @@ export default new Command({
 
     if (ownedPokemons.length === 0)
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setDescription("You do not have any Pokémons that could be shown.")

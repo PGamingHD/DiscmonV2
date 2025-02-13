@@ -4,6 +4,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
   EmbedBuilder,
+  MessageFlags,
 } from "discord.js";
 import { Command } from "../../structures/Command";
 import db from "../../utils/database";
@@ -219,7 +220,7 @@ export default new Command({
     await interaction.reply({
       embeds: [mainEmbed],
       components: [storeRow],
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
     });
 
     const newInteraction = await interaction.fetchReply();

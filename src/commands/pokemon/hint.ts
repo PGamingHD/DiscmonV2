@@ -1,4 +1,4 @@
-import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder, MessageFlags } from "discord.js";
 import { Command } from "../../structures/Command";
 import { Colours } from "../../@types/Colours";
 import db from "../../utils/database";
@@ -23,7 +23,7 @@ export default new Command({
 
     if (!spawnedPoke)
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -32,7 +32,7 @@ export default new Command({
       });
     if (userData.userCoins < 1000)
       return interaction.reply({
-        ephemeral: true,
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
@@ -47,7 +47,7 @@ export default new Command({
     const hintReturn: string = await HintGame(spawnedPoke.pokemonName);
 
     return interaction.reply({
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
       embeds: [
         new EmbedBuilder()
           .setColor(Colours.GREEN)

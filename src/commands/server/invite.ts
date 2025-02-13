@@ -1,4 +1,4 @@
-import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder, MessageFlags } from "discord.js";
 import { Command } from "../../structures/Command";
 import { Colours } from "../../@types/Colours";
 
@@ -8,7 +8,7 @@ export default new Command({
   noDefer: true,
   run: async ({ interaction, client }) => {
     return interaction.reply({
-      ephemeral: true,
+      flags: [MessageFlags.Ephemeral],
       embeds: [
         new EmbedBuilder()
           .setColor(Colours.MAIN)
