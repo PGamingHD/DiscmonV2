@@ -86,6 +86,11 @@ export class Database {
           },
         },
       },
+      orderBy: [
+        {
+          pokemonPokedex: "asc",
+        },
+      ],
     });
   }
 
