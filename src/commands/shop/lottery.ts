@@ -129,7 +129,7 @@ export default new Command({
 
       await db.SetCoins(
         interaction.user.id,
-        parseInt(usersData.userCoins.toString()) - buy * 10000
+        Number(usersData.userCoins) - buy * 10000
       );
 
       await db.AddNewTickets(toPush);

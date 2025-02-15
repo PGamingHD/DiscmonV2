@@ -168,7 +168,8 @@ export default async function (client: ExtendedClient): Promise<void> {
             if (newChallenge.challengesCoinReward !== null) {
               await db.SetCoins(
                 usersData.userId,
-                usersData.userCoins + newChallenge.challengesCoinReward
+                Number(usersData.userCoins) +
+                  Number(newChallenge.challengesCoinReward)
               );
             }
 

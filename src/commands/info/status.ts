@@ -53,7 +53,7 @@ export default new Command({
               inline: true,
             },
             {
-              name: "Project Developer",
+              name: "Bot Developer",
               value:
                 "[***PGamingHD***](https://discordapp.com/users/266726434855321600/)",
               inline: true,
@@ -100,7 +100,7 @@ export default new Command({
               inline: true,
             },
             {
-              name: "Project Uptime",
+              name: "Bot Uptime",
               value: `\`[ ${FormatSeconds(client.uptime / 1000)} ]\``,
               inline: true,
             },
@@ -117,7 +117,7 @@ export default new Command({
               inline: true,
             },
             {
-              name: "Project Version",
+              name: "Bot Version",
               value: `\`V1.0.75_DEV\``,
               inline: true,
             },

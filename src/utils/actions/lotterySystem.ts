@@ -48,7 +48,7 @@ export default async function (client: Client) {
         const usersTickets: number = await db.CountUserTickets(userid);
         await db.SetCoins(
           userid,
-          parseInt(usersData.userCoins.toString()) + usersTickets * 10000
+          Number(usersData.userCoins) + usersTickets * 10000
         );
 
         try {
@@ -87,7 +87,7 @@ export default async function (client: Client) {
 
     await db.SetCoins(
       winner1Data.userId,
-      Math.floor(parseInt(winner1Data.userCoins.toString()) + winner1Award)
+      Math.floor(Number(winner1Data.userCoins) + winner1Award)
     );
 
     const spawnedRarity = await getSpawnRarity();
@@ -209,7 +209,7 @@ export default async function (client: Client) {
 
     await db.SetCoins(
       winner2Data.userId,
-      Math.floor(parseInt(winner2Data.userCoins.toString()) + winner2Award)
+      Math.floor(Number(winner2Data.userCoins) + winner2Award)
     );
 
     try {
@@ -235,7 +235,7 @@ export default async function (client: Client) {
 
     await db.SetCoins(
       winner3Data.userId,
-      Math.floor(parseInt(winner3Data.userCoins.toString()) + winner3Award)
+      Math.floor(Number(winner3Data.userCoins) + winner3Award)
     );
 
     try {

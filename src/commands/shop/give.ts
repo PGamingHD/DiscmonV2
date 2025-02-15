@@ -99,11 +99,11 @@ export default new Command({
 
       await db.SetCoins(
         usersData.userId,
-        parseInt(usersData.userCoins.toString()) - valueToGive
+        Number(usersData.userCoins) - valueToGive
       );
       await db.SetCoins(
         targetsData.userId,
-        parseInt(targetsData.userCoins.toString()) + valueToGive
+        Number(targetsData.userCoins) + valueToGive
       );
 
       return interaction.reply({

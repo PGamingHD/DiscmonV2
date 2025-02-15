@@ -49,6 +49,7 @@ export default new Command({
       interaction.channel.id,
       pokeName
     );
+
     const getHighestPoke: Pokemons[] = await db.GetPokemonNextPokeId(
       interaction.user.id
     );

@@ -85,7 +85,7 @@ export default new Command({
         .setStyle(ButtonStyle.Danger),
     ]);
 
-    const mainMsg = await interaction.reply({
+    await interaction.reply({
       embeds: [
         new EmbedBuilder()
           .setColor(Colours.MAIN)
@@ -96,8 +96,6 @@ export default new Command({
       components: [confirmRow],
       flags: [MessageFlags.Ephemeral],
     });
-
-    console.log("Channel?", interaction.channel);
 
     const collector = interaction.channel?.createMessageComponentCollector({
       idle: 1000 * 120,

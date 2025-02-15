@@ -90,10 +90,10 @@ export default new Command({
               iconURL: interaction.user.displayAvatarURL(),
             })
             .setDescription(
-              `Your catchbuddy helps you in your adventure to catch them all, catch Pokémons while not online!\n\nRun your catchbuddy by using \`/catchbuddy status:enable\`\nDisable your catchbuddy by using \`/catchbuddy status:disable\`\nYou may also upgrade your catchbuddy for quicker/better Pokémons, run \`/catchbuddy upgrade:name\``
+              `Your catchbuddy helps you in your adventure to catch them all, catch Pokémons while idle!\n\nRun your catchbuddy by using \`/catchbuddy status:enable\`\nDisable your catchbuddy by using \`/catchbuddy status:disable\`\nYou may also upgrade your catchbuddy for quicker/better Pokémons, run \`/catchbuddy upgrade:name\``
             )
             .setFooter({
-              text: `Catchbuddy has so far caught ${usersData.userCatchBuddy.catcherCaught} Pokémons for you.`,
+              text: `Catchbuddy has so far caught ${usersData.userCatchBuddy.catcherCaught} Pokémon(s) for you.`,
             })
             .setTimestamp()
             .addFields([
@@ -432,7 +432,7 @@ export default new Command({
 
         await db.SetCoins(
           interaction.user.id,
-          usersData.userCoins - calculatedPrice
+          Number(usersData.userCoins) - calculatedPrice
         );
         const upgrade: userCatchBuddy = await db.IncrementPokemonUpgrade(
           interaction.user.id
@@ -477,7 +477,7 @@ export default new Command({
 
         await db.SetCoins(
           interaction.user.id,
-          usersData.userCoins - calculatedPrice
+          Number(usersData.userCoins) - calculatedPrice
         );
         const upgrade: userCatchBuddy = await db.IncrementDurationUpgrade(
           interaction.user.id
@@ -522,7 +522,7 @@ export default new Command({
 
         await db.SetCoins(
           interaction.user.id,
-          usersData.userCoins - calculatedPrice
+          Number(usersData.userCoins) - calculatedPrice
         );
         const upgrade: userCatchBuddy = await db.IncrementLuckUpgrade(
           interaction.user.id

@@ -170,7 +170,10 @@ export default new Command({
           ],
         });
 
-      await db.SetCoins(interaction.user.id, usersData.userCoins + 50000);
+      await db.SetCoins(
+        interaction.user.id,
+        Number(usersData.userCoins) + 50000
+      );
       await db.SetUserRedeems(
         interaction.user.id,
         usersData.userBag.userRedeems - 1

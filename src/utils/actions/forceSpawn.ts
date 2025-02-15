@@ -72,21 +72,6 @@ export default async function (
     ],
   });
 
-  if (
-    pokemonToSpawn.pokemonRarity === PokemonRarity.LEGEND ||
-    shiny ||
-    pokemonToSpawn.pokemonRarity === PokemonRarity.ULTRABEAST ||
-    pokemonToSpawn.pokemonRarity === PokemonRarity.MYTHICAL
-  ) {
-    await SendWebhookWithImage(
-      "https://canary.discord.com/api/webhooks/1120752699860860968/CF7WjmkTsFmCXtMFQGMtASRgnxKfRGVUvBvY9mvlz45p6BHunjmzan83fRRMeld797fw",
-      "👑 Rare Spawn Detected 👑",
-      "**A rare spawn has been detected in a guild**",
-      pic,
-      Colours.MAIN
-    );
-  }
-
   const guildId: string = interaction.guild.id;
   const channelId: string = channelToSend.id;
 
