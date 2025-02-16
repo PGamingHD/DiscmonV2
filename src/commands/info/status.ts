@@ -118,7 +118,7 @@ export default new Command({
             },
             {
               name: "Bot Version",
-              value: `\`V1.0.75_DEV\``,
+              value: `\`V1.0.85_DEV\``,
               inline: true,
             },
           ]),
