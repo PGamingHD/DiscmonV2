@@ -16,7 +16,7 @@ import { Colours } from "../@types/Colours";
 export default new Event(Events.InteractionCreate, async (interaction) => {
   if (interaction.isChatInputCommand()) {
     const command: CommandType | undefined = client.commands.get(
-      interaction.commandName
+      interaction.commandName,
     );
     if (!command)
       return interaction.followUp("You have used a non existent command");
@@ -26,7 +26,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
     else await interaction.deferReply();
 
     const findUser: userData | null = await db.FindPokemonTrainer(
-      interaction.user.id
+      interaction.user.id,
     );
     if (
       findUser &&
@@ -39,7 +39,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
           new EmbedBuilder()
             .setColor(Colours.RED)
             .setDescription(
-              "You require the permission `Developer` to execute this command."
+              "You require the permission `Developer` to execute this command.",
             ),
         ],
       });
@@ -55,7 +55,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
           new EmbedBuilder()
             .setColor(Colours.RED)
             .setDescription(
-              "You require the permission `Administrator` to execute this command."
+              "You require the permission `Administrator` to execute this command.",
             ),
         ],
       });
@@ -72,7 +72,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
           new EmbedBuilder()
             .setColor(Colours.RED)
             .setDescription(
-              "You require the permission `Moderator` to execute this command."
+              "You require the permission `Moderator` to execute this command.",
             ),
         ],
       });
@@ -83,7 +83,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
           new EmbedBuilder()
             .setColor(Colours.RED)
             .setDescription(
-              "You require an account to execute this command, please use `/start` to start your adventure."
+              "You require an account to execute this command, please use `/start` to start your adventure.2",
             ),
         ],
       });
@@ -95,7 +95,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
             .setColor(Colours.RED)
             .setTitle(":x: Account has been disabled :x:")
             .setDescription(
-              "*Your account has been permanently suspended.*\n\n**Please contact Staff for more information.**"
+              "*Your account has been permanently suspended.*\n\n**Please contact Staff for more information.**",
             ),
         ],
       });
@@ -126,8 +126,8 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
             .setTitle(":x: Account has been timed out :x:")
             .setDescription(
               `*Your account has been temporarily suspended until <t:${Math.floor(
-                Number(findUser.userTimeoutDate) / 1000
-              )}:R> for suspicious activity.*\n\n**Please contact Staff for more information.**`
+                Number(findUser.userTimeoutDate) / 1000,
+              )}:R> for suspicious activity.*\n\n**Please contact Staff for more information.**`,
             ),
         ],
       });
@@ -147,7 +147,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
               new EmbedBuilder()
                 .setTitle(":warning: Missing Permissions :warning:")
                 .setDescription(
-                  "*I am missing the required server permissions to execute this command.*\n\n**Contact the Server Staff for more information.**"
+                  "*I am missing the required server permissions to execute this command.*\n\n**Contact the Server Staff for more information.**",
                 )
                 .setColor(Colours.RED),
             ],
@@ -160,7 +160,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
             new EmbedBuilder()
               .setTitle(":warning: Missing Permissions :warning:")
               .setDescription(
-                "*I am missing the required server permissions to execute this command.*\n\n**Contact the Server Staff for more information.**"
+                "*I am missing the required server permissions to execute this command.*\n\n**Contact the Server Staff for more information.**",
               )
               .setColor(Colours.RED),
           ],
@@ -175,7 +175,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
     interaction.isUserContextMenuCommand()
   ) {
     const command: MenuType | undefined = client.contextmenus.get(
-      interaction.commandName
+      interaction.commandName,
     );
     if (!command)
       return interaction.followUp("You have used a non existent context menu");
@@ -190,7 +190,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
     }
   } else if (interaction.isModalSubmit()) {
     const modal: ModalType | undefined = client.modals.get(
-      interaction.customId
+      interaction.customId,
     );
     if (modal) {
       try {
@@ -205,7 +205,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
     }
   } else if (interaction.isButton()) {
     const button: ButtonType | undefined = client.buttons.get(
-      interaction.customId
+      interaction.customId,
     );
     if (button) {
       try {
