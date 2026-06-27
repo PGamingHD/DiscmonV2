@@ -62,13 +62,13 @@ export class ExtendedClient extends Client {
   }
 
   async registerCommands({ commands, guildId }: RegisterCommandsOptions) {
-    /*if (guildId) {
-      this.guilds.cache.get(guildId)?.commands.set(commands);
+    if (!this.application)
+      return logger.error("No application to register commands for!");
+    if (guildId) {
+      await this.guilds.cache.get(guildId)?.commands.set(commands);
     } else {
-      this.application?.commands.set(commands);
-    }*/
-
-    this.application?.commands.set(commands);
+      await this.application?.commands.set(commands);
+    }
   }
 
   async RegisterModules() {
@@ -156,10 +156,11 @@ export class ExtendedClient extends Client {
     });
 
     this.on("ready", async () => {
-      this.registerCommands({
+      await this.registerCommands({
         commands: globalCommands,
       });
-      this.registerCommands({
+
+      await this.registerCommands({
         commands: guildSpecfic,
         guildId: process.env.guildId,
       });
