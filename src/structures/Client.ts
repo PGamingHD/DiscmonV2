@@ -54,7 +54,7 @@ export class ExtendedClient extends Client {
 
   start() {
     this.RegisterModules();
-    this.login(process.env.token);
+    this.login(process.env.TOKEN);
   }
 
   async ImportFile(filePath: string) {
@@ -62,11 +62,13 @@ export class ExtendedClient extends Client {
   }
 
   async registerCommands({ commands, guildId }: RegisterCommandsOptions) {
-    if (guildId) {
+    /*if (guildId) {
       this.guilds.cache.get(guildId)?.commands.set(commands);
     } else {
       this.application?.commands.set(commands);
-    }
+    }*/
+
+    this.application?.commands.set(commands);
   }
 
   async RegisterModules() {
