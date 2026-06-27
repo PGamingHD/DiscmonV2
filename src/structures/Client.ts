@@ -65,7 +65,14 @@ export class ExtendedClient extends Client {
     if (!this.application)
       return logger.error("No application to register commands for!");
     if (guildId) {
-      await this.guilds.cache.get(guildId)?.commands.set(commands);
+      const guild = this.guilds.cache.get(guildId);
+
+      if (!guild) {
+        logger.error(`Guild ${guildId} not found to push local commands to.`);
+        return;
+      }
+
+      await guild.commands.set(commands);
     } else {
       await this.application?.commands.set(commands);
     }
