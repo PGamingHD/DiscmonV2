@@ -64,15 +64,15 @@ export class ExtendedClient extends Client {
   async registerCommands({ commands, guildId }: RegisterCommandsOptions) {
     if (!this.application)
       return logger.error("No application to register commands for!");
+
     if (guildId) {
-      const guild = this.guilds.cache.get(guildId);
+      const guild = await this.guilds.fetch(guildId);
 
       if (!guild) {
         logger.error(`Guild ${guildId} not found to push local commands to.`);
-        return;
+      } else {
+        await guild.commands.set(commands);
       }
-
-      await guild.commands.set(commands);
     } else {
       await this.application?.commands.set(commands);
     }
@@ -163,6 +163,7 @@ export class ExtendedClient extends Client {
     });
 
     this.on("ready", async () => {
+      console.log("RAN READY!");
       await this.registerCommands({
         commands: globalCommands,
       });
