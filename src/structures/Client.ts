@@ -76,6 +76,8 @@ export class ExtendedClient extends Client {
     } else {
       await this.application?.commands.set(commands);
     }
+
+    console.log("Pushing", commands, guildId);
   }
 
   async RegisterModules() {
