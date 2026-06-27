@@ -406,7 +406,7 @@ export default new Command({
             new EmbedBuilder()
               .setColor(Colours.RED)
               .setDescription(
-                "The rarity is invalid, must be of a valid rarity."
+                "The rarity is invalid, must be of a valid rarity.",
               ),
           ],
         });
@@ -451,7 +451,7 @@ export default new Command({
             new EmbedBuilder()
               .setColor(Colours.RED)
               .setDescription(
-                "The types field is empty, please enter atleast 1 type."
+                "The types field is empty, please enter atleast 1 type.",
               ),
           ],
         });
@@ -464,7 +464,7 @@ export default new Command({
               new EmbedBuilder()
                 .setColor(Colours.RED)
                 .setDescription(
-                  "One of the entered Pokémon types are invalid."
+                  "One of the entered Pokémon types are invalid.",
                 ),
             ],
           });
@@ -511,7 +511,7 @@ export default new Command({
           new EmbedBuilder()
             .setColor(Colours.GREEN)
             .setDescription(
-              `The Pokémon \`${pokeName}\` has been added into the database successfully with all types & evolve data!`
+              `The Pokémon \`${pokeName}\` has been added into the database successfully with all types & evolve data!`,
             ),
         ],
       });
@@ -526,7 +526,7 @@ export default new Command({
 
       const spawnedPokemon: Pokemons | null = await db.FindSpawnedPokemon(
         interaction.channel.id,
-        pokeName
+        pokeName,
       );
       if (!spawnedPokemon)
         return interaction.reply({
@@ -534,7 +534,7 @@ export default new Command({
             new EmbedBuilder()
               .setColor(Colours.RED)
               .setDescription(
-                "The Pokémon with that name is not spawned in this channel, is the channel correct?"
+                "The Pokémon with that name is not spawned in this channel, is the channel correct?",
               ),
           ],
         });
@@ -542,11 +542,11 @@ export default new Command({
       if (spawnedPokemon) {
         try {
           const channel: TextChannel = (await interaction.guild.channels.fetch(
-            spawnedPokemon.spawnedChannel as string
+            spawnedPokemon.spawnedChannel as string,
           )) as TextChannel;
           if (!channel) return;
           const oldMessage: Message<true> = await channel.messages.fetch(
-            spawnedPokemon.spawnedMessage as string
+            spawnedPokemon.spawnedMessage as string,
           );
           await oldMessage.edit({
             content: `:x: The \`${spawnedPokemon.pokemonName}\` was forcefully despawned by a Developer.`,
@@ -563,7 +563,7 @@ export default new Command({
           new EmbedBuilder()
             .setColor(Colours.GREEN)
             .setDescription(
-              `The Pokémon \`${pokeName}\` was successfully despawned from this channel!`
+              `The Pokémon \`${pokeName}\` was successfully despawned from this channel!`,
             ),
         ],
       });
@@ -588,7 +588,7 @@ export default new Command({
               : `\`${pokemon.pokemonOwner}\``
           } **${pokemon.pokemonName}** • Lvl. ${
             pokemon.pokemonLevel
-          } • *IV ${IVtotal}%*`
+          } • *IV ${IVtotal}%*`,
         );
       }
 
@@ -619,7 +619,7 @@ export default new Command({
           new EmbedBuilder()
             .setColor(Colours.GREEN)
             .setDescription(
-              `The server spawner was made \`100%\`, next message will instantly spawn a Pokémon!`
+              `The server spawner was made \`100%\`, next message will instantly spawn a Pokémon!`,
             ),
         ],
       });
@@ -640,7 +640,7 @@ export default new Command({
 
       const getPokemon: Pokemon | null = await db.GetPokemon(pokeName);
       const getPokemonServer: PokemonServer | null = await db.GetServer(
-        interaction.guild.id
+        interaction.guild.id,
       );
 
       if (!getPokemon)
@@ -649,7 +649,7 @@ export default new Command({
             new EmbedBuilder()
               .setColor(Colours.RED)
               .setDescription(
-                "No Pokémon was found with the specified name, is it valid?"
+                "No Pokémon was found with the specified name, is it valid?",
               ),
           ],
         });
@@ -659,7 +659,7 @@ export default new Command({
             new EmbedBuilder()
               .setColor(Colours.RED)
               .setDescription(
-                "No Pokémon Server was found, please send a message first to initialize."
+                "No Pokémon Server was found, please send a message first to initialize.",
               ),
           ],
         });
@@ -670,7 +670,7 @@ export default new Command({
         getPokemonServer,
         pokeLevel,
         maxIV,
-        isShiny
+        isShiny,
       );
 
       return interaction.reply({
@@ -678,7 +678,7 @@ export default new Command({
           new EmbedBuilder()
             .setColor(Colours.GREEN)
             .setDescription(
-              `The Pokémon \`${pokeName}\` was successfully spawned with level \`${pokeLevel}\`!`
+              `The Pokémon \`${pokeName}\` was successfully spawned with level \`${pokeLevel}\`!`,
             ),
         ],
       });
@@ -701,7 +701,7 @@ export default new Command({
             new EmbedBuilder()
               .setColor(Colours.RED)
               .setDescription(
-                `A code with the exact same name already exists, please try another name!`
+                `A code with the exact same name already exists, please try another name!`,
               ),
           ],
         });
@@ -713,7 +713,7 @@ export default new Command({
           new EmbedBuilder()
             .setColor(Colours.GREEN)
             .setDescription(
-              `The code \`${code}\` has been successfully added with redeem amount of \`${maxuses}\`!`
+              `The code \`${code}\` has been successfully added with redeem amount of \`${maxuses}\`!`,
             ),
         ],
       });
@@ -747,8 +747,8 @@ export default new Command({
       const data: string[] = [];
       guilds.map((guild) =>
         data.push(
-          `**[**\`${guild.id}\`**]** • ***${guild.name}*** • *${guild.memberCount} members*`
-        )
+          `**[**\`${guild.id}\`**]** • ***${guild.name}*** • *${guild.memberCount} members*`,
+        ),
       );
 
       const pages: string[][] = chunk(data, 15);
@@ -770,6 +770,7 @@ export default new Command({
       return sendPagination(interaction, embeds, 120000, 120000, true, 0);
     } else if (interaction.options.getSubcommand() === "eval") {
       if (interaction.user.id !== "266726434855321600") return;
+
       const evalMsg: string | null = interaction.options.getString("toeval");
 
       if (!evalMsg)
@@ -793,12 +794,12 @@ export default new Command({
         if (string.includes(client.token)) return;
 
         let evalEmbed: EmbedBuilder = new EmbedBuilder().setTitle(
-          `${client.user.username} | EVALUTION`
+          `${client.user.username} | EVALUTION`,
         );
         evalEmbed.setDescription(
           `***Input:***\n\`\`\`js\n${evalMsg}\n\`\`\`\n***Output:***\n\`\`\`js\n${
             !!string ? "?" : string
-          }\n\`\`\``
+          }\n\`\`\``,
         );
         return interaction.reply({
           embeds: [evalEmbed.setColor(Colours.MAIN).setTimestamp()],
@@ -841,8 +842,8 @@ export default new Command({
               .setColor(Colours.GREEN)
               .setDescription(
                 `The trainers economy has been successfully set to \`${amount}\` **${CapitalizeFirst(
-                  type.toLowerCase()
-                )}**!`
+                  type.toLowerCase(),
+                )}**!`,
               ),
           ],
         });
@@ -859,8 +860,8 @@ export default new Command({
               .setColor(Colours.GREEN)
               .setDescription(
                 `The trainers economy has been successfully added \`${amount}\` **${CapitalizeFirst(
-                  type.toLowerCase()
-                )}**`
+                  type.toLowerCase(),
+                )}**`,
               ),
           ],
         });
@@ -870,7 +871,7 @@ export default new Command({
             new EmbedBuilder()
               .setColor(Colours.RED)
               .setDescription(
-                `The subcommand you tried to use is not valid or does not exist anymore.`
+                `The subcommand you tried to use is not valid or does not exist anymore.`,
               ),
           ],
         });
@@ -881,7 +882,7 @@ export default new Command({
           new EmbedBuilder()
             .setColor(Colours.RED)
             .setDescription(
-              `The subcommand you tried to use is not valid or does not exist anymore.`
+              `The subcommand you tried to use is not valid or does not exist anymore.`,
             ),
         ],
       });

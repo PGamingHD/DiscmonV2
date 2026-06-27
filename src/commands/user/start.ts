@@ -22,7 +22,7 @@ export default new Command({
   noDefer: true,
   run: async ({ interaction, client }) => {
     const trainerData: userData | null = await db.FindPokemonTrainer(
-      interaction.user.id
+      interaction.user.id,
     );
 
     if (trainerData)
@@ -32,7 +32,7 @@ export default new Command({
           new EmbedBuilder()
             .setColor(Colours.RED)
             .setDescription(
-              "It seems like you already have an account, you may not register twice."
+              "It seems like you already have an account, you may not register twice.",
             ),
         ],
       });
@@ -64,7 +64,7 @@ export default new Command({
       new ActionRowBuilder<ButtonBuilder>().addComponents(
         bulbasaur,
         charmander,
-        squirtle
+        squirtle,
       );
 
     const choiceMsg = await interaction.reply({
@@ -73,7 +73,7 @@ export default new Command({
         new EmbedBuilder()
           .setTitle("Please choose a starter Pokémon")
           .setImage(
-            "https://cdn.discordapp.com/attachments/1010999257899204769/1057280526190387271/starters.png"
+            "https://cdn.discordapp.com/attachments/1010999257899204769/1057280526190387271/starters.png",
           )
           .setColor(Colours.YELLOW)
           .setFooter({
@@ -133,7 +133,7 @@ export default new Command({
 
           await db.RegisterNewUser(
             interaction.user.id,
-            nextTrainerId as number
+            nextTrainerId as number,
           );
 
           await db.RegisterUserChallenges(interaction.user.id);
@@ -177,7 +177,7 @@ export default new Command({
               SpecialAtk: pokemon.pokemonEVs.SpecialAtk,
               SpecialDef: pokemon.pokemonEVs.SpecialDef,
               Speed: pokemon.pokemonEVs.Speed,
-            }
+            },
           );
 
           /*await choiceMsg.edit({
@@ -233,7 +233,7 @@ export default new Command({
 
           await db.RegisterNewUser(
             interaction.user.id,
-            nextTrainerId as number
+            nextTrainerId as number,
           );
 
           await db.RegisterUserChallenges(interaction.user.id);
@@ -277,7 +277,7 @@ export default new Command({
               SpecialAtk: pokemon.pokemonEVs.SpecialAtk,
               SpecialDef: pokemon.pokemonEVs.SpecialDef,
               Speed: pokemon.pokemonEVs.Speed,
-            }
+            },
           );
 
           /*await choiceMsg?.edit({
@@ -333,7 +333,7 @@ export default new Command({
 
           await db.RegisterNewUser(
             interaction.user.id,
-            nextTrainerId as number
+            nextTrainerId as number,
           );
 
           await db.RegisterUserChallenges(interaction.user.id);
@@ -377,7 +377,7 @@ export default new Command({
               SpecialAtk: pokemon.pokemonEVs.SpecialAtk,
               SpecialDef: pokemon.pokemonEVs.SpecialDef,
               Speed: pokemon.pokemonEVs.Speed,
-            }
+            },
           );
 
           /*await choiceMsg.edit({
@@ -393,7 +393,7 @@ export default new Command({
 
           return catchBuddyOne(interaction.user.id);
         }
-      }
+      },
     );
 
     collector?.on("end", async (i, reason): Promise<void> => {
