@@ -83,7 +83,7 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
           new EmbedBuilder()
             .setColor(Colours.RED)
             .setDescription(
-              "You require an account to execute this command, please use `/start` to start your adventure.2",
+              "You require an account to execute this command, please use `/start` to start your adventure.",
             ),
         ],
       });
