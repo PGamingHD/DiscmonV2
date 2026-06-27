@@ -39,7 +39,7 @@ export default new Command({
           .setColor(Colours.MAIN)
           .setTitle("🤖 Discmon Status 🤖")
           .setDescription(
-            "Need help with any commands? View our `/help` command."
+            "Need help with any commands? View our `/help` command.",
           )
           .addFields([
             {
@@ -74,21 +74,21 @@ export default new Command({
             {
               name: "Total Guilds",
               value: `\`[ ${client.guilds.cache.size.toLocaleString(
-                "en-US"
+                "en-US",
               )} ]\``,
               inline: true,
             },
             {
               name: "Total Channels",
               value: `\`[ ${client.channels.cache.size.toLocaleString(
-                "en-US"
+                "en-US",
               )} ]\``,
               inline: true,
             },
             {
               name: "Cached Users",
               value: `\`[ ${client.users.cache.size.toLocaleString(
-                "en-US"
+                "en-US",
               )} ]\``,
               inline: true,
             },

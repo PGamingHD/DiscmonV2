@@ -10,18 +10,6 @@ export default new Command({
   description: "Display all leaderboards",
   noDefer: true,
   run: async ({ interaction, client }) => {
-    if (client.changelogFiles.size === 0)
-      return interaction.reply({
-        flags: [MessageFlags.Ephemeral],
-        embeds: [
-          new EmbedBuilder()
-            .setDescription(
-              "There are no changelogs currently added, please wait for changelogs to be added."
-            )
-            .setColor(Colours.RED),
-        ],
-      });
-
     const data: any[] = [];
 
     let coinText: string = ``;
