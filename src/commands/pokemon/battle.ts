@@ -25,6 +25,7 @@ import {
   CapitalizeFirst,
 } from "../../utils/misc";
 import moveChart from "../../utils/charts/moveChart";
+import redis from "../../utils/redis";
 
 export default new Command({
   name: "battle",
@@ -43,14 +44,24 @@ export default new Command({
     const targetUser: User | null = interaction.options.getUser("trainer");
     if (!targetUser) return;
 
-    if (client.battleCooldowns.has(interaction.user.id))
+    let hasCooldown = false;
+
+    if (redis.isConnected()) {
+      hasCooldown = await redis.hasCooldown(
+        `cooldown:battle:${interaction.user.id}`,
+      );
+    } else {
+      hasCooldown = client.battleCooldowns.has(interaction.user.id);
+    }
+
+    if (hasCooldown)
       return interaction.reply({
         flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
             .setDescription(
-              "You are required to wait `5` minutes between each battle, please wait."
+              "You are required to wait `5` minutes between each battle, please wait.",
             ),
         ],
       });
@@ -62,16 +73,16 @@ export default new Command({
           new EmbedBuilder()
             .setColor(Colours.RED)
             .setDescription(
-              "You may not battle yourself, please send a battle request to someone else."
+              "You may not battle yourself, please send a battle request to someone else.",
             ),
         ],
       });
 
     const targetTrainer: userData | null = await db.FindPokemonTrainer(
-      targetUser.id
+      targetUser.id,
     );
     const userTrainer: userData | null = await db.FindPokemonTrainer(
-      interaction.user.id
+      interaction.user.id,
     );
     if (!targetTrainer)
       return interaction.reply({
@@ -80,17 +91,17 @@ export default new Command({
           new EmbedBuilder()
             .setColor(Colours.RED)
             .setDescription(
-              "The user have not yet registered their account, please have them register first."
+              "The user have not yet registered their account, please have them register first.",
             ),
         ],
       });
     if (!userTrainer) return;
 
     const targetPokemon: any = await db.FindUserSelectedPokemon(
-      targetTrainer.userId
+      targetTrainer.userId,
     );
     const battlerPokemon: any = await db.FindUserSelectedPokemon(
-      interaction.user.id
+      interaction.user.id,
     );
 
     if (!targetPokemon) return;
@@ -127,7 +138,7 @@ export default new Command({
         new EmbedBuilder()
           .setColor(Colours.MAIN)
           .setDescription(
-            `The user ${interaction.user} has challenged user ${targetUser} to a battle, please confirm or deny below.`
+            `The user ${interaction.user} has challenged user ${targetUser} to a battle, please confirm or deny below.`,
           ),
       ],
       components: [confirmRow],
@@ -156,13 +167,13 @@ export default new Command({
             targetPokemon.pokemonLevel,
             targetPoke.pokemonEVs.HP,
             targetPokemon.PokemonIVs.HP,
-            targetPokemon.PokemonsEVs.HP
+            targetPokemon.PokemonsEVs.HP,
           );
           const totalBattlerHP: number = CalculatePokemonHP(
             battlerPokemon.pokemonLevel,
             battlerPoke.pokemonEVs.HP,
             battlerPokemon.PokemonIVs.HP,
-            targetPokemon.PokemonsEVs.HP
+            targetPokemon.PokemonsEVs.HP,
           );
 
           let currentTargetHP: number = totalTargetHP;
@@ -176,7 +187,7 @@ export default new Command({
             totalTargetHP,
             totalBattlerHP,
             currentTargetHP,
-            currentBattlerHP
+            currentBattlerHP,
           );
 
           let battlerMoves: string[] = [];
@@ -235,7 +246,7 @@ export default new Command({
               battlerMove2,
               battlerMove3,
               battlerMove4,
-              battlerMove5
+              battlerMove5,
             );
 
           let targetMoves: string[] = [];
@@ -295,14 +306,14 @@ export default new Command({
               targetMove2,
               targetMove3,
               targetMove4,
-              targetMove5
+              targetMove5,
             );
 
           //currentTargetHP = currentTargetHP - 10; HOW TO CHANGE CURRENT TO NEW BY REMOVING
 
           const attachment: AttachmentBuilder = new AttachmentBuilder(
             await canvas.encode("png"),
-            { name: `battle.png` }
+            { name: `battle.png` },
           );
 
           let battleData: string[] = [];
@@ -319,7 +330,7 @@ export default new Command({
                 targetPokemon.pokemonName
               }\`\n\n**Battle History**\n\`\`\`${
                 battleData.length === 0 ? "No Data" : battleData.join("\n")
-              }\`\`\``
+              }\`\`\``,
             )
             .setFooter({ text: `Move Turn: ${interaction.user.tag}` });
 
@@ -421,7 +432,7 @@ export default new Command({
                   targetPokemon.pokemonLevel,
                   battlerPokemon.PokemonsEVs.Defense,
                   moveTypes,
-                  moveData
+                  moveData,
                 );
                 currentBattlerHP = currentBattlerHP - damageDealt;
 
@@ -429,7 +440,7 @@ export default new Command({
                   await db.IncreaseBattlesWon(targetUser.id);
                   await db.SetTokens(
                     targetUser.id,
-                    parseInt(targetTrainer.userTokens.toString()) + 1
+                    parseInt(targetTrainer.userTokens.toString()) + 1,
                   );
 
                   const fetchedMsg: Message<boolean> =
@@ -442,32 +453,44 @@ export default new Command({
                         .setColor(Colours.GREEN)
                         .setTitle("Battle Over")
                         .setDescription(
-                          `The battle has been won by user ${targetUser}`
+                          `The battle has been won by user ${targetUser}`,
                         ),
                     ],
                     attachments: [],
                   });
 
-                  client.battleCooldowns.set(
-                    interaction.user.id,
-                    "User on a 5 minute battle cooldown"
-                  );
-                  client.battleCooldowns.set(
-                    targetUser.id,
-                    "Target on a 5 minute battle cooldown"
-                  );
+                  if (redis.isConnected()) {
+                    await redis.setCooldown(
+                      `cooldown:battle:${interaction.user.id}`,
+                      300,
+                    );
 
-                  setTimeout(() => {
-                    console.log("FINISHED BATTLE COOLDOWN");
-                    client.battleCooldowns.delete(interaction.user.id);
-                    client.battleCooldowns.delete(targetUser.id);
-                  }, 1000 * 60 * 5);
+                    await redis.setCooldown(
+                      `cooldown:battle:${targetUser.id}`,
+                      300,
+                    );
+                  } else {
+                    client.battleCooldowns.set(
+                      interaction.user.id,
+                      "User on a 5 minute battle cooldown",
+                    );
+                    client.battleCooldowns.set(
+                      targetUser.id,
+                      "Target on a 5 minute battle cooldown",
+                    );
+
+                    setTimeout(() => {
+                      console.log("FINISHED BATTLE COOLDOWN");
+                      client.battleCooldowns.delete(interaction.user.id);
+                      client.battleCooldowns.delete(targetUser.id);
+                    }, 1000 * 60 * 5);
+                  }
 
                   return collector.stop();
                 }
 
                 battleData.push(
-                  `${targetUser.tag} used move ${moveData.name} - ${damageDealt} dmg!\n`
+                  `${targetUser.tag} used move ${moveData.name} - ${damageDealt} dmg!\n`,
                 );
 
                 if (i.message.embeds[0].data.footer) {
@@ -486,7 +509,7 @@ export default new Command({
                       battleData.length === 0
                         ? "No Data"
                         : battleData.join("\n")
-                    }\`\`\``
+                    }\`\`\``,
                   );
                 }
 
@@ -516,7 +539,7 @@ export default new Command({
                   battlerPokemon.pokemonLevel,
                   targetPokemon.PokemonsEVs.Defense,
                   moveTypes,
-                  moveData
+                  moveData,
                 );
                 currentTargetHP = currentTargetHP - damageDealt;
 
@@ -524,7 +547,7 @@ export default new Command({
                   await db.IncreaseBattlesWon(interaction.user.id);
                   await db.SetTokens(
                     interaction.user.id,
-                    parseInt(userTrainer.userTokens.toString()) + 1
+                    parseInt(userTrainer.userTokens.toString()) + 1,
                   );
 
                   const fetchedMsg: Message<boolean> =
@@ -537,32 +560,44 @@ export default new Command({
                         .setColor(Colours.GREEN)
                         .setTitle("Battle Over")
                         .setDescription(
-                          `The battle has been won by user ${interaction.user}`
+                          `The battle has been won by user ${interaction.user}`,
                         ),
                     ],
                     attachments: [],
                   });
 
-                  client.battleCooldowns.set(
-                    interaction.user.id,
-                    "User on a 5 minute battle cooldown"
-                  );
-                  client.battleCooldowns.set(
-                    targetUser.id,
-                    "Target on a 5 minute battle cooldown"
-                  );
+                  if (redis.isConnected()) {
+                    await redis.setCooldown(
+                      `cooldown:battle:${interaction.user.id}`,
+                      300,
+                    );
 
-                  setTimeout(() => {
-                    console.log("FINISHED BATTLE COOLDOWN");
-                    client.battleCooldowns.delete(interaction.user.id);
-                    client.battleCooldowns.delete(targetUser.id);
-                  }, 1000 * 60 * 5);
+                    await redis.setCooldown(
+                      `cooldown:battle:${targetUser.id}`,
+                      300,
+                    );
+                  } else {
+                    client.battleCooldowns.set(
+                      interaction.user.id,
+                      "User on a 5 minute battle cooldown",
+                    );
+                    client.battleCooldowns.set(
+                      targetUser.id,
+                      "Target on a 5 minute battle cooldown",
+                    );
+
+                    setTimeout(() => {
+                      console.log("FINISHED BATTLE COOLDOWN");
+                      client.battleCooldowns.delete(interaction.user.id);
+                      client.battleCooldowns.delete(targetUser.id);
+                    }, 1000 * 60 * 5);
+                  }
 
                   return collector.stop();
                 }
 
                 battleData.push(
-                  `${interaction.user.tag} used move ${moveData.name} - ${damageDealt} dmg!\n`
+                  `${interaction.user.tag} used move ${moveData.name} - ${damageDealt} dmg!\n`,
                 );
 
                 if (i.message.embeds[0].data.footer) {
@@ -581,7 +616,7 @@ export default new Command({
                       battleData.length === 0
                         ? "No Data"
                         : battleData.join("\n")
-                    }\`\`\``
+                    }\`\`\``,
                   );
                 }
 
@@ -596,7 +631,7 @@ export default new Command({
               }
 
               currentMove = currentMove === "Battler" ? "Target" : "Battler";
-            }
+            },
           );
         }
 
@@ -612,13 +647,13 @@ export default new Command({
                 .setColor(Colours.RED)
                 .setTitle("Battle Denied")
                 .setDescription(
-                  `The battle has been denied by user ${targetUser}`
+                  `The battle has been denied by user ${targetUser}`,
                 ),
             ],
           });
           cofirmCollector.stop();
         }
-      }
+      },
     );
 
     return;
@@ -633,15 +668,15 @@ async function drawBattleImage(
   totalTargetHP: number,
   totalBattlerHP: number,
   currentTargetHP: number,
-  currentBattlerHP: number
+  currentBattlerHP: number,
 ): Promise<void> {
   const background = await loadImage(
-    "https://cdn.discordapp.com/attachments/1071220155037794335/1114660027500871691/images.jpg"
+    "https://cdn.discordapp.com/attachments/1071220155037794335/1114660027500871691/images.jpg",
   );
   ctx.drawImage(
     background,
     canvas.width / 2 - background.width / 2,
-    canvas.height / 2 - background.height / 2
+    canvas.height / 2 - background.height / 2,
   );
 
   const player1 = await loadImage(battlerPokemon.pokemonPicture);
@@ -651,7 +686,7 @@ async function drawBattleImage(
   drawImageExtended(ctx, player2, 525, 20, false);
 
   const p1HP = await loadImage(
-    "https://cdn.discordapp.com/attachments/1066698877916418138/1115276992376475648/image.png"
+    "https://cdn.discordapp.com/attachments/1066698877916418138/1115276992376475648/image.png",
   );
   ctx.drawImage(p1HP, 100, 25);
 
@@ -664,7 +699,7 @@ async function drawBattleImage(
   ctx.fillText(`${battlerPokemon.pokemonLevel}`, 315, 40);
 
   const p2HP = await loadImage(
-    "https://cdn.discordapp.com/attachments/1066698877916418138/1115276992376475648/image.png"
+    "https://cdn.discordapp.com/attachments/1066698877916418138/1115276992376475648/image.png",
   );
   ctx.drawImage(p2HP, 675, 375);
 
@@ -682,7 +717,7 @@ function drawImageExtended(
   img: Image,
   x: number,
   y: number,
-  mirrorImage: boolean
+  mirrorImage: boolean,
 ): void {
   if (mirrorImage) {
     ctx.translate(x + img.width / 2, 0);

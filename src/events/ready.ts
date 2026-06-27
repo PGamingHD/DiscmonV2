@@ -13,6 +13,7 @@ import { Pokemons } from "@prisma/client";
 import { Cron } from "croner";
 import { RandomizeNumber } from "../utils/misc";
 import lotterySystem from "../utils/actions/lotterySystem";
+import redis from "../utils/redis";
 
 export default new Event(Events.ClientReady, async (client: Client) => {
   const activities: { activity: ActivityType; name: string }[] = [
@@ -20,7 +21,7 @@ export default new Event(Events.ClientReady, async (client: Client) => {
       activity: ActivityType.Watching,
       name: `over ${client.guilds.cache.reduce(
         (a, g) => a + g.memberCount,
-        0
+        0,
       )} users!`,
     },
     {
@@ -70,14 +71,14 @@ export default new Event(Events.ClientReady, async (client: Client) => {
 
         const findUser = await db.FindPokemonTrainer(findAuction.leaderData);
         const findSeller = await db.FindPokemonTrainer(
-          findAuction.pokemon.pokemonOwner
+          findAuction.pokemon.pokemonOwner,
         );
 
         if (!findUser) return;
         if (!findSeller) return;
 
         const getHighestPoke: Pokemons[] = await db.GetPokemonNextPokeId(
-          findAuction.leaderData
+          findAuction.leaderData,
         );
 
         let incrementId;
@@ -96,17 +97,17 @@ export default new Event(Events.ClientReady, async (client: Client) => {
         await db.SetPokemonOwner(
           auction.pokemon.pokemonId,
           findAuction.leaderData,
-          incrementId
+          incrementId,
         );
         if (findAuction.leaderData !== findAuction.pokemon.pokemonOwner) {
           await db.SetTokens(
             findAuction.leaderData,
             parseInt(findUser.userTokens.toString()) -
-              findAuction.auctionCurrent
+              findAuction.auctionCurrent,
           );
           await db.SetTokens(
             findAuction.pokemon.pokemonOwner,
-            findSeller.userTokens + findAuction.auctionCurrent
+            findSeller.userTokens + findAuction.auctionCurrent,
           );
         }
       }
@@ -117,13 +118,13 @@ export default new Event(Events.ClientReady, async (client: Client) => {
   for (const spawnedPokemon of allPokemons) {
     try {
       const guild: Guild = await client.guilds.fetch(
-        spawnedPokemon.spawnedServer as string
+        spawnedPokemon.spawnedServer as string,
       );
       const channel: TextChannel = (await guild.channels.fetch(
-        spawnedPokemon.spawnedChannel as string
+        spawnedPokemon.spawnedChannel as string,
       )) as TextChannel;
       const message: Message<true> = await channel.messages.fetch(
-        spawnedPokemon.spawnedMessage as string
+        spawnedPokemon.spawnedMessage as string,
       );
       await message.edit({
         content: `:x: The \`${spawnedPokemon.pokemonName}\` wasn't caught in time and therefore fled, better luck next time!`,
@@ -132,7 +133,7 @@ export default new Event(Events.ClientReady, async (client: Client) => {
       });
 
       logger.warning(
-        `Successfully removed Pokémon ${spawnedPokemon.pokemonName} from guild ${spawnedPokemon.spawnedServer} in channel ${spawnedPokemon.spawnedChannel}!`
+        `Successfully removed Pokémon ${spawnedPokemon.pokemonName} from guild ${spawnedPokemon.spawnedServer} in channel ${spawnedPokemon.spawnedChannel}!`,
       );
     } catch {}
   }

@@ -8,16 +8,25 @@ import { ExtendedClient } from "../../structures/Client";
 import db from "../database";
 import { Pokemon, Pokemons, PokemonServer } from "@prisma/client";
 import { RandomizeNumber } from "../misc";
+import redis from "../redis";
 
 export default async function (
   message: Message<boolean>,
-  client: ExtendedClient
+  client: ExtendedClient,
 ) {
-  if (client.xpCooldowns.has(message.author.id)) return;
+  let hasCooldown = false;
+
+  if (redis.isConnected()) {
+    hasCooldown = await redis.hasCooldown(`cooldown:xp:${message.author.id}`);
+  } else {
+    hasCooldown = client.xpCooldowns.has(message.author.id);
+  }
+
+  if (hasCooldown) return;
   if (!message.guild) return;
 
   const findSelected: Pokemons | null = await db.FindUserSelectedPokemon(
-    message.author.id
+    message.author.id,
   );
   if (!findSelected) return;
   const pokemon: any = await db.GetPokemon(findSelected.pokemonName);
@@ -32,14 +41,14 @@ export default async function (
 
   if (findSelected.pokemonXP >= newLevelXP && findSelected.pokemonLevel < 100) {
     const levelPoke: Pokemons | null = await db.SetPokemonLevelUp(
-      findSelected.pokemonId
+      findSelected.pokemonId,
     );
     if (!levelPoke) return;
     const toEvolveTo: Pokemon | null = await db.GetPokemon(
-      pokemon.pokemonEvolve.nextEvolveName
+      pokemon.pokemonEvolve.nextEvolveName,
     );
     const serverData: PokemonServer | null = await db.GetServer(
-      message.guild.id
+      message.guild.id,
     );
 
     if (pokemon.pokemonEvolve.nextEvolveLevel <= levelPoke.pokemonLevel) {
@@ -47,7 +56,7 @@ export default async function (
         await db.SetPokemonEvolve(
           findSelected.pokemonId,
           toEvolveTo.pokemonName,
-          toEvolveTo.pokemonPicture
+          toEvolveTo.pokemonPicture,
         );
 
         if (message.channel.type !== ChannelType.GuildText) return;
@@ -63,7 +72,7 @@ export default async function (
         ) {
           if (serverData?.serverAnnouncer)
             return message.channel.send(
-              `${message.author} Congratulations, your ${findSelected.pokemonName} mysteriously evolved into a ${toEvolveTo.pokemonName} upon reaching level \`[${levelPoke.pokemonLevel}]\`!`
+              `${message.author} Congratulations, your ${findSelected.pokemonName} mysteriously evolved into a ${toEvolveTo.pokemonName} upon reaching level \`[${levelPoke.pokemonLevel}]\`!`,
             );
         } else {
           return;
@@ -83,7 +92,7 @@ export default async function (
       ) {
         if (serverData?.serverAnnouncer)
           return message.channel.send(
-            `${message.author} Congratulations, your ${findSelected.pokemonName} has just leveled up to level \`[${levelPoke.pokemonLevel}]\`!`
+            `${message.author} Congratulations, your ${findSelected.pokemonName} has just leveled up to level \`[${levelPoke.pokemonLevel}]\`!`,
           );
       } else {
         return;
@@ -94,16 +103,21 @@ export default async function (
   if (findSelected.pokemonLevel < 100) {
     await db.SetPokemonXP(
       findSelected.pokemonId,
-      await RandomizeNumber(20, 50)
+      await RandomizeNumber(20, 50),
     );
 
-    client.xpCooldowns.set(
-      message.author.id,
-      "User set on a 5 second cooldown!"
-    );
-    setTimeout(() => {
-      client.xpCooldowns.delete(message.author.id);
-    }, 1000 * 5);
+    if (redis.isConnected()) {
+      await redis.setCooldown(`cooldown:xp:${message.author.id}`, 5);
+    } else {
+      client.xpCooldowns.set(
+        message.author.id,
+        "User set on a 5 second cooldown!",
+      );
+
+      setTimeout(async () => {
+        client.xpCooldowns.delete(message.author.id);
+      }, 1000 * 5);
+    }
   }
 
   return;

@@ -18,6 +18,7 @@ import { HasUpperCase } from "../utils/misc";
 import { readdirSync } from "fs";
 import autoPoster from "../utils/actions/autoPoster";
 import catchBuddy from "../utils/actions/catchBuddy";
+import redis from "../utils/redis";
 const globPromise = promisify(glob);
 
 export class ExtendedClient extends Client {
@@ -69,6 +70,8 @@ export class ExtendedClient extends Client {
   }
 
   async RegisterModules() {
+    await redis.incr("client:restarts");
+
     const globalCommands: ApplicationCommandDataResolvable[] = [];
     const guildSpecfic: ApplicationCommandDataResolvable[] = [];
 
@@ -101,7 +104,7 @@ export class ExtendedClient extends Client {
         globalCommands.push(command);
         if (HasUpperCase(command.name)) {
           logger.command(
-            `Loaded global contextmenu command "${command.name}"!`
+            `Loaded global contextmenu command "${command.name}"!`,
           );
         } else {
           logger.command(`Loaded global command "${command.name}"!`);

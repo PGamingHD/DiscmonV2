@@ -37,6 +37,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "random-number-csprng": "^1.0.2",
+    "redis": "^6.0.1",
     "rimraf": "^5.0.1",
     "snowflake-generator": "^1.0.2",
     "topgg-autoposter": "^2.0.1",
