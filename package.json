@@ -4,6 +4,7 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
+    "start:daemon": "node dist/index.js",
     "start": "npx rimraf dist && tsc && node dist/index.js",
     "start:dev": "ts-node-dev src/index.ts",
     "start:production": "npx rimraf dist && tsc && node dist/index.js",
