@@ -34,6 +34,11 @@ export class ExtendedClient extends Client {
 
   changelogFiles: Collection<number, any> = new Collection();
 
+  awardCooldowns: Collection<string, string> = new Collection();
+  xpCooldowns: Collection<string, string> = new Collection();
+  captchaSent: Collection<string, string> = new Collection();
+  battleCooldowns: Collection<string, string> = new Collection();
+
   constructor() {
     super({
       intents: [
