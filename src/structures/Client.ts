@@ -4,26 +4,21 @@ import {
   Client,
   ClientEvents,
   Collection,
-  Events,
   GatewayIntentBits,
   Partials,
 } from "discord.js";
-
 import glob from "glob";
 import { promisify } from "util";
-import path from "path";
-import { readdirSync } from "fs";
-
 import { Event } from "./Event";
 import { CommandType, MenuType, RegisterCommandsOptions } from "../@types";
 import { ButtonType, ModalType, TextType } from "../@types/Command";
-
+import path from "path";
 import logger from "../utils/logger";
 import { HasUpperCase } from "../utils/misc";
+import { readdirSync } from "fs";
 import autoPoster from "../utils/actions/autoPoster";
 import catchBuddy from "../utils/actions/catchBuddy";
 import redis from "../utils/redis";
-
 const globPromise = promisify(glob);
 
 export class ExtendedClient extends Client {
@@ -33,80 +28,104 @@ export class ExtendedClient extends Client {
   modals: Collection<string, ModalType> = new Collection();
   buttons: Collection<string, ButtonType> = new Collection();
 
-  changelogFiles: Collection<number, any> = new Collection();
-
+  //GLOBAL TEMP VARIABLES
   awardCooldowns: Collection<string, string> = new Collection();
   xpCooldowns: Collection<string, string> = new Collection();
-  captchaSent: Collection<string, string> = new Collection();
   battleCooldowns: Collection<string, string> = new Collection();
+  changelogFiles: Collection<number, any> = new Collection();
+  messagesSent: Collection<string, number> = new Collection<string, number>();
+  firstMsgDate: Collection<string, number> = new Collection<string, number>();
+  captchaSent: Collection<string, boolean> = new Collection<string, boolean>();
 
   constructor() {
     super({
+      waitGuildTimeout: 1000,
       intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent,
         GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMessages,
         GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.DirectMessageTyping,
       ],
       partials: [Partials.Channel],
     });
   }
 
-  // =========================
-  // START BOT
-  // =========================
   async start() {
-    const modules = await this.RegisterModules();
-
+    const commands = await this.RegisterModules();
     await this.login(process.env.TOKEN);
-
-    this.HandleReady(modules.global, modules.guild);
+    this.Registerer(commands.global, commands.local);
   }
 
-  // =========================
-  // IMPORT HELPER
-  // =========================
   async ImportFile(filePath: string) {
-    try {
-      return (await import(filePath))?.default;
-    } catch (err) {
-      logger.error(`Failed to import file: ${filePath}`);
-      console.error(err);
-      return null;
+    return (await import(filePath))?.default;
+  }
+
+  async registerCommands({
+    globalCommands,
+    localCommands,
+    guildId,
+  }: RegisterCommandsOptions) {
+    if (!this.application)
+      return logger.error("No application to register commands for!");
+
+    console.log("BEFORE GLOBAL REG");
+
+    this.application.commands.set(globalCommands);
+
+    console.log("AFTER GLOBAL REG");
+
+    if (guildId) {
+      const guild = await this.guilds.fetch(guildId);
+
+      if (guild) {
+        await guild.commands.set(localCommands);
+      }
     }
   }
 
-  // =========================
-  // REGISTER MODULES
-  // =========================
   async RegisterModules() {
     await redis.incr("client:restarts");
 
     const globalCommands: ApplicationCommandDataResolvable[] = [];
-    const guildCommands: ApplicationCommandDataResolvable[] = [];
+    const guildSpecfic: ApplicationCommandDataResolvable[] = [];
 
-    const root = path.join(__dirname, "..");
+    const root: string = path.join(__dirname, "..");
+    const commandFiles: string[] = await globPromise("/commands/*/*{.ts,.js}", {
+      root,
+    });
+    const textFiles: string[] = await globPromise("/text/*/*{.ts,.js}", {
+      root,
+    });
+    const modalFiles: string[] = await globPromise("/modals/*/*{.ts,.js}", {
+      root,
+    });
+    const buttonFiles: string[] = await globPromise("/buttons/*/*{.ts,.js}", {
+      root,
+    });
 
-    const commandFiles = await globPromise("/commands/*/*{.ts,.js}", { root });
-    const textFiles = await globPromise("/text/*/*{.ts,.js}", { root });
-    const modalFiles = await globPromise("/modals/*/*{.ts,.js}", { root });
-    const buttonFiles = await globPromise("/buttons/*/*{.ts,.js}", { root });
-    const eventFiles = await globPromise("/events/*{.ts,.js}", { root });
-
-    // =========================
-    // COMMANDS
-    // =========================
     for (const filePath of commandFiles) {
       const command: CommandType | MenuType = await this.ImportFile(filePath);
-      if (!command?.name) continue;
+      if (!command.name) continue;
 
-      if (command.main) {
-        guildCommands.push(command);
+      if (command?.main) {
+        guildSpecfic.push(command);
+        if (HasUpperCase(command.name)) {
+          logger.command(`Loaded guild contextmenu command "${command.name}"!`);
+        } else {
+          logger.command(`Loaded guild command "${command.name}"!`);
+        }
       } else {
         globalCommands.push(command);
+        if (HasUpperCase(command.name)) {
+          logger.command(
+            `Loaded global contextmenu command "${command.name}"!`,
+          );
+        } else {
+          logger.command(`Loaded global command "${command.name}"!`);
+        }
       }
-
       if (command.type === ApplicationCommandType.ChatInput) {
         this.commands.set(command.name, command);
       } else {
@@ -114,121 +133,66 @@ export class ExtendedClient extends Client {
       }
     }
 
-    // =========================
-    // TEXT COMMANDS
-    // =========================
     for (const filePath of textFiles) {
       const command: TextType = await this.ImportFile(filePath);
-      if (!command?.name) continue;
+      if (HasUpperCase(command.name))
+        logger.error("Text commands may not be uppercased!");
+      if (!command.name) continue;
+
+      logger.text(`Loaded text command "${command.name}"!`);
 
       this.textcommands.set(command.name, command);
     }
 
-    // =========================
-    // MODALS
-    // =========================
     for (const filePath of modalFiles) {
       const modal: ModalType = await this.ImportFile(filePath);
-      if (!modal?.customId) continue;
+      if (!modal.customId) continue;
 
-      this.modals.set(modal.customId, modal);
+      this.modals.set(modal.customId, modal as ModalType);
     }
 
-    // =========================
-    // BUTTONS
-    // =========================
     for (const filePath of buttonFiles) {
       const button: ButtonType = await this.ImportFile(filePath);
-      if (!button?.customId) continue;
+      if (!button.customId) continue;
 
-      this.buttons.set(button.customId, button);
+      this.buttons.set(button.customId, button as ButtonType);
     }
 
-    // =========================
-    // CHANGELONGS
-    // =========================
-    const changelogs = readdirSync(process.cwd() + "/src/changelog/");
-
-    for (const file of changelogs) {
+    const changelogs: string[] = readdirSync(process.cwd() + "/src/changelog/");
+    changelogs.map((file: string) => {
       const filecontent = require(process.cwd() + `/src/changelog/${file}`);
-
-      this.changelogFiles.set(filecontent.ChangelogNumber, {
-        ChangelogTitle: filecontent.ChangelogTitle,
-        ChangelogDescription: filecontent.ChangelogDescription,
-        ChangelogTimestamp: filecontent.ChangelogTimestamp,
+      const number = filecontent["ChangelogNumber"];
+      this.changelogFiles.set(number, {
+        ChangelogTitle: filecontent["ChangelogTitle"],
+        ChangelogDescription: filecontent["ChangelogDescription"],
+        ChangelogTimestamp: filecontent["ChangelogTimestamp"],
       });
-    }
+    });
 
-    // =========================
-    // EVENTS
-    // =========================
+    // Events
+    const eventFiles = await globPromise("/events/*{.ts,.js}", { root });
     for (const filePath of eventFiles) {
       const event: Event<keyof ClientEvents> = await this.ImportFile(filePath);
-      if (!event) continue;
-
+      logger.event(`Loaded event "${event.event}"!`);
       this.on(event.event, event.run);
     }
 
-    return {
-      global: globalCommands,
-      guild: guildCommands,
-    };
+    return { global: globalCommands, local: guildSpecfic };
   }
 
-  // =========================
-  // READY + COMMAND DEPLOY
-  // =========================
-  async HandleReady(
-    global: ApplicationCommandDataResolvable[],
-    guilds: ApplicationCommandDataResolvable[],
-  ) {
-    this.once(Events.ClientReady, async () => {
-      try {
-        logger.log("Bot ready!");
-
-        if (!this.application) {
-          await this.application;
-        }
-
-        console.log("GLOBAL COMMANDS:", global.length);
-        console.log("GUILD COMMANDS:", guilds.length);
-
-        // =========================
-        // GLOBAL COMMANDS
-        // =========================
-        await this.application?.commands.set(global);
-
-        logger.log("Global commands registered");
-
-        // =========================
-        // GUILD COMMANDS
-        // =========================
-        const guildId = process.env.GUILD_ID;
-
-        if (guildId) {
-          const guild = await this.guilds.fetch(guildId);
-
-          await guild.commands.set(guilds);
-
-          logger.log("Guild commands registered");
-        }
-
-        await autoPoster(this);
-        await catchBuddy(this);
-      } catch (err) {
-        logger.error("Failed during ready initialization:");
-        console.error(err);
-      }
-    });
-  }
-
-  // =========================
-  // REGISTER WRAPPER
-  // =========================
   async Registerer(
-    global: ApplicationCommandDataResolvable[],
-    guild: ApplicationCommandDataResolvable[],
+    globalCommands: ApplicationCommandDataResolvable[],
+    guildSpecific: ApplicationCommandDataResolvable[],
   ) {
-    await this.HandleReady(global, guild);
+    this.once("ready", async () => {
+      await this.registerCommands({
+        globalCommands: globalCommands,
+        localCommands: guildSpecific,
+        guildId: process.env.guildId,
+      });
+
+      await autoPoster(this);
+      await catchBuddy(this);
+    });
   }
 }
