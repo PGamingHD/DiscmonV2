@@ -4,6 +4,7 @@ import {
   Client,
   ClientEvents,
   Collection,
+  Events,
   GatewayIntentBits,
   Partials,
 } from "discord.js";
@@ -56,11 +57,11 @@ export class ExtendedClient extends Client {
   // START BOT
   // =========================
   async start() {
-    await this.login(process.env.TOKEN);
-
     const modules = await this.RegisterModules();
 
-    await this.HandleReady(modules.global, modules.guild);
+    await this.login(process.env.TOKEN);
+
+    this.HandleReady(modules.global, modules.guild);
   }
 
   // =========================
@@ -181,7 +182,7 @@ export class ExtendedClient extends Client {
     global: ApplicationCommandDataResolvable[],
     guilds: ApplicationCommandDataResolvable[],
   ) {
-    this.once("ready", async () => {
+    this.once(Events.ClientReady, async () => {
       try {
         logger.log("Bot ready!");
 
