@@ -43,11 +43,11 @@ async function deployCommands() {
     );
 
     // 3. Deploy Guild (Local) Commands
-    if (process.env.guildId && guildSpecific.length > 0) {
+    if (process.env.GUILDID && guildSpecific.length > 0) {
       await rest.put(
         Routes.applicationGuildCommands(
           process.env.CLIENT_ID as string,
-          process.env.guildId,
+          process.env.GUILDID,
         ),
         { body: guildSpecific },
       );
