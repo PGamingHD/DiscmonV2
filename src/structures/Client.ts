@@ -71,7 +71,27 @@ export class ExtendedClient extends Client {
     if (!this.application)
       return logger.error("No application to register commands for!");
 
-    this.application.commands.set(globalCommands);
+    for (const cmd of globalCommands) {
+      if (!cmd) {
+        console.log("❌ NULL COMMAND FOUND");
+        continue;
+      }
+
+      if (!(cmd as any).name) {
+        console.log("❌ INVALID COMMAND (NO NAME):", cmd);
+      }
+
+      if (!(cmd as any).description) {
+        console.log("❌ MISSING DESCRIPTION:", cmd);
+      }
+    }
+
+    const res = await this.application.commands.set(globalCommands);
+
+    console.log(
+      "SUCCESS:",
+      res.map((c) => c.name),
+    );
 
     if (guildId) {
       const guild = await this.guilds.fetch(guildId);
