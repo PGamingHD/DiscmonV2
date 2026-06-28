@@ -62,6 +62,7 @@ export class ExtendedClient extends Client {
   }
 
   async registerCommands({ commands, guildId }: RegisterCommandsOptions) {
+    console.log("RUNNING!");
     if (!this.application)
       return logger.error("No application to register commands for!");
 
@@ -165,7 +166,6 @@ export class ExtendedClient extends Client {
     });
 
     this.on("ready", async () => {
-      console.log("RAN READY!");
       await this.registerCommands({
         commands: globalCommands,
       });
