@@ -53,7 +53,11 @@ export class ExtendedClient extends Client {
   }
 
   start() {
-    this.login(process.env.TOKEN).then(() => this.RegisterModules());
+    this.login(process.env.TOKEN).then(async () => {
+      const commands = await this.RegisterModules();
+
+      this.Registerer();
+    });
   }
 
   async ImportFile(filePath: string) {
@@ -187,5 +191,23 @@ export class ExtendedClient extends Client {
       logger.event(`Loaded event "${event.event}"!`);
       this.on(event.event, event.run);
     }
+
+    return { global: globalCommands, local: guildSpecfic };
+  }
+
+  async Registerer(
+    globalCommands: ApplicationCommandDataResolvable[],
+    guildSpecific: ApplicationCommandDataResolvable[],
+  ) {
+    this.on("ready", async () => {
+      await this.registerCommands({
+        globalCommands: globalCommands,
+        localCommands: guildSpecific,
+        guildId: process.env.guildId,
+      });
+
+      await autoPoster(this);
+      await catchBuddy(this);
+    });
   }
 }
