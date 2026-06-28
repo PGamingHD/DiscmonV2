@@ -53,31 +53,32 @@ export class ExtendedClient extends Client {
   }
 
   start() {
-    this.RegisterModules().then(() => {
-      this.login(process.env.TOKEN);
-    });
+    this.RegisterModules();
+    this.login(process.env.TOKEN);
   }
 
   async ImportFile(filePath: string) {
     return (await import(filePath))?.default;
   }
 
-  async registerCommands({ commands, guildId }: RegisterCommandsOptions) {
-    console.log("RAN!?");
-    try {
-      if (!this.application)
-        return logger.error("No application to register commands for!");
+  async registerCommands({
+    globalCommands,
+    localCommands,
+    guildId,
+  }: RegisterCommandsOptions) {
+    if (!this.application)
+      return logger.error("No application to register commands for!");
 
-      if (guildId) {
-        const guild = await this.guilds.fetch(guildId);
+    await this.application.commands.set(globalCommands);
 
-        await guild.commands.set(commands);
-      } else {
-        await this.application.commands.set(commands);
+    console.log("AFTER GLOBAL REG");
+
+    if (guildId) {
+      const guild = await this.guilds.fetch(guildId);
+
+      if (guild) {
+        await guild.commands.set(localCommands);
       }
-    } catch (err) {
-      console.error("registerCommands failed:");
-      console.error(err);
     }
   }
 
@@ -167,11 +168,8 @@ export class ExtendedClient extends Client {
 
     this.on("ready", async () => {
       await this.registerCommands({
-        commands: globalCommands,
-      });
-
-      await this.registerCommands({
-        commands: guildSpecfic,
+        globalCommands: globalCommands,
+        localCommands: guildSpecfic,
         guildId: process.env.guildId,
       });
 
