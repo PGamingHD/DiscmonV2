@@ -57,7 +57,9 @@ export class ExtendedClient extends Client {
   // =========================
   async start() {
     await this.login(process.env.TOKEN);
+
     const modules = await this.RegisterModules();
+
     await this.HandleReady(modules.global, modules.guild);
   }
 
