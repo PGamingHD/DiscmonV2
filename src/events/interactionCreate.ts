@@ -19,10 +19,10 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
       interaction.commandName,
     );
     if (!command)
-      return interaction.followUp("You have used a non existent command");
+      return interaction.reply("You have used a non existent command");
 
     if (!interaction.guild) {
-      return interaction.followUp(
+      return interaction.reply(
         "You must execute commands from a Discord Server.",
       );
     }
