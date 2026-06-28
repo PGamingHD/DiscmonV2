@@ -54,9 +54,9 @@ export class ExtendedClient extends Client {
   }
 
   async start() {
-    const commands = await this.RegisterModules();
+    await this.RegisterModules();
     await this.login(process.env.TOKEN);
-    this.Registerer(commands.global, commands.local);
+    await this.ReadyHandler();
   }
 
   async ImportFile(filePath: string) {
@@ -94,8 +94,8 @@ export class ExtendedClient extends Client {
   async RegisterModules() {
     await redis.incr("client:restarts");
 
-    const globalCommands: ApplicationCommandDataResolvable[] = [];
-    const guildSpecfic: ApplicationCommandDataResolvable[] = [];
+    //const globalCommands: ApplicationCommandDataResolvable[] = [];
+    //const guildSpecfic: ApplicationCommandDataResolvable[] = [];
 
     const root: string = path.join(__dirname, "..");
     //const commandFiles: string[] = await globPromise("/commands/*/*{.ts,.js}", {root});
@@ -181,20 +181,11 @@ export class ExtendedClient extends Client {
       this.on(event.event, event.run);
     }
 
-    return { global: globalCommands, local: guildSpecfic };
+    //return { global: globalCommands, local: guildSpecfic };
   }
 
-  async Registerer(
-    globalCommands: ApplicationCommandDataResolvable[],
-    guildSpecific: ApplicationCommandDataResolvable[],
-  ) {
+  async ReadyHandler() {
     this.once(Events.ClientReady, async () => {
-      await this.registerCommands({
-        globalCommands: globalCommands,
-        localCommands: guildSpecific,
-        guildId: process.env.guildId,
-      });
-
       await autoPoster(this);
       await catchBuddy(this);
     });
