@@ -174,7 +174,7 @@ export class ExtendedClient extends Client {
   ) {
     this.once("ready", async () => {
       try {
-        logger.log("Bot ready!");
+        logger.log("Bot ready!!");
 
         if (!this.application) {
           await this.application;
