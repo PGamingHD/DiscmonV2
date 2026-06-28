@@ -111,8 +111,6 @@ export class ExtendedClient extends Client {
       root,
     });
 
-    console.log(commandFiles);
-
     for (const filePath of commandFiles) {
       const command: CommandType | MenuType = await this.ImportFile(filePath);
       if (!command.name) continue;
