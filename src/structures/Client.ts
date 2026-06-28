@@ -86,12 +86,16 @@ export class ExtendedClient extends Client {
       }
     }
 
-    const res = await this.application.commands.set(globalCommands);
+    try {
+      const res = await this.application.commands.set(globalCommands);
 
-    console.log(
-      "SUCCESS:",
-      res.map((c) => c.name),
-    );
+      console.log(
+        "SUCCESS:",
+        res.map((c) => c.name),
+      );
+    } catch (error) {
+      console.log("X", error);
+    }
 
     if (guildId) {
       const guild = await this.guilds.fetch(guildId);
