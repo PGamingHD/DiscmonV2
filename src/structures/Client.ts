@@ -72,7 +72,7 @@ export class ExtendedClient extends Client {
 
     console.log("BEFORE GLOBAL REG");
 
-    this.application.commands.set(globalCommands);
+    await this.application.commands.set(globalCommands);
 
     console.log("AFTER GLOBAL REG");
 
