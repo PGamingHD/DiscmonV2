@@ -71,7 +71,7 @@ export class ExtendedClient extends Client {
     if (!this.application)
       return logger.error("No application to register commands for!");
 
-    console.log(
+    /*console.log(
       `Attempting to register ${globalCommands?.length || 0} global commands.`,
     );
 
@@ -88,7 +88,7 @@ export class ExtendedClient extends Client {
       if (guild) {
         guild.commands.set(localCommands);
       }
-    }
+    }*/
   }
 
   async RegisterModules() {
@@ -98,9 +98,7 @@ export class ExtendedClient extends Client {
     const guildSpecfic: ApplicationCommandDataResolvable[] = [];
 
     const root: string = path.join(__dirname, "..");
-    const commandFiles: string[] = await globPromise("/commands/*/*{.ts,.js}", {
-      root,
-    });
+    //const commandFiles: string[] = await globPromise("/commands/*/*{.ts,.js}", {root});
     const textFiles: string[] = await globPromise("/text/*/*{.ts,.js}", {
       root,
     });
@@ -111,7 +109,7 @@ export class ExtendedClient extends Client {
       root,
     });
 
-    for (const filePath of commandFiles) {
+    /*for (const filePath of commandFiles) {
       const command: CommandType | MenuType = await this.ImportFile(filePath);
       if (!command.name) continue;
 
@@ -137,7 +135,7 @@ export class ExtendedClient extends Client {
       } else {
         this.contextmenus.set(command.name, command as MenuType);
       }
-    }
+    }*/
 
     for (const filePath of textFiles) {
       const command: TextType = await this.ImportFile(filePath);
