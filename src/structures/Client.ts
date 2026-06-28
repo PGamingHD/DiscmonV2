@@ -69,6 +69,8 @@ export class ExtendedClient extends Client {
     if (!this.application)
       return logger.error("No application to register commands for!");
 
+    console.log("BEFORE GLOBAL REG");
+
     await this.application.commands.set(globalCommands);
 
     console.log("AFTER GLOBAL REG");
