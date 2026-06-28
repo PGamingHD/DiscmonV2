@@ -76,7 +76,7 @@ export class ExtendedClient extends Client {
 
     console.log(globalCommands);
 
-    await this.application.commands.set(globalCommands);
+    this.application.commands.set(globalCommands);
 
     console.log("AFTER GLOBAL REG");
 
@@ -189,7 +189,6 @@ export class ExtendedClient extends Client {
     guildSpecific: ApplicationCommandDataResolvable[],
   ) {
     this.once("ready", async () => {
-      console.log("READY RAN!");
       await this.registerCommands({
         globalCommands: globalCommands,
         localCommands: guildSpecific,
