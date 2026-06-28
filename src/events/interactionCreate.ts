@@ -93,9 +93,8 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
             ),
         ],
       });
-    console.log(command?.main && interaction.guild.id != process.env.guildId);
-    console.log(interaction.guild.id, process.env.GUILDID, command.main);
-    if (command?.main && interaction.guild.id != process.env.guildId)
+    console.log(process.env.GUILDID);
+    if (command?.main && interaction.guild.id != process.env.GUILDID)
       return interaction.reply({
         flags: [MessageFlags.Ephemeral],
         embeds: [
