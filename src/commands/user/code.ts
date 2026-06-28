@@ -26,14 +26,14 @@ export default new Command({
     const redeem: string | null = interaction.options.getString("redeem");
     if (!interaction.guild) return;
 
-    if (interaction.guild.id !== process.env.guildId)
+    if (interaction.guild.id !== process.env.GUILDID)
       return interaction.reply({
         flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor(Colours.RED)
             .setDescription(
-              "Codes may only be redeemed on our official Discord Server."
+              "Codes may only be redeemed on our official Discord Server.",
             ),
         ],
       });
@@ -46,7 +46,7 @@ export default new Command({
             .setColor(Colours.MAIN)
             .setTitle("What are codes?")
             .setDescription(
-              "Codes are very special that you could redeem and get rewards.\nThese codes are not given out that often and are given in special occations only.\nMake sure to redeem these rewards quick, because they are limited.\n\n*Codes are extemely limited, and can only be obtained through the official discord.*"
+              "Codes are very special that you could redeem and get rewards.\nThese codes are not given out that often and are given in special occations only.\nMake sure to redeem these rewards quick, because they are limited.\n\n*Codes are extemely limited, and can only be obtained through the official discord.*",
             ),
         ],
       });
@@ -54,7 +54,7 @@ export default new Command({
       const toRedeem: globalCodes | null = await db.FindCode(redeem);
       const redeemUser: userCodes | null = await db.FindUserCode(
         interaction.user.id,
-        redeem
+        redeem,
       );
       if (!toRedeem)
         return interaction.reply({
@@ -63,7 +63,7 @@ export default new Command({
             new EmbedBuilder()
               .setColor(Colours.RED)
               .setDescription(
-                "The code you have entered is invalid!\n\n*Please check the official discord for more information.*"
+                "The code you have entered is invalid!\n\n*Please check the official discord for more information.*",
               ),
           ],
         });
@@ -74,7 +74,7 @@ export default new Command({
             new EmbedBuilder()
               .setColor(Colours.RED)
               .setDescription(
-                `It seems like you have already redeemed this code.\n\n*Please contact staff if this is wrong.*`
+                `It seems like you have already redeemed this code.\n\n*Please contact staff if this is wrong.*`,
               ),
           ],
         });
@@ -85,7 +85,7 @@ export default new Command({
             new EmbedBuilder()
               .setColor(Colours.RED)
               .setDescription(
-                `The code you have entered has already been used \`${toRedeem.codeLimitation}\` times.`
+                `The code you have entered has already been used \`${toRedeem.codeLimitation}\` times.`,
               ),
           ],
         });
@@ -106,8 +106,8 @@ export default new Command({
             .setColor(Colours.GREEN)
             .setDescription(
               `You have successfully redeemed the code \`${redeem}\` and been awarded with **${toRedeem.rewardAmount.toLocaleString(
-                "en-US"
-              )}** *${CapitalizeFirst(toRedeem.rewardType)}*`
+                "en-US",
+              )}** *${CapitalizeFirst(toRedeem.rewardType)}*`,
             ),
         ],
       });
