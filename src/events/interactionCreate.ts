@@ -18,14 +18,14 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
     const command: CommandType | undefined = client.commands.get(
       interaction.commandName,
     );
+
     if (!command)
       return interaction.reply("You have used a non existent command");
 
-    if (!interaction.guild) {
+    if (!interaction.guild)
       return interaction.reply(
         "You must execute commands from a Discord Server.",
       );
-    }
 
     let bla: string;
     if (command.noDefer) bla = "hey";
@@ -93,7 +93,9 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
             ),
         ],
       });
-    if (command?.main && interaction.guild?.id != process.env.guildId)
+    console.log(command?.main && interaction.guild.id != process.env.guildId);
+    console.log(interaction.guild.id, process.env.guildId, command.main);
+    if (command?.main && interaction.guild.id != process.env.guildId)
       return interaction.reply({
         flags: [MessageFlags.Ephemeral],
         embeds: [
