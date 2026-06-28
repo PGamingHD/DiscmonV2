@@ -94,11 +94,13 @@ export class ExtendedClient extends Client {
   async RegisterModules() {
     await redis.incr("client:restarts");
 
-    //const globalCommands: ApplicationCommandDataResolvable[] = [];
-    //const guildSpecfic: ApplicationCommandDataResolvable[] = [];
+    const globalCommands: ApplicationCommandDataResolvable[] = [];
+    const guildSpecfic: ApplicationCommandDataResolvable[] = [];
 
     const root: string = path.join(__dirname, "..");
-    //const commandFiles: string[] = await globPromise("/commands/*/*{.ts,.js}", {root});
+    const commandFiles: string[] = await globPromise("/commands/*/*{.ts,.js}", {
+      root,
+    });
     const textFiles: string[] = await globPromise("/text/*/*{.ts,.js}", {
       root,
     });
@@ -109,7 +111,7 @@ export class ExtendedClient extends Client {
       root,
     });
 
-    /*for (const filePath of commandFiles) {
+    for (const filePath of commandFiles) {
       const command: CommandType | MenuType = await this.ImportFile(filePath);
       if (!command.name) continue;
 
@@ -135,7 +137,7 @@ export class ExtendedClient extends Client {
       } else {
         this.contextmenus.set(command.name, command as MenuType);
       }
-    }*/
+    }
 
     for (const filePath of textFiles) {
       const command: TextType = await this.ImportFile(filePath);
