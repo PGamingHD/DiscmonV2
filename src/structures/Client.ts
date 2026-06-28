@@ -63,37 +63,23 @@ export class ExtendedClient extends Client {
   }
 
   async registerCommands({ commands, guildId }: RegisterCommandsOptions) {
-    console.log(this.isReady());
-    console.log(this.application?.id);
     try {
-      console.log("RUNNING!");
-
       if (!this.application)
         return logger.error("No application to register commands for!");
 
       if (guildId) {
-        console.log("Fetching guild...");
-
         const guild = await this.guilds.fetch(guildId);
 
-        console.log("Fetched guild:", guild.id);
-
         await guild.commands.set(commands);
-
-        console.log("Guild commands pushed!");
       } else {
-        console.log("Pushing global commands...");
-
         await this.application.commands.set(commands);
-
-        console.log("Global commands pushed!");
       }
-
-      console.log("Pushing", commands, guildId);
     } catch (err) {
       console.error("registerCommands failed:");
       console.error(err);
     }
+
+    console.log("RAN!");
   }
 
   async RegisterModules() {
