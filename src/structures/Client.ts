@@ -56,7 +56,7 @@ export class ExtendedClient extends Client {
     this.login(process.env.TOKEN).then(async () => {
       const commands = await this.RegisterModules();
 
-      this.Registerer();
+      this.Registerer(commands.global, commands.local);
     });
   }
 
