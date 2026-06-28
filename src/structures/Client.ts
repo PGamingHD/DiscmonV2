@@ -53,8 +53,9 @@ export class ExtendedClient extends Client {
   }
 
   start() {
-    this.RegisterModules();
-    this.login(process.env.TOKEN);
+    this.RegisterModules().then(() => {
+      this.login(process.env.TOKEN);
+    });
   }
 
   async ImportFile(filePath: string) {
