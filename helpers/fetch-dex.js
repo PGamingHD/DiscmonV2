@@ -1,24 +1,17 @@
 const fs = require("fs");
 
-// Configuration: Change END_ID to 151 for Gen 1, or higher for more generations
 const START_ID = 1;
 const END_ID = 1025;
 const OUTPUT_FILE = "pokedex.json";
 
-// Simple cache to prevent downloading the same evolution chain multiple times
 const evolutionChainCache = new Map();
-
-// Helper to add a small delay between requests so PokéAPI doesn't rate-limit you
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// Helper to capitalize strings (e.g., "bulbasaur" -> "Bulbasaur")
 const capitalize = (str) =>
   str
     .split("-")
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(" ");
 
-// Parses the recursive PokéAPI evolution tree to find what the target evolves into
 function parseEvolutions(chainNode, targetName) {
   const queue = [chainNode];
   while (queue.length > 0) {
@@ -56,13 +49,11 @@ async function fetchPokedex() {
     try {
       console.log(`Fetching #${id}...`);
 
-      // 1. Fetch Core Data
       const resPokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
       if (!resPokemon.ok)
         throw new Error(`Failed to fetch basic data for ID ${id}`);
       const pokemonData = await resPokemon.json();
 
-      // 2. Fetch Species Data (for Legendaries, Mythicals, and Evolution Chain links)
       const resSpecies = await fetch(
         `https://pokeapi.co/api/v2/pokemon-species/${id}`,
       );
@@ -70,7 +61,6 @@ async function fetchPokedex() {
         throw new Error(`Failed to fetch species data for ID ${id}`);
       const speciesData = await resSpecies.json();
 
-      // 3. Fetch/Cache Evolution Chain Data
       const evoUrl = speciesData.evolution_chain.url;
       let evoChainData;
       if (evolutionChainCache.has(evoUrl)) {
@@ -83,9 +73,6 @@ async function fetchPokedex() {
         }
       }
 
-      // --- DATA MAPPING ---
-
-      // Map Stats
       const baseStats = {};
       pokemonData.stats.forEach((s) => {
         let name = s.stat.name;
@@ -94,7 +81,6 @@ async function fetchPokedex() {
         baseStats[name] = s.base_stat;
       });
 
-      // Heuristic to calculate dynamic Rarity
       let rarity = "COMMON";
       if (speciesData.is_mythical) rarity = "MYTHICAL";
       else if (speciesData.is_legendary) rarity = "LEGENDARY";
@@ -104,53 +90,61 @@ async function fetchPokedex() {
         else if (bst >= 400) rarity = "UNCOMMON";
       }
 
-      // Map Learnset (Filters only Level-Up moves from the classic red-blue or first available version)
       const learnset = [];
-      const seenMoves = new Set();
+      const tmMoves = [];
+      const seenLevelMoves = new Set();
+      const seenTmMoves = new Set();
 
       for (const m of pokemonData.moves) {
-        // Find details where move is learned via leveling up
         const lvlDetail = m.version_group_details.find(
           (d) => d.move_learn_method.name === "level-up",
         );
-        if (lvlDetail && !seenMoves.has(m.move.name)) {
-          seenMoves.add(m.move.name);
+        if (lvlDetail && !seenLevelMoves.has(m.move.name)) {
+          seenLevelMoves.add(m.move.name);
           learnset.push({
             level: lvlDetail.level_learned_at,
             move: capitalize(m.move.name),
           });
         }
-      }
-      // Sort moves by level learned
-      learnset.sort((a, b) => a.level - b.level);
 
-      // Parse Evolutions
+        const tmDetail = m.version_group_details.find(
+          (d) => d.move_learn_method.name === "machine",
+        );
+        if (tmDetail && !seenTmMoves.has(m.move.name)) {
+          seenTmMoves.add(m.move.name);
+          tmMoves.push(capitalize(m.move.name));
+        }
+      }
+
+      learnset.sort((a, b) => a.level - b.level);
+      tmMoves.sort();
+
       const evolutions = evoChainData
         ? parseEvolutions(evoChainData.chain, pokemonData.name)
         : [];
 
-      // Compile into your schema shape
       pokedex[id] = {
         name: capitalize(pokemonData.name),
         rarity: rarity,
+        height: pokemonData.height / 10 || 0,
+        weight: pokemonData.weight / 10 || 0,
         types: pokemonData.types.map((t) => t.type.name.toUpperCase()),
         baseStats: baseStats,
         sprites: {
           normal: `https://pgaminghd.github.io/discmon-images/pokemon-sprites/normal/${id}.png`,
-          shiny: `https://pgaminghd.github.io/discmon-images/pokemon-sprites/shiny/${id}.png`,
+          shiny: `https://pgaminghd.github.io/discmon-images/pokemon-sprites/normal/${id}.png`,
         },
         evolutions: evolutions,
         learnset: learnset,
+        tmMoves: tmMoves,
       };
 
-      // Respectful API delay (200ms) so you don't overwhelm the server
       await delay(200);
     } catch (error) {
       console.error(`❌ Error parsing Pokémon ID ${id}:`, error.message);
     }
   }
 
-  // Write file to disk
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(pokedex, null, 2));
   console.log(`\n✅ Finished! Data written successfully to ${OUTPUT_FILE}`);
 }
