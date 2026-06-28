@@ -173,17 +173,6 @@ export class ExtendedClient extends Client {
       });
     });
 
-    this.on("ready", async () => {
-      await this.registerCommands({
-        globalCommands: globalCommands,
-        localCommands: guildSpecfic,
-        guildId: process.env.guildId,
-      });
-
-      await autoPoster(this);
-      await catchBuddy(this);
-    });
-
     // Events
     const eventFiles = await globPromise("/events/*{.ts,.js}", { root });
     for (const filePath of eventFiles) {
@@ -199,7 +188,8 @@ export class ExtendedClient extends Client {
     globalCommands: ApplicationCommandDataResolvable[],
     guildSpecific: ApplicationCommandDataResolvable[],
   ) {
-    this.on("ready", async () => {
+    this.once("ready", async () => {
+      console.log("READY RAN!");
       await this.registerCommands({
         globalCommands: globalCommands,
         localCommands: guildSpecific,
