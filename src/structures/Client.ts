@@ -71,7 +71,16 @@ export class ExtendedClient extends Client {
     if (!this.application)
       return logger.error("No application to register commands for!");
 
-    this.application.commands.set(globalCommands);
+    console.log(
+      `Attempting to register ${globalCommands?.length || 0} global commands.`,
+    );
+
+    try {
+      await this.application.commands.set(globalCommands);
+      console.log("SUCCESS: Global commands registered!");
+    } catch (error) {
+      console.log("FAILED to register global commands:", error);
+    }
 
     if (guildId) {
       const guild = await this.guilds.fetch(guildId);
