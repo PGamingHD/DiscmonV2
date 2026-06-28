@@ -71,14 +71,6 @@ export class ExtendedClient extends Client {
     if (!this.application)
       return logger.error("No application to register commands for!");
 
-    console.log(
-      globalCommands.map((c) => ({
-        name: (c as any).name,
-        description: (c as any).description,
-        type: (c as any).type,
-      })),
-    );
-
     this.application.commands.set(globalCommands);
 
     if (guildId) {
