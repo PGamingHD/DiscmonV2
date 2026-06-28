@@ -21,6 +21,12 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
     if (!command)
       return interaction.followUp("You have used a non existent command");
 
+    if (!interaction.guild) {
+      return interaction.followUp(
+        "You must execute commands from a Discord Server.",
+      );
+    }
+
     let bla: string;
     if (command.noDefer) bla = "hey";
     else await interaction.deferReply();
@@ -84,6 +90,17 @@ export default new Event(Events.InteractionCreate, async (interaction) => {
             .setColor(Colours.RED)
             .setDescription(
               "You require an account to execute this command, please use `/start` to start your adventure.",
+            ),
+        ],
+      });
+    if (command?.main && interaction.guild?.id != process.env.guildId)
+      return interaction.reply({
+        flags: [MessageFlags.Ephemeral],
+        embeds: [
+          new EmbedBuilder()
+            .setColor(Colours.RED)
+            .setDescription(
+              "This command is required to be executed from the Support Server, please join it and execute the command there.",
             ),
         ],
       });
