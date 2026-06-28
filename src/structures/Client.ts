@@ -63,6 +63,7 @@ export class ExtendedClient extends Client {
 
   async registerCommands({ commands, guildId }: RegisterCommandsOptions) {
     console.log(this.isReady());
+    console.log(this.application?.id);
     try {
       console.log("RUNNING!");
 
