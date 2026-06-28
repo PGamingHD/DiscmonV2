@@ -3,6 +3,7 @@ import {
   ApplicationCommandOptionType,
   EmbedBuilder,
   Message,
+  MessageFlags,
   TextChannel,
 } from "discord.js";
 import { Command } from "../../structures/Command";
@@ -803,6 +804,7 @@ export default new Command({
         );
         return interaction.reply({
           embeds: [evalEmbed.setColor(Colours.MAIN).setTimestamp()],
+          flags: [MessageFlags.Ephemeral],
         });
       } catch (e: any) {
         const evalEmbed2 = new EmbedBuilder();
