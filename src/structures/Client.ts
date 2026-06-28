@@ -4,6 +4,7 @@ import {
   Client,
   ClientEvents,
   Collection,
+  Events,
   GatewayIntentBits,
   Partials,
 } from "discord.js";
@@ -70,17 +71,13 @@ export class ExtendedClient extends Client {
     if (!this.application)
       return logger.error("No application to register commands for!");
 
-    console.log("BEFORE GLOBAL REG");
-
-    await this.application.commands.set(globalCommands);
-
-    console.log("AFTER GLOBAL REG");
+    this.application.commands.set(globalCommands);
 
     if (guildId) {
       const guild = await this.guilds.fetch(guildId);
 
       if (guild) {
-        await guild.commands.set(localCommands);
+        guild.commands.set(localCommands);
       }
     }
   }
@@ -184,7 +181,7 @@ export class ExtendedClient extends Client {
     globalCommands: ApplicationCommandDataResolvable[],
     guildSpecific: ApplicationCommandDataResolvable[],
   ) {
-    this.once("ready", async () => {
+    this.once(Events.ClientReady, async () => {
       await this.registerCommands({
         globalCommands: globalCommands,
         localCommands: guildSpecific,
