@@ -8,6 +8,7 @@
     "start": "npx rimraf dist && tsc && node dist/index.js",
     "start:dev": "ts-node-dev src/index.ts",
     "start:production": "npx rimraf dist && tsc && node dist/index.js",
+    "deploy:commands": "node dist/utils/deploy-commands.js",
     "build": "tsc",
     "fix": "gts fix"
   },

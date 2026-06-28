@@ -63,7 +63,7 @@ export class ExtendedClient extends Client {
     return (await import(filePath))?.default;
   }
 
-  async registerCommands({
+  /*async registerCommands({
     globalCommands,
     localCommands,
     guildId,
@@ -71,7 +71,7 @@ export class ExtendedClient extends Client {
     if (!this.application)
       return logger.error("No application to register commands for!");
 
-    /*console.log(
+    console.log(
       `Attempting to register ${globalCommands?.length || 0} global commands.`,
     );
 
@@ -88,8 +88,8 @@ export class ExtendedClient extends Client {
       if (guild) {
         guild.commands.set(localCommands);
       }
-    }*/
-  }
+    }
+  }*/
 
   async RegisterModules() {
     await redis.incr("client:restarts");
